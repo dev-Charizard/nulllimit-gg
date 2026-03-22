@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Agent Setup — Null Limit</title>
+<meta name="description" content="Get your own OpenClaw AI agent running. Configured, secured, connected. One session." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:  #090909;
+    --g900:   #111111;
+    --g800:   #1a1a1a;
+    --g700:   #242424;
+    --g600:   #333333;
+    --g400:   #666666;
+    --g200:   #aaaaaa;
+    --g100:   #d4d4d4;
+    --white:  #f5f5f0;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  html {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    scroll-behavior: smooth;
+    cursor: none;
+  }
+
+  .cursor-dot {
+    width: 6px; height: 6px;
+    background: var(--white); border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease, opacity 0.2s;
+  }
+
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 0.5px solid rgba(245,245,240,0.4); border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s, opacity 0.2s;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35; pointer-events: none; z-index: 100;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 99;
+  }
+
+  .site { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 36px 0; border-bottom: 0.5px solid var(--g700);
+    opacity: 0; animation: fadeUp 0.6s ease forwards;
+  }
+
+  .nav-mark {
+    font-family: var(--mono); font-size: 18px; font-weight: 700;
+    color: var(--white); display: flex; align-items: center;
+    text-decoration: none; letter-spacing: -0.01em;
+  }
+
+  .nav-cursor {
+    display: inline-block; width: 2px; height: 18px;
+    background: var(--white); margin-left: 2px; border-radius: 1px;
+    animation: blink 1.1s step-end infinite;
+  }
+
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--g400); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  /* HERO */
+  .hero { padding: 120px 0 100px; position: relative; }
+
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--g400); margin-bottom: 32px;
+    opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--sans); font-size: clamp(52px, 8vw, 96px);
+    font-weight: 800; line-height: 0.95; letter-spacing: -0.03em;
+    color: var(--white); margin-bottom: 40px;
+    opacity: 0; animation: fadeUp 0.7s ease 0.2s forwards;
+  }
+
+  .hero-title .dim { color: var(--g600); }
+
+  .hero-sub {
+    font-family: var(--mono); font-size: 13px; color: var(--g200);
+    letter-spacing: 0.05em; line-height: 1.8; max-width: 480px;
+    margin-bottom: 48px;
+    opacity: 0; animation: fadeUp 0.7s ease 0.35s forwards;
+  }
+
+  .hero-sub span { color: var(--white); font-weight: 700; }
+
+  .hero-ctas {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.7s ease 0.45s forwards;
+  }
+
+  .btn-primary {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; background: var(--white); color: var(--black);
+    padding: 14px 28px; text-decoration: none; transition: all 0.2s;
+    display: inline-block; font-weight: 700;
+  }
+  .btn-primary:hover { background: var(--g100); }
+
+  .btn-ghost {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; background: transparent; color: var(--g400);
+    padding: 14px 28px; text-decoration: none;
+    border: 0.5px solid var(--g700); transition: all 0.2s; display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--g400); color: var(--white); }
+
+  .hero-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 2px; margin-top: 80px;
+    opacity: 0; animation: fadeUp 0.7s ease 0.55s forwards;
+  }
+
+  .hero-stat { background: var(--g900); padding: 24px 20px; }
+  .hero-stat-num {
+    font-family: var(--mono); font-size: 24px; font-weight: 700;
+    color: var(--white); letter-spacing: -0.02em; margin-bottom: 4px;
+  }
+  .hero-stat-label {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--g400);
+  }
+
+  /* SECTION */
+  .section-label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--g400);
+    display: flex; align-items: center; gap: 16px; margin-bottom: 48px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 0.5px; background: var(--g700); }
+
+  /* SERVICES */
+  .services { padding: 100px 0; border-top: 0.5px solid var(--g700); }
+
+  .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+
+  .service-card {
+    background: var(--g900); padding: 48px 40px;
+    transition: background 0.25s;
+  }
+  .service-card:hover { background: var(--g800); }
+
+  .service-num {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+    color: var(--g600); margin-bottom: 32px;
+  }
+
+  .service-name {
+    font-family: var(--sans); font-size: 28px; font-weight: 800;
+    color: var(--white); letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.1;
+  }
+
+  .service-desc {
+    font-family: var(--sans); font-size: 15px; color: var(--g200);
+    line-height: 1.65; margin-bottom: 32px;
+  }
+
+  .service-price {
+    font-family: var(--mono); font-size: 22px; font-weight: 700;
+    color: var(--white); letter-spacing: -0.01em;
+  }
+
+  .service-price span {
+    font-size: 11px; color: var(--g400); font-weight: 400; margin-left: 4px;
+  }
+
+  /* WHAT YOU GET */
+  .features { padding: 100px 0; border-top: 0.5px solid var(--g700); }
+
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; }
+
+  .feature-card { background: var(--g900); padding: 40px 32px; transition: background 0.25s; }
+  .feature-card:hover { background: var(--g800); }
+
+  .feature-num {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+    color: var(--g600); margin-bottom: 24px;
+  }
+
+  .feature-name {
+    font-family: var(--sans); font-size: 20px; font-weight: 800;
+    color: var(--white); letter-spacing: -0.01em; margin-bottom: 12px; line-height: 1.1;
+  }
+
+  .feature-desc {
+    font-family: var(--sans); font-size: 14px; color: var(--g200); line-height: 1.65;
+  }
+
+  /* STACK */
+  .stack { padding: 100px 0; border-top: 0.5px solid var(--g700); }
+
+  .stack-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+
+  .stack-item { background: var(--g900); padding: 32px 28px; transition: background 0.25s; }
+  .stack-item:hover { background: var(--g800); }
+
+  .stack-name {
+    font-family: var(--mono); font-size: 13px; font-weight: 700;
+    color: var(--white); margin-bottom: 8px;
+  }
+
+  .stack-desc {
+    font-family: var(--mono); font-size: 11px; color: var(--g400); line-height: 1.6;
+  }
+
+  /* PROCESS */
+  .process { padding: 100px 0; border-top: 0.5px solid var(--g700); }
+
+  .process-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+
+  .process-step { background: var(--g900); padding: 40px 32px; transition: background 0.25s; }
+  .process-step:hover { background: var(--g800); }
+
+  .step-num {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+    color: var(--g600); margin-bottom: 24px;
+  }
+
+  .step-name {
+    font-family: var(--sans); font-size: 20px; font-weight: 800;
+    color: var(--white); letter-spacing: -0.01em; margin-bottom: 12px;
+  }
+
+  .step-desc {
+    font-family: var(--sans); font-size: 14px; color: var(--g200); line-height: 1.65;
+  }
+
+  /* CONTACT FORM */
+  .contact { padding: 100px 0; border-top: 0.5px solid var(--g700); }
+
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: start;
+  }
+
+  .contact-left-title {
+    font-family: var(--sans); font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800; letter-spacing: -0.03em; line-height: 1;
+    margin-bottom: 24px; color: var(--white);
+  }
+
+  .contact-left-title .dim { color: var(--g600); }
+
+  .contact-left-desc {
+    font-family: var(--mono); font-size: 13px; color: var(--g200);
+    line-height: 1.8; margin-bottom: 40px;
+  }
+
+  .trust-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .trust-list li {
+    font-family: var(--mono); font-size: 11px; color: var(--g400);
+    letter-spacing: 0.05em; display: flex; align-items: center; gap: 10px;
+  }
+  .trust-list li::before { content: '—'; color: var(--g600); }
+
+  .form { display: flex; flex-direction: column; gap: 2px; }
+
+  .form-field {
+    background: var(--g900); border: none; border-bottom: 0.5px solid var(--g700);
+    color: var(--white); font-family: var(--mono); font-size: 13px;
+    padding: 18px 20px; outline: none; transition: background 0.2s, border-color 0.2s;
+    width: 100%;
+  }
+  .form-field:focus { background: var(--g800); border-color: var(--g400); }
+  .form-field::placeholder { color: var(--g600); }
+
+  select.form-field { cursor: none; }
+  select.form-field option { background: var(--g900); }
+
+  textarea.form-field { resize: none; }
+
+  .form-submit {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; background: var(--white); color: var(--black);
+    padding: 18px 28px; border: none; cursor: none; font-weight: 700;
+    transition: background 0.2s; margin-top: 4px; text-align: left;
+  }
+  .form-submit:hover { background: var(--g100); }
+
+  .form-note {
+    font-family: var(--mono); font-size: 10px; color: var(--g600);
+    letter-spacing: 0.05em; margin-top: 8px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 0.5px solid var(--g700); padding: 40px 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .footer-mark {
+    font-family: var(--mono); font-size: 14px; font-weight: 700;
+    color: var(--g600); display: flex; align-items: center;
+  }
+
+  .footer-mark .fc {
+    display: inline-block; width: 1.5px; height: 13px;
+    background: var(--g600); margin-left: 2px; border-radius: 1px;
+    animation: blink 1.1s step-end infinite;
+  }
+
+  .footer-right {
+    font-family: var(--mono); font-size: 10px; color: var(--g600);
+    letter-spacing: 0.1em; text-align: right; line-height: 2;
+  }
+
+  .footer-right a {
+    color: var(--g600); text-decoration: none; transition: color 0.2s;
+  }
+  .footer-right a:hover { color: var(--white); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .site { padding: 0 24px; }
+    .hero { padding: 80px 0 60px; }
+    .hero-stats { grid-template-columns: 1fr 1fr; }
+    .service-grid { grid-template-columns: 1fr; }
+    .feature-grid { grid-template-columns: 1fr 1fr; }
+    .stack-grid { grid-template-columns: 1fr 1fr; }
+    .process-grid { grid-template-columns: 1fr 1fr; }
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    html { cursor: auto; }
+    .cursor-dot, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="dot"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<div class="site">
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-mark">null;<span class="nav-cursor"></span></a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/leads">Leads</a></li>
+      <li><a href="#book">Book a Session</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">nulllimit.gg — AI Agent Setup · 003</div>
+    <h1 class="hero-title">
+      Your own AI agent.<br/>
+      <span class="dim">Actually running.</span>
+    </h1>
+    <p class="hero-sub">
+      OpenClaw setup, configuration, security hardening, and custom development.
+      From <span>zero</span> to a fully operational AI agent in <span>one session</span>.
+    </p>
+    <div class="hero-ctas">
+      <a href="#book" class="btn-primary">Book a Setup Session</a>
+      <a href="#services" class="btn-ghost">See Services ↓</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">1 day</div>
+        <div class="hero-stat-label">To deploy</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">24/7</div>
+        <div class="hero-stat-label">Agent uptime</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">250K+</div>
+        <div class="hero-stat-label">OpenClaw stars</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">$0</div>
+        <div class="hero-stat-label">Software cost</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="section-label">01 — Services</div>
+    <div class="service-grid reveal">
+
+      <div class="service-card">
+        <div class="service-num">01</div>
+        <div class="service-name">Starter Setup</div>
+        <div class="service-desc">Full OpenClaw install and configuration on your machine or cloud VPS. Telegram connected, AI model wired, security hardened, skills installed. Ready to use same day.</div>
+        <div class="service-price">$125 <span>/ one-time</span></div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-num">02</div>
+        <div class="service-name">Pro Setup</div>
+        <div class="service-desc">Everything in Starter plus custom skills, fallback model configuration, web search integration, Docker sandbox, and a full walkthrough of your agent's capabilities.</div>
+        <div class="service-price">$250 <span>/ one-time</span></div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-num">03</div>
+        <div class="service-name">Business Agent</div>
+        <div class="service-desc">Full business automation. Email, lead research, content drafting, GitHub monitoring, task management. Your agent runs your ops while you build.</div>
+        <div class="service-price">$500 <span>/ one-time</span></div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-num">04</div>
+        <div class="service-name">Custom Development</div>
+        <div class="service-desc">Custom OpenClaw skills, multi-agent systems, workflow automation, API integrations. You tell us what you need your agent to do — we build it.</div>
+        <div class="service-price">Custom <span>/ scoped project</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WHAT YOU GET -->
+  <section class="features" id="what-you-get">
+    <div class="section-label">02 — What You Get</div>
+    <div class="feature-grid reveal">
+
+      <div class="feature-card">
+        <div class="feature-num">01</div>
+        <div class="feature-name">Full Installation</div>
+        <div class="feature-desc">OpenClaw installed and running on your hardware or cloud VPS. Node versioning, PATH fixes, daemon setup — all handled.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-num">02</div>
+        <div class="feature-name">AI Model Wired</div>
+        <div class="feature-desc">Claude, DeepSeek, or your preferred model connected as the agent's brain. Fallback model configured so your agent never goes down.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-num">03</div>
+        <div class="feature-name">Messaging Connected</div>
+        <div class="feature-desc">Telegram, Discord, WhatsApp, or Signal. Your agent lives in your messaging app. Talk to it from your phone, anywhere, anytime.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-num">04</div>
+        <div class="feature-name">Security Hardened</div>
+        <div class="feature-desc">0 critical security issues. Allowlists configured, Docker sandbox enabled, API keys in environment variables. Audit passed.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-num">05</div>
+        <div class="feature-name">Skills Installed</div>
+        <div class="feature-desc">Web search, GitHub, email, calendar, summarization, self-improvement. Your agent gains real capabilities on day one.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-num">06</div>
+        <div class="feature-name">You Own It</div>
+        <div class="feature-desc">Full walkthrough. Config documented. Your data stays on your machine. No subscriptions, no vendor lock-in. Yours forever.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section class="stack">
+    <div class="section-label">03 — The Stack</div>
+    <div class="stack-grid reveal">
+      <div class="stack-item">
+        <div class="stack-name">OpenClaw</div>
+        <div class="stack-desc">The agent framework. 250K+ GitHub stars. Connects to your tools, runs your workflows 24/7.</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">Claude Sonnet</div>
+        <div class="stack-desc">Primary AI brain. Best-in-class tool calling, long context, precise instruction following.</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">DeepSeek</div>
+        <div class="stack-desc">Fallback model. Fraction of the cost. Agent never goes down when Claude rate limits.</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">Perplexity</div>
+        <div class="stack-desc">Web search. AI-synthesized answers with citations. Your agent reads the live web.</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">Docker</div>
+        <div class="stack-desc">Sandbox execution. Code runs in isolation. Your system stays protected.</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">Telegram</div>
+        <div class="stack-desc">Primary messaging channel. Talk to your agent from your phone. Always connected.</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">GitHub CLI</div>
+        <div class="stack-desc">Project monitoring, issue tracking, PR management. Your agent watches your repos.</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">ClawHub Skills</div>
+        <div class="stack-desc">Vetted skill ecosystem. Email, calendar, summarization, self-improvement, and more.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process">
+    <div class="section-label">04 — Process</div>
+    <div class="process-grid reveal">
+      <div class="process-step">
+        <div class="step-num">01</div>
+        <div class="step-name">Book a Session</div>
+        <div class="step-desc">Tell us your setup — Mac, Windows, Linux, or cloud VPS. What you want your agent to do. We schedule the work.</div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">02</div>
+        <div class="step-name">We Build</div>
+        <div class="step-desc">Full installation, configuration, security hardening, skill setup. We handle every error so you don't have to.</div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">03</div>
+        <div class="step-name">You Take Over</div>
+        <div class="step-desc">Walkthrough of your agent's capabilities. Config documented. You own everything — no dependencies on us.</div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">04</div>
+        <div class="step-name">Your Agent Works</div>
+        <div class="step-desc">Research, emails, scheduling, monitoring — running while you focus on what matters. 24/7, no babysitting.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT / BOOK -->
+  <section class="contact" id="book">
+    <div class="section-label">05 — Book a Session</div>
+    <div class="contact-grid">
+      <div class="contact-left reveal">
+        <div class="contact-left-title">
+          Let's get your<br/>
+          <span class="dim">agent running.</span>
+        </div>
+        <div class="contact-left-desc">
+          Fill out the form and we'll get back to you within 24 hours.
+          First session can happen same day if you're ready.
+        </div>
+        <ul class="trust-list">
+          <li>Works on Mac, Windows, Linux, or cloud</li>
+          <li>One session — agent live same day</li>
+          <li>You own everything after — no lock-in</li>
+          <li>DM @devCharizard on X for a free consult first</li>
+        </ul>
+      </div>
+      <div class="contact-right reveal">
+        <form class="form" onsubmit="handleSubmit(event)">
+          <input class="form-field" type="text" placeholder="Your name" required />
+          <input class="form-field" type="email" placeholder="Your email" required />
+          <select class="form-field" required>
+            <option value="" disabled selected>Which service?</option>
+            <option>Starter Setup — $125</option>
+            <option>Pro Setup — $250</option>
+            <option>Business Agent — $500</option>
+            <option>Custom Development</option>
+          </select>
+          <input class="form-field" type="text" placeholder="Mac / Windows / Linux / Cloud VPS?" required />
+          <textarea class="form-field" rows="4" placeholder="What do you want your agent to do?"></textarea>
+          <button type="submit" class="form-submit">Book My Setup Session →</button>
+          <div class="form-note">Or DM @devCharizard on X. Response within 24h.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-mark">null;<span class="fc"></span></div>
+    <div class="footer-right">
+      <div><a href="/">nulllimit.gg</a></div>
+      <div><a href="/leads">leads</a> · <a href="/agents">agents</a></div>
+      <div>© 2026 Null Limit</div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const dot = document.getElementById('dot');
+  const ring = document.getElementById('ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+  });
+
+  (function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '48px';
+      ring.style.height = '48px';
+      ring.style.borderColor = 'rgba(245,245,240,0.7)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '32px';
+      ring.style.height = '32px';
+      ring.style.borderColor = 'rgba(245,245,240,0.4)';
+    });
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => observer.observe(el));
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.textContent = "Received. We'll be in touch within 24h.";
+    btn.style.background = 'var(--g800)';
+    btn.style.color = 'var(--white)';
+    btn.disabled = true;
+  }
+</script>
+</body>
+</html>
