@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Null Limit Leads — Qualified Cross-Border E-commerce Leads for SaaS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090909;
+      --bg2: #111111;
+      --bg3: #151515;
+      --border: rgba(245,245,240,0.07);
+      --text: #f5f5f0;
+      --muted: #666666;
+      --muted2: #aaaaaa;
+      --dim: #333333;
+      --mono: 'Space Mono', monospace;
+      --serif: 'DM Serif Display', serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    #dot {
+      position: fixed; width: 6px; height: 6px;
+      background: var(--text); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+
+    #ring {
+      position: fixed; width: 32px; height: 32px;
+      border: 1px solid rgba(245,245,240,0.4); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, border-color 0.2s;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.5rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9,9,9,0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      font-family: var(--mono); font-size: 0.8rem;
+      color: var(--text); text-decoration: none;
+      letter-spacing: 0.05em; opacity: 0.8;
+    }
+    .nav-logo:hover { opacity: 1; }
+
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: var(--muted); text-decoration: none;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    nav ul a:hover { color: var(--text); }
+
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 10rem 2.5rem 5rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono); font-size: 0.6rem;
+      color: var(--muted); letter-spacing: 0.2em;
+      text-transform: uppercase; margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      font-weight: 400; line-height: 1.0;
+      letter-spacing: -0.01em; margin-bottom: 2rem;
+      max-width: 900px;
+    }
+
+    .hero h1 em { font-style: italic; color: var(--muted2); }
+
+    .hero-sub {
+      font-size: 0.825rem; color: var(--muted);
+      max-width: 480px; margin-bottom: 3rem; line-height: 1.85;
+    }
+
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn-primary {
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      background: var(--text); color: var(--bg);
+      padding: 0.85rem 1.75rem; text-decoration: none;
+      border: 1px solid var(--text); transition: all 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: transparent; color: var(--text); }
+
+    .btn-ghost {
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      background: transparent; color: var(--muted);
+      padding: 0.85rem 1.75rem; text-decoration: none;
+      border: 1px solid var(--border); transition: all 0.2s;
+      display: inline-block;
+    }
+    .btn-ghost:hover { border-color: rgba(245,245,240,0.25); color: var(--text); }
+
+    .stats-row {
+      display: flex; margin-top: 5rem;
+      border-top: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+    }
+
+    .stat {
+      flex: 1; padding: 1.5rem 2rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat-n {
+      font-family: var(--serif); font-size: 2rem;
+      display: block; line-height: 1; margin-bottom: 0.35rem;
+    }
+
+    .stat-l {
+      font-size: 0.58rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.15em;
+    }
+
+    .rule { border: none; border-top: 1px solid var(--border); margin: 0 2.5rem; }
+
+    .section { padding: 6rem 2.5rem; max-width: 1200px; margin: 0 auto; }
+
+    .section-tag {
+      font-size: 0.58rem; color: var(--muted);
+      letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;
+    }
+    .section-tag::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .section-h {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 400; line-height: 1.1;
+      margin-bottom: 1.25rem; letter-spacing: -0.01em;
+    }
+    .section-h em { font-style: italic; color: var(--muted2); }
+
+    .section-p {
+      font-size: 0.8rem; color: var(--muted);
+      max-width: 480px; line-height: 1.85; margin-bottom: 3rem;
+    }
+
+    .grid-2 {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--border);
+    }
+
+    .grid-item {
+      padding: 2rem 2.25rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .grid-item:hover { background: var(--bg2); }
+
+    .grid-item-label {
+      font-size: 0.58rem; color: var(--muted);
+      letter-spacing: 0.15em; text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .grid-item-text { font-size: 0.8rem; color: var(--muted2); line-height: 1.7; }
+
+    .grid-3 {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--border);
+    }
+
+    .deliverable {
+      padding: 2.25rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .deliverable:hover { background: var(--bg2); }
+
+    .deliverable-num {
+      font-size: 0.58rem; color: var(--muted);
+      letter-spacing: 0.15em; margin-bottom: 1.25rem; display: block;
+    }
+
+    .deliverable h3 {
+      font-family: var(--serif); font-size: 1.15rem;
+      font-weight: 400; margin-bottom: 0.6rem; line-height: 1.2;
+    }
+
+    .deliverable p { font-size: 0.775rem; color: var(--muted); line-height: 1.7; }
+
+    .lead-card { border: 1px solid var(--border); background: var(--bg2); overflow: hidden; }
+
+    .lead-card-top {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 1.75rem; border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+    }
+
+    .lead-id { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+    .lead-score { font-size: 0.62rem; color: var(--muted2); letter-spacing: 0.08em; border: 1px solid var(--border); padding: 0.2rem 0.6rem; }
+
+    .lead-body { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+
+    .lead-col { padding: 1.75rem; border-right: 1px solid var(--border); }
+
+    .lead-col-title {
+      font-size: 0.52rem; color: var(--muted);
+      letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lead-row {
+      display: flex; justify-content: space-between;
+      padding: 0.3rem 0; font-size: 0.7rem;
+      border-bottom: 1px solid rgba(245,245,240,0.03); gap: 1rem;
+    }
+
+    .lead-k { color: var(--muted); flex-shrink: 0; }
+    .lead-v { color: var(--muted2); text-align: right; }
+    .lead-v.none { color: var(--dim); }
+
+    .fit-list { list-style: none; margin-top: 0.5rem; }
+    .fit-list li {
+      font-size: 0.7rem; color: var(--muted);
+      padding: 0.25rem 0; display: flex; gap: 0.5rem;
+    }
+    .fit-list li::before { content: '—'; color: var(--dim); flex-shrink: 0; }
+
+    .pitch-box {
+      margin-top: 1rem; padding: 1rem;
+      background: var(--bg); border: 1px solid var(--border);
+      font-size: 0.7rem; color: var(--muted2);
+      line-height: 1.75; font-style: italic;
+    }
+
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--border);
+    }
+
+    .pricing-card {
+      padding: 2.5rem 2.25rem;
+      border-right: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .pricing-card:hover { background: var(--bg2); }
+    .pricing-card.featured { background: var(--bg2); }
+
+    .pricing-tag {
+      font-size: 0.52rem; color: var(--muted);
+      letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 1.5rem; display: block;
+    }
+    .pricing-card.featured .pricing-tag { color: var(--muted2); }
+
+    .pricing-name { font-family: var(--serif); font-size: 1.4rem; font-weight: 400; margin-bottom: 0.5rem; }
+
+    .pricing-price { font-family: var(--serif); font-size: 2.75rem; line-height: 1; margin-bottom: 0.35rem; }
+    .pricing-price sup { font-family: var(--mono); font-size: 1rem; vertical-align: super; }
+
+    .pricing-period {
+      font-size: 0.65rem; color: var(--muted); line-height: 1.7;
+      margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);
+    }
+
+    .pricing-features { list-style: none; }
+    .pricing-features li {
+      font-size: 0.72rem; color: var(--muted);
+      padding: 0.35rem 0; border-bottom: 1px solid rgba(245,245,240,0.03);
+      display: flex; gap: 0.5rem;
+    }
+    .pricing-features li::before { content: '—'; color: var(--dim); }
+
+    .process-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--border);
+    }
+
+    .process-step {
+      padding: 2.25rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .process-step:hover { background: var(--bg2); }
+
+    .step-n { font-size: 0.52rem; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1.5rem; display: block; }
+    .step-h { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; margin-bottom: 0.6rem; }
+    .step-p { font-size: 0.75rem; color: var(--muted); line-height: 1.7; }
+
+    .cta-wrap { padding: 6rem 2.5rem; max-width: 1200px; margin: 0 auto; }
+
+    .cta-inner {
+      border: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr;
+      background: var(--bg2);
+    }
+
+    .cta-left { padding: 3.5rem; border-right: 1px solid var(--border); }
+    .cta-right { padding: 3.5rem; }
+
+    .cta-h { font-family: var(--serif); font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 400; line-height: 1.1; margin-bottom: 1rem; }
+    .cta-p { font-size: 0.8rem; color: var(--muted); line-height: 1.85; margin-bottom: 2rem; }
+
+    .trust-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .trust-list li { font-size: 0.68rem; color: var(--muted); display: flex; gap: 0.5rem; }
+    .trust-list li::before { content: '✓'; color: var(--muted2); }
+
+    .cta-form { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .form-field {
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); font-family: var(--mono); font-size: 0.72rem;
+      padding: 0.85rem 1rem; outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .form-field:focus { border-color: rgba(245,245,240,0.25); }
+    .form-field::placeholder { color: var(--muted); }
+
+    .form-note { font-size: 0.58rem; color: var(--dim); margin-top: 0.25rem; }
+
+    .ticker-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 0.85rem 0; background: var(--bg2);
+    }
+
+    .ticker { display: flex; gap: 4rem; animation: ticker 40s linear infinite; white-space: nowrap; }
+
+    .ticker-item { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; flex-shrink: 0; }
+    .ticker-sep { color: var(--dim); margin-right: 0.5rem; }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+
+    footer a { font-size: 0.7rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--text); }
+    footer span { font-size: 0.62rem; color: var(--dim); letter-spacing: 0.1em; }
+
+    .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .grid-3 { grid-template-columns: 1fr 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .process-grid { grid-template-columns: 1fr 1fr; }
+      .lead-body { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      nav ul { display: none; }
+      .hero { padding: 8rem 1.5rem 4rem; }
+      .section { padding: 4rem 1.5rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .stats-row { flex-wrap: wrap; }
+      .stat { min-width: 50%; }
+      .cta-inner { grid-template-columns: 1fr; }
+      .cta-left { border-right: none; border-bottom: 1px solid var(--border); padding: 2.5rem 1.75rem; }
+      .cta-right { padding: 2.5rem 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="dot"></div>
+  <div id="ring"></div>
+
+  <nav>
+    <a href="https://nulllimit.gg" class="nav-logo">null; — leads</a>
+    <ul>
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#what-you-get">What You Get</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#get-leads">Get Started</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-eyebrow">Null Limit · Lead Generation · 002</div>
+    <h1>Qualified leads for<br /><em>cross-border</em><br />e-commerce SaaS.</h1>
+    <p class="hero-sub">Stop burning sales cycles on bad data. We deliver 50–100 pre-qualified online stores every week — verified contacts, revenue signals, tech stack, pitch angles included.</p>
+    <div class="hero-ctas">
+      <a href="#get-leads" class="btn-primary">Get 10 Free Sample Leads</a>
+      <a href="#what-you-get" class="btn-ghost">See What's Included ↓</a>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-n">50–100</span><span class="stat-l">Leads / week</span></div>
+      <div class="stat"><span class="stat-n">48h</span><span class="stat-l">First delivery</span></div>
+      <div class="stat"><span class="stat-n">10+</span><span class="stat-l">Data points per lead</span></div>
+      <div class="stat"><span class="stat-n">$6.88T</span><span class="stat-l">Global e-commerce market</span></div>
+    </div>
+  </div>
+
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span class="ticker-item"><span class="ticker-sep">→</span>Zonos · Duty automation</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>FlavorCloud · International shipping</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>Passport Global · Seller of Record</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>Easyship · Global logistics</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>17TRACK · Package tracking</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>Cross-border growing 12.2% YoY</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>Latin America $191B market</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>Zonos · Duty automation</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>FlavorCloud · International shipping</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>Passport Global · Seller of Record</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>Easyship · Global logistics</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>17TRACK · Package tracking</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>Cross-border growing 12.2% YoY</span>
+      <span class="ticker-item"><span class="ticker-sep">→</span>Latin America $191B market</span>
+    </div>
+  </div>
+
+  <hr class="rule" />
+  <section class="section" id="problem">
+    <div class="section-tag reveal">01 — The Problem</div>
+    <h2 class="section-h reveal">Your sales team is burning time<br />on the <em>wrong stores.</em></h2>
+    <p class="section-p reveal">Most cross-border SaaS companies lose 60%+ of sales time chasing leads that were never going to convert. The data is bad, the targeting is off, the timing is wrong.</p>
+    <div class="grid-2 reveal">
+      <div class="grid-item"><div class="grid-item-label">✗ &nbsp;Time wasted</div><div class="grid-item-text">Manually researching stores for hours with nothing to show for it.</div></div>
+      <div class="grid-item"><div class="grid-item-label">✗ &nbsp;Stale lists</div><div class="grid-item-text">Buying outdated lead lists full of dead emails and defunct stores.</div></div>
+      <div class="grid-item"><div class="grid-item-label">✗ &nbsp;Wrong ICP</div><div class="grid-item-text">Cold calling stores that don't match your ideal customer and never will.</div></div>
+      <div class="grid-item"><div class="grid-item-label">✗ &nbsp;Missed timing</div><div class="grid-item-text">Missing stores in active expansion mode — the ones ready to buy right now.</div></div>
+      <div class="grid-item"><div class="grid-item-label">✗ &nbsp;No tech data</div><div class="grid-item-text">Pitching tools to stores already locked into a competitor.</div></div>
+      <div class="grid-item"><div class="grid-item-label">✗ &nbsp;Generic outreach</div><div class="grid-item-text">No context, no pitch angle, low reply rates, wasted sequences.</div></div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+  <section class="section" id="what-you-get">
+    <div class="section-tag reveal">02 — What You Get</div>
+    <h2 class="section-h reveal">Every lead. Every week.<br /><em>Ready to close.</em></h2>
+    <p class="section-p reveal">Not just a spreadsheet. Everything your sales team needs to open with context, not a cold template.</p>
+    <div class="grid-3 reveal">
+      <div class="deliverable"><span class="deliverable-num">01</span><h3>50–100 Qualified Leads</h3><p>Stores actively selling cross-border, matched to your ICP. Every lead passes our minimum 5/10 threshold. No filler.</p></div>
+      <div class="deliverable"><span class="deliverable-num">02</span><h3>Verified Contacts</h3><p>Direct email and LinkedIn for founders and decision-makers. Verified within 48 hours of delivery. Not guessed — confirmed.</p></div>
+      <div class="deliverable"><span class="deliverable-num">03</span><h3>Revenue Intelligence</h3><p>Estimated monthly revenue, traffic data, funding stage, growth signals. Know who has budget before you dial.</p></div>
+      <div class="deliverable"><span class="deliverable-num">04</span><h3>Tech Stack Analysis</h3><p>What tools they use. Where you fit. Where competitors already are. Built from real data, not assumptions.</p></div>
+      <div class="deliverable"><span class="deliverable-num">05</span><h3>Custom Pitch Angles</h3><p>A specific 1–2 sentence pitch per lead tied to their actual pain point. Your team opens with context.</p></div>
+      <div class="deliverable"><span class="deliverable-num">06</span><h3>Weekly Delivery</h3><p>CSV, Google Sheets, Notion, or direct CRM import. Delivered every Monday. Fresh data, every week.</p></div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+  <section class="section">
+    <div class="section-tag reveal">03 — Sample Lead</div>
+    <h2 class="section-h reveal">This is what a Null Limit<br />lead looks like.</h2>
+    <p class="section-p reveal">Every lead in your weekly batch follows this format. Full context, not just a name and email.</p>
+    <div class="lead-card reveal">
+      <div class="lead-card-top">
+        <span class="lead-id">Lead #042 — GreenPaw Pet Supplies</span>
+        <span class="lead-score">Score 8/10 · Ready to Buy: HIGH</span>
+      </div>
+      <div class="lead-body">
+        <div class="lead-col">
+          <div class="lead-col-title">Company</div>
+          <div class="lead-row"><span class="lead-k">Website</span><span class="lead-v">greenpawpets.com</span></div>
+          <div class="lead-row"><span class="lead-k">Industry</span><span class="lead-v">Pet Products / D2C</span></div>
+          <div class="lead-row"><span class="lead-k">Founded</span><span class="lead-v">2023</span></div>
+          <div class="lead-row"><span class="lead-k">Team</span><span class="lead-v">3–5 employees</span></div>
+          <div class="lead-row"><span class="lead-k">Funding</span><span class="lead-v">Seed ($1.2M)</span></div>
+          <br/>
+          <div class="lead-col-title">Decision Maker</div>
+          <div class="lead-row"><span class="lead-k">Name</span><span class="lead-v">Sarah Chen</span></div>
+          <div class="lead-row"><span class="lead-k">Title</span><span class="lead-v">Founder / CEO</span></div>
+          <div class="lead-row"><span class="lead-k">Email</span><span class="lead-v">sarah@greenpaw...</span></div>
+          <div class="lead-row"><span class="lead-k">LinkedIn</span><span class="lead-v">↗ Verified</span></div>
+        </div>
+        <div class="lead-col">
+          <div class="lead-col-title">Metrics</div>
+          <div class="lead-row"><span class="lead-k">Monthly Revenue</span><span class="lead-v">$50K–$100K</span></div>
+          <div class="lead-row"><span class="lead-k">Monthly Traffic</span><span class="lead-v">15,000</span></div>
+          <div class="lead-row"><span class="lead-k">MoM Growth</span><span class="lead-v">+20%</span></div>
+          <br/>
+          <div class="lead-col-title">Tech Stack</div>
+          <div class="lead-row"><span class="lead-k">Platform</span><span class="lead-v">Shopify</span></div>
+          <div class="lead-row"><span class="lead-k">Payments</span><span class="lead-v">Stripe</span></div>
+          <div class="lead-row"><span class="lead-k">Shipping</span><span class="lead-v">ShipStation</span></div>
+          <div class="lead-row"><span class="lead-k">Email</span><span class="lead-v">Klaviyo</span></div>
+          <div class="lead-row"><span class="lead-k">Cross-border tool</span><span class="lead-v none">None detected</span></div>
+        </div>
+        <div class="lead-col">
+          <div class="lead-col-title">Why They Fit</div>
+          <ul class="fit-list">
+            <li>Shipping to 5+ countries (EU, CA, AU)</li>
+            <li>No advanced duty or tax tool detected</li>
+            <li>Growing 20% month-over-month</li>
+            <li>Recently entered EU market</li>
+            <li>Budget confirmed — VC-backed</li>
+          </ul>
+          <div class="lead-col-title" style="margin-top:1.5rem;">Pitch Angle</div>
+          <div class="pitch-box">"Your EU expansion is smart, but manual duty calculations are killing your margins. Our tool automates landed cost at checkout — stores see 40% fewer abandoned carts."</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+  <section class="section" id="pricing">
+    <div class="section-tag reveal">04 — Pricing</div>
+    <h2 class="section-h reveal">Simple pricing.<br /><em>No surprises.</em></h2>
+    <p class="section-p reveal">Start with 10 free sample leads. No credit card. See the quality before you commit.</p>
+    <div class="pricing-grid reveal">
+      <div class="pricing-card">
+        <span class="pricing-tag">On Demand</span>
+        <div class="pricing-name">Pay Per Lead</div>
+        <div class="pricing-price"><sup>$</sup>25</div>
+        <div class="pricing-period">per lead · minimum 20 leads per order<br/>Same quality, order when you need it.</div>
+        <ul class="pricing-features">
+          <li>Verified contacts</li>
+          <li>Tech stack analysis</li>
+          <li>Revenue intelligence</li>
+          <li>Custom pitch angles</li>
+          <li>CSV or Google Sheets</li>
+        </ul>
+      </div>
+      <div class="pricing-card featured">
+        <span class="pricing-tag">★ Recommended</span>
+        <div class="pricing-name">Monthly Retainer</div>
+        <div class="pricing-price"><sup>$</sup>997</div>
+        <div class="pricing-period">per month · cancel anytime<br/>50–100 leads delivered every Monday.</div>
+        <ul class="pricing-features">
+          <li>50–100 leads per week</li>
+          <li>Verified contacts</li>
+          <li>Full tech stack analysis</li>
+          <li>Revenue intelligence</li>
+          <li>Custom pitch angles per lead</li>
+          <li>Monday delivery, every week</li>
+          <li>Format of your choice</li>
+        </ul>
+      </div>
+      <div class="pricing-card">
+        <span class="pricing-tag">Enterprise</span>
+        <div class="pricing-name">Custom</div>
+        <div class="pricing-price" style="font-size:2rem; padding-top:0.5rem;">Let's talk</div>
+        <div class="pricing-period">volume · CRM integration<br/>Multi-market, dedicated account manager.</div>
+        <ul class="pricing-features">
+          <li>Custom lead volume</li>
+          <li>Direct CRM integration</li>
+          <li>Multi-market targeting</li>
+          <li>Dedicated account manager</li>
+          <li>Priority turnaround</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+  <section class="section" id="how-it-works">
+    <div class="section-tag reveal">05 — Process</div>
+    <h2 class="section-h reveal">How Null Limit works.</h2>
+    <p class="section-p reveal">Simple. Fast. Repeatable.</p>
+    <div class="process-grid reveal">
+      <div class="process-step"><span class="step-n">Step 01</span><div class="step-h">Define Your ICP</div><p class="step-p">Tell us your ideal customer — revenue range, markets, tech stack, growth stage. Takes 10 minutes.</p></div>
+      <div class="process-step"><span class="step-n">Step 02</span><div class="step-h">We Hunt</div><p class="step-p">We scrape directories, analyze tech stacks, verify contacts, and qualify every lead against your ICP.</p></div>
+      <div class="process-step"><span class="step-n">Step 03</span><div class="step-h">You Receive</div><p class="step-p">Every Monday — 50–100 fully enriched leads in your preferred format. Fresh data, ready to work.</p></div>
+      <div class="process-step"><span class="step-n">Step 04</span><div class="step-h">Your Team Closes</div><p class="step-p">Your sales team focuses on warm, context-rich outreach. No more cold prospecting from scratch.</p></div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+  <div class="cta-wrap" id="get-leads">
+    <div class="cta-inner reveal">
+      <div class="cta-left">
+        <div class="section-tag" style="margin-bottom:1.5rem;">06 — Get Started</div>
+        <h2 class="cta-h">Get 10 free<br />sample leads.</h2>
+        <p class="cta-p">We'll build 10 fully qualified leads matching your ICP and deliver them within 48 hours. No credit card. No commitment. Just proof of quality.</p>
+        <ul class="trust-list">
+          <li>No credit card required</li>
+          <li>Delivered within 48 hours</li>
+          <li>Full lead profile — not just a name and email</li>
+          <li>Cancel the retainer anytime</li>
+        </ul>
+      </div>
+      <div class="cta-right">
+        <form class="cta-form" onsubmit="handleSubmit(event)">
+          <input class="form-field" type="text" placeholder="Your name" required />
+          <input class="form-field" type="text" placeholder="Company name" required />
+          <input class="form-field" type="email" placeholder="Work email" required />
+          <input class="form-field" type="text" placeholder="What cross-border SaaS tool do you sell?" required />
+          <input class="form-field" type="text" placeholder="Describe your ideal customer (optional)" />
+          <button type="submit" class="btn-primary" style="border:none; cursor:none; text-align:center; margin-top:0.5rem;">
+            Send Me 10 Free Leads →
+          </button>
+          <p class="form-note">No spam. Unsubscribe anytime. hello@nulllimit.gg</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="https://nulllimit.gg">null; — Null Limit</a>
+    <nav>
+      <ul style="list-style:none; display:flex; gap:1.5rem;">
+        <li><a href="https://nulllimit.gg" style="font-size:0.62rem; color:var(--muted); text-decoration:none; letter-spacing:0.1em; text-transform:uppercase;">Home</a></li>
+        <li><a href="mailto:hello@nulllimit.gg" style="font-size:0.62rem; color:var(--muted); text-decoration:none; letter-spacing:0.1em; text-transform:uppercase;">Contact</a></li>
+      </ul>
+    </nav>
+    <span>© 2026 Null Limit</span>
+  </footer>
+
+  <script>
+    const dot = document.getElementById('dot');
+    const ring = document.getElementById('ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    });
+
+    (function animRing() {
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    })();
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        ring.style.width = '48px'; ring.style.height = '48px';
+        ring.style.borderColor = 'rgba(245,245,240,0.7)';
+      });
+      el.addEventListener('mouseleave', () => {
+        ring.style.width = '32px'; ring.style.height = '32px';
+        ring.style.borderColor = 'rgba(245,245,240,0.4)';
+      });
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      btn.textContent = "Sent. We'll be in touch within 48h.";
+      btn.style.background = 'transparent';
+      btn.style.color = 'var(--text)';
+      btn.disabled = true;
+    }
+  </script>
+
+</body>
+</html>
