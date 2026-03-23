@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Work With Me — Null Limit</title>
+<meta name="description" content="Vitoshi — independent builder, AI agent developer, lead generation, and OpenClaw specialist. Available for hire." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:  #090909;
+    --g900:   #111111;
+    --g800:   #1a1a1a;
+    --g700:   #242424;
+    --g600:   #333333;
+    --g400:   #666666;
+    --g200:   #aaaaaa;
+    --g100:   #d4d4d4;
+    --white:  #f5f5f0;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  html {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    scroll-behavior: smooth;
+    cursor: none;
+  }
+
+  .cursor-dot {
+    width: 6px; height: 6px;
+    background: var(--white); border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease, opacity 0.2s;
+  }
+
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 0.5px solid rgba(245,245,240,0.4); border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s, opacity 0.2s;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35; pointer-events: none; z-index: 100;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 99;
+  }
+
+  .site { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+  /* NAV */
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 36px 0; border-bottom: 0.5px solid var(--g700);
+    opacity: 0; animation: fadeUp 0.6s ease forwards;
+  }
+
+  .nav-mark {
+    font-family: var(--mono); font-size: 18px; font-weight: 700;
+    color: var(--white); display: flex; align-items: center;
+    text-decoration: none; letter-spacing: -0.01em;
+  }
+
+  .nav-cursor {
+    display: inline-block; width: 2px; height: 18px;
+    background: var(--white); margin-left: 2px; border-radius: 1px;
+    animation: blink 1.1s step-end infinite;
+  }
+
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--g400); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  /* HERO */
+  .hero { padding: 120px 0 100px; position: relative; }
+
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--g400); margin-bottom: 32px;
+    opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--sans); font-size: clamp(52px, 8vw, 96px);
+    font-weight: 800; line-height: 0.95; letter-spacing: -0.03em;
+    color: var(--white); margin-bottom: 40px;
+    opacity: 0; animation: fadeUp 0.7s ease 0.2s forwards;
+  }
+
+  .hero-title .dim { color: var(--g600); }
+
+  .hero-sub {
+    font-family: var(--mono); font-size: 13px; color: var(--g200);
+    letter-spacing: 0.05em; line-height: 1.8; max-width: 560px;
+    margin-bottom: 48px;
+    opacity: 0; animation: fadeUp 0.7s ease 0.35s forwards;
+  }
+
+  .hero-sub span { color: var(--white); font-weight: 700; }
+
+  .hero-ctas {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.7s ease 0.45s forwards;
+  }
+
+  .btn-primary {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; background: var(--white); color: var(--black);
+    padding: 14px 28px; text-decoration: none; transition: all 0.2s;
+    display: inline-block; font-weight: 700;
+  }
+  .btn-primary:hover { background: var(--g100); }
+
+  .btn-ghost {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; background: transparent; color: var(--g400);
+    padding: 14px 28px; text-decoration: none;
+    border: 0.5px solid var(--g700); transition: all 0.2s; display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--g400); color: var(--white); }
+
+  /* AVAILABILITY BADGE */
+  .availability {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--g400);
+    border: 0.5px solid var(--g700); padding: 8px 16px;
+    margin-bottom: 40px;
+    opacity: 0; animation: fadeUp 0.6s ease 0.3s forwards;
+  }
+
+  .availability-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 6px #4ade80;
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* SECTION */
+  .section-label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--g400);
+    display: flex; align-items: center; gap: 16px; margin-bottom: 48px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 0.5px; background: var(--g700); }
+
+  /* SKILLS PROOF */
+  .skills { padding: 100px 0; border-top: 0.5px solid var(--g700); }
+
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+
+  .skill-card {
+    background: var(--g900); padding: 40px;
+    transition: background 0.25s;
+  }
+  .skill-card:hover { background: var(--g800); }
+
+  .skill-num {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+    color: var(--g600); margin-bottom: 24px;
+  }
+
+  .skill-title {
+    font-family: var(--sans); font-size: 22px; font-weight: 800;
+    color: var(--white); letter-spacing: -0.02em; margin-bottom: 12px;
+  }
+
+  .skill-proof {
+    font-family: var(--mono); font-size: 11px; color: var(--g400);
+    line-height: 1.7; margin-bottom: 20px;
+  }
+
+  .skill-proof span { color: var(--g200); }
+
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .tag {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--g400);
+    border: 0.5px solid var(--g600); padding: 5px 10px;
+  }
+
+  /* PROJECTS BUILT */
+  .built { padding: 100px 0; border-top: 0.5px solid var(--g700); }
+
+  .built-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; }
+
+  .built-card {
+    background: var(--g900); padding: 36px 32px;
+    text-decoration: none; display: block;
+    transition: background 0.25s; color: inherit;
+  }
+  .built-card:hover { background: var(--g800); }
+
+  .built-num {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+    color: var(--g600); margin-bottom: 20px;
+  }
+
+  .built-name {
+    font-family: var(--sans); font-size: 20px; font-weight: 800;
+    color: var(--white); letter-spacing: -0.01em; margin-bottom: 10px; line-height: 1.1;
+  }
+
+  .built-desc {
+    font-family: var(--sans); font-size: 13px; color: var(--g200);
+    line-height: 1.65; margin-bottom: 20px;
+  }
+
+  .built-link {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    color: var(--g400); display: flex; align-items: center; gap: 6px;
+    transition: color 0.2s;
+  }
+  .built-card:hover .built-link { color: var(--white); }
+
+  /* CERTIFICATIONS */
+  .certs { padding: 100px 0; border-top: 0.5px solid var(--g700); }
+
+  .certs-note {
+    font-family: var(--mono); font-size: 11px; color: var(--g400);
+    line-height: 1.7; max-width: 560px; margin-bottom: 48px;
+    padding: 20px; border: 0.5px dashed var(--g700);
+  }
+
+  .cert-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+
+  .cert-card {
+    background: var(--g900); padding: 32px 28px;
+    transition: background 0.25s;
+  }
+  .cert-card:hover { background: var(--g800); }
+
+  .cert-issuer {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--g600); margin-bottom: 16px;
+  }
+
+  .cert-name {
+    font-family: var(--sans); font-size: 16px; font-weight: 800;
+    color: var(--white); letter-spacing: -0.01em; margin-bottom: 10px; line-height: 1.2;
+  }
+
+  .cert-status {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em;
+    text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px;
+  }
+
+  .cert-status.earned { color: #4ade80; }
+  .cert-status.planned { color: var(--g600); }
+
+  .cert-status-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: currentColor;
+  }
+
+  .cert-link {
+    display: block; margin-top: 12px;
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+    color: var(--g600); text-decoration: none; transition: color 0.2s;
+  }
+  .cert-link:hover { color: var(--white); }
+
+  /* EXPERIENCE TABLE */
+  .experience { padding: 100px 0; border-top: 0.5px solid var(--g700); }
+
+  .exp-row {
+    display: grid; grid-template-columns: 120px 1fr 1fr;
+    gap: 40px; padding: 28px 0; border-bottom: 0.5px solid var(--g700);
+    align-items: start;
+  }
+
+  .exp-year {
+    font-family: var(--mono); font-size: 11px; color: var(--g600);
+    letter-spacing: 0.1em; padding-top: 2px;
+  }
+
+  .exp-role {
+    font-family: var(--sans); font-size: 18px; font-weight: 800;
+    color: var(--white); letter-spacing: -0.01em; margin-bottom: 6px;
+  }
+
+  .exp-org {
+    font-family: var(--mono); font-size: 11px; color: var(--g400);
+    letter-spacing: 0.05em;
+  }
+
+  .exp-desc {
+    font-family: var(--sans); font-size: 14px; color: var(--g200); line-height: 1.65;
+  }
+
+  /* HIRE FORM */
+  .hire { padding: 100px 0; border-top: 0.5px solid var(--g700); }
+
+  .hire-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+
+  .hire-left-title {
+    font-family: var(--sans); font-size: clamp(32px, 4vw, 56px);
+    font-weight: 800; letter-spacing: -0.03em; line-height: 0.95;
+    margin-bottom: 24px; color: var(--white);
+  }
+
+  .hire-left-title .dim { color: var(--g600); }
+
+  .hire-left-desc {
+    font-family: var(--mono); font-size: 12px; color: var(--g200);
+    line-height: 1.8; margin-bottom: 32px;
+  }
+
+  .hire-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .hire-list li {
+    font-family: var(--mono); font-size: 11px; color: var(--g400);
+    letter-spacing: 0.05em; display: flex; align-items: center; gap: 10px;
+  }
+  .hire-list li::before { content: '—'; color: var(--g600); }
+
+  .form { display: flex; flex-direction: column; gap: 2px; }
+
+  .form-field {
+    background: var(--g900); border: none; border-bottom: 0.5px solid var(--g700);
+    color: var(--white); font-family: var(--mono); font-size: 13px;
+    padding: 18px 20px; outline: none; transition: background 0.2s, border-color 0.2s;
+    width: 100%;
+  }
+  .form-field:focus { background: var(--g800); border-color: var(--g400); }
+  .form-field::placeholder { color: var(--g600); }
+  select.form-field { cursor: none; }
+  select.form-field option { background: var(--g900); }
+  textarea.form-field { resize: none; }
+
+  .form-submit {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; background: var(--white); color: var(--black);
+    padding: 18px 28px; border: none; cursor: none; font-weight: 700;
+    transition: background 0.2s; margin-top: 4px; text-align: left;
+  }
+  .form-submit:hover { background: var(--g100); }
+
+  .form-note {
+    font-family: var(--mono); font-size: 10px; color: var(--g600);
+    letter-spacing: 0.05em; margin-top: 8px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 0.5px solid var(--g700); padding: 40px 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .footer-mark {
+    font-family: var(--mono); font-size: 14px; font-weight: 700;
+    color: var(--g600); display: flex; align-items: center;
+  }
+
+  .footer-mark .fc {
+    display: inline-block; width: 1.5px; height: 13px;
+    background: var(--g600); margin-left: 2px; border-radius: 1px;
+    animation: blink 1.1s step-end infinite;
+  }
+
+  .footer-right {
+    font-family: var(--mono); font-size: 10px; color: var(--g600);
+    letter-spacing: 0.1em; text-align: right; line-height: 2;
+  }
+
+  .footer-right a {
+    color: var(--g600); text-decoration: none; transition: color 0.2s;
+  }
+  .footer-right a:hover { color: var(--white); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .site { padding: 0 24px; }
+    .hero { padding: 80px 0 60px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .built-grid { grid-template-columns: 1fr 1fr; }
+    .cert-grid { grid-template-columns: 1fr 1fr; }
+    .exp-row { grid-template-columns: 1fr; gap: 8px; }
+    .hire-grid { grid-template-columns: 1fr; gap: 40px; }
+    html { cursor: auto; }
+    .cursor-dot, .cursor-ring { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .built-grid { grid-template-columns: 1fr; }
+    .cert-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="dot"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<div class="site">
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-mark">null;<span class="nav-cursor"></span></a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/agents">Agents</a></li>
+      <li><a href="/leads">Leads</a></li>
+      <li><a href="#hire">Hire Me</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">nulllimit.gg — Work With Me · 004</div>
+
+    <div class="availability">
+      <span class="availability-dot"></span>
+      Available for freelance & full-time — March 2026
+    </div>
+
+    <h1 class="hero-title">
+      Built different.<br/>
+      <span class="dim">Hire accordingly.</span>
+    </h1>
+    <p class="hero-sub">
+      12 years of professional sports taught me discipline, pressure, and how to perform when it counts.
+      Now I build <span>AI agents</span>, <span>crypto apps</span>, and <span>business infrastructure</span> — solo, fast, and shipping.
+    </p>
+    <div class="hero-ctas">
+      <a href="#hire" class="btn-primary">Work With Me</a>
+      <a href="/cdn-cgi/l/email-protection#e189848d8d8ea18f948d8d8d888c8895cf8686" class="btn-ghost"><span class="__cf_email__" data-cfemail="771f121b1b183719021b1b1b1e1a1e03591010">[email&#160;protected]</span> ↗</a>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="skills" id="skills">
+    <div class="section-label">01 — Skills & Proof</div>
+    <div class="skills-grid reveal">
+
+      <div class="skill-card">
+        <div class="skill-num">01</div>
+        <div class="skill-title">AI Agent Development</div>
+        <div class="skill-proof">
+          Built and deployed <span>Vibey Mewtwo</span> — a fully operational OpenClaw AI agent with Claude Sonnet 4.5, DeepSeek fallback, Perplexity web search, Docker sandbox, and Telegram integration. 0 critical security issues. Running 24/7.
+        </div>
+        <div class="skill-tags">
+          <span class="tag">OpenClaw</span>
+          <span class="tag">Claude API</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Telegram API</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-num">02</div>
+        <div class="skill-title">Frontend Development</div>
+        <div class="skill-proof">
+          Built <span>nulllimit.gg</span> and all subpages from scratch — custom cursor, grain overlays, scanlines, scroll reveal animations, responsive layout. Zero frameworks. Deployed on Vercel via GitHub CI/CD.
+        </div>
+        <div class="skill-tags">
+          <span class="tag">HTML/CSS</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Vercel</span>
+          <span class="tag">GitHub</span>
+          <span class="tag">Responsive</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-num">03</div>
+        <div class="skill-title">React + Mobile Development</div>
+        <div class="skill-proof">
+          Built <span>Aeye</span> — a pixel art AI companion app in React + Vite with canvas-based rendering, GBA-style sprite system, emotion-reactive character states, and Solana token integration.
+        </div>
+        <div class="skill-tags">
+          <span class="tag">React</span>
+          <span class="tag">Vite</span>
+          <span class="tag">Canvas API</span>
+          <span class="tag">Expo</span>
+          <span class="tag">Solana</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-num">04</div>
+        <div class="skill-title">Business Operations & Lead Gen</div>
+        <div class="skill-proof">
+          Founded and operates <span>Null Limit Leads</span> — a B2B lead generation service for cross-border e-commerce SaaS companies. Full pipeline: research, enrichment, verification, and delivery.
+        </div>
+        <div class="skill-tags">
+          <span class="tag">B2B Sales</span>
+          <span class="tag">Lead Gen</span>
+          <span class="tag">Data Enrichment</span>
+          <span class="tag">CRM</span>
+          <span class="tag">Outreach</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROJECTS BUILT -->
+  <section class="built" id="projects">
+    <div class="section-label">02 — Projects Shipped</div>
+    <div class="built-grid reveal">
+
+      <a class="built-card" href="https://app.aeyenotai.com" target="_blank">
+        <div class="built-num">001</div>
+        <div class="built-name">Aeye</div>
+        <div class="built-desc">Pixel art AI companion app. Canvas-based GBA renderer, emotion system, Solana token integration, personality imprinting across 4 phases.</div>
+        <div class="built-link">app.aeyenotai.com <span>↗</span></div>
+      </a>
+
+      <a class="built-card" href="/leads" target="_blank">
+        <div class="built-num">002</div>
+        <div class="built-name">Null Limit Leads</div>
+        <div class="built-desc">B2B lead gen service for cross-border e-commerce SaaS. Weekly delivery of 50–100 qualified leads with full enrichment and pitch angles.</div>
+        <div class="built-link">nulllimit.gg/leads <span>↗</span></div>
+      </a>
+
+      <a class="built-card" href="/agents" target="_blank">
+        <div class="built-num">003</div>
+        <div class="built-name">AI Agent Setup Service</div>
+        <div class="built-desc">OpenClaw setup, configuration, security hardening, and custom agent development. Starter to full business automation.</div>
+        <div class="built-link">nulllimit.gg/agents <span>↗</span></div>
+      </a>
+
+      <a class="built-card" href="https://nulllimit.gg" target="_blank">
+        <div class="built-num">004</div>
+        <div class="built-name">nulllimit.gg</div>
+        <div class="built-desc">This site. Built from scratch in vanilla HTML/CSS/JS. Custom cursor, grain overlay, scanlines, scroll reveals, Vercel CI/CD.</div>
+        <div class="built-link">nulllimit.gg <span>↗</span></div>
+      </a>
+
+      <div class="built-card" style="cursor:default;">
+        <div class="built-num">005</div>
+        <div class="built-name">$AEYE Token</div>
+        <div class="built-desc">Launched and managed a Solana token on pump.fun. Built custom burn tool, managed 131M+ token wallet, coordinated community push to Raydium migration.</div>
+        <div class="built-link" style="color:var(--g600);">Solana · pump.fun</div>
+      </div>
+
+      <div class="built-card" style="cursor:default;">
+        <div class="built-num">006</div>
+        <div class="built-name">Vibey Mewtwo</div>
+        <div class="built-desc">Personal AI business agent. OpenClaw + Claude + DeepSeek + Perplexity + Docker. Handles research, emails, GitHub monitoring, task management 24/7.</div>
+        <div class="built-link" style="color:var(--g600);">OpenClaw · Telegram</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section class="certs" id="certifications">
+    <div class="section-label">03 — Certifications</div>
+    <div class="certs-note">
+      All certifications below are publicly verifiable via unique credential links. No unverifiable PDFs — each one has a live verification trail through the issuing platform.
+    </div>
+    <div class="cert-grid reveal">
+
+      <div class="cert-card">
+        <div class="cert-issuer">HubSpot Academy</div>
+        <div class="cert-name">Digital Marketing Certification</div>
+        <div class="cert-status planned">
+          <span class="cert-status-dot"></span>
+          In progress
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-issuer">HubSpot Academy</div>
+        <div class="cert-name">Inbound Marketing Certification</div>
+        <div class="cert-status planned">
+          <span class="cert-status-dot"></span>
+          In progress
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-issuer">HubSpot Academy</div>
+        <div class="cert-name">Sales Software Certification</div>
+        <div class="cert-status planned">
+          <span class="cert-status-dot"></span>
+          In progress
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-issuer">Google Skillshop</div>
+        <div class="cert-name">Digital Marketing & E-commerce</div>
+        <div class="cert-status planned">
+          <span class="cert-status-dot"></span>
+          In progress
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-issuer">Coursera · DeepLearning.AI</div>
+        <div class="cert-name">Generative AI for Everyone</div>
+        <div class="cert-status planned">
+          <span class="cert-status-dot"></span>
+          In progress
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-issuer">Salesforce Trailhead</div>
+        <div class="cert-name">AI Associate Certification</div>
+        <div class="cert-status planned">
+          <span class="cert-status-dot"></span>
+          In progress
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="experience" id="experience">
+    <div class="section-label">04 — Experience</div>
+    <div class="reveal">
+
+      <div class="exp-row">
+        <div class="exp-year">2025 — Now</div>
+        <div>
+          <div class="exp-role">Founder & Independent Builder</div>
+          <div class="exp-org">Null Limit · nulllimit.gg</div>
+        </div>
+        <div class="exp-desc">Building AI companion apps, agent services, and B2B lead generation under the Null Limit brand. Solo across product, dev, marketing, and ops.</div>
+      </div>
+
+      <div class="exp-row">
+        <div class="exp-year">2025 — Now</div>
+        <div>
+          <div class="exp-role">AI Agent Developer & Consultant</div>
+          <div class="exp-org">Null Limit Agents</div>
+        </div>
+        <div class="exp-desc">OpenClaw setup, configuration, security hardening, and custom skill development for individuals and businesses. From zero to fully operational AI agents.</div>
+      </div>
+
+      <div class="exp-row">
+        <div class="exp-year">2025 — Now</div>
+        <div>
+          <div class="exp-role">Founder & Lead Developer</div>
+          <div class="exp-org">Aeye · aeyenotai.com</div>
+        </div>
+        <div class="exp-desc">Designed and built a pixel art AI companion app with canvas rendering, Solana integration, personality imprinting, and token-gated features. Solo dev across React, mobile, and blockchain.</div>
+      </div>
+
+      <div class="exp-row">
+        <div class="exp-year">2012 — 2024</div>
+        <div>
+          <div class="exp-role">Professional Basketball Player</div>
+          <div class="exp-org">12 Years · 7 Countries</div>
+        </div>
+        <div class="exp-desc">12 years competing at the highest professional level across 7 countries. All-time leading rebounder at Boise State. Built discipline, high-performance habits, and the ability to execute under pressure that now drives everything I build.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HIRE FORM -->
+  <section class="hire" id="hire">
+    <div class="section-label">05 — Work With Me</div>
+    <div class="hire-grid">
+      <div class="reveal">
+        <div class="hire-left-title">
+          Let's build<br/>
+          <span class="dim">something real.</span>
+        </div>
+        <div class="hire-left-desc">
+          Available for freelance projects, consulting, and full-time roles. Fast turnaround, self-directed, and shipping-focused.
+        </div>
+        <ul class="hire-list">
+          <li>AI agent development & OpenClaw setup</li>
+          <li>Frontend development (React, vanilla JS)</li>
+          <li>Solana / crypto integration</li>
+          <li>B2B lead generation & research</li>
+          <li>Full-time roles in AI, product, or dev</li>
+          <li>Response within 24 hours</li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <form class="form" onsubmit="handleSubmit(event)">
+          <input class="form-field" type="text" placeholder="Your name" required />
+          <input class="form-field" type="email" placeholder="Your email" required />
+          <input class="form-field" type="text" placeholder="Company / project name" />
+          <select class="form-field" required>
+            <option value="" disabled selected>What do you need?</option>
+            <option>AI agent development</option>
+            <option>OpenClaw setup & configuration</option>
+            <option>Frontend development</option>
+            <option>Solana / crypto integration</option>
+            <option>B2B lead generation</option>
+            <option>Full-time role</option>
+            <option>Something else</option>
+          </select>
+          <textarea class="form-field" rows="4" placeholder="Tell me about the project or role"></textarea>
+          <button type="submit" class="form-submit">Send It →</button>
+          <div class="form-note">Or email vitoshi@nulllimit.gg · DM @devCharizard on X. Response within 24h.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-mark">null;<span class="fc"></span></div>
+    <div class="footer-right">
+      <div><a href="/">nulllimit.gg</a></div>
+      <div>
+        <a href="/leads">leads</a> ·
+        <a href="/agents">agents</a> ·
+        <a href="/work">work</a>
+      </div>
+      <div>© 2026 Null Limit</div>
+    </div>
+  </footer>
+
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  const dot = document.getElementById('dot');
+  const ring = document.getElementById('ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+  });
+
+  (function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '48px';
+      ring.style.height = '48px';
+      ring.style.borderColor = 'rgba(245,245,240,0.7)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '32px';
+      ring.style.height = '32px';
+      ring.style.borderColor = 'rgba(245,245,240,0.4)';
+    });
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  function handleSubmit(e) {
+    e.prev
