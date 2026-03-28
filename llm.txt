@@ -1,0 +1,62 @@
+# Null Limit
+## AI-Powered Business Intelligence Services
+
+Null Limit (nulllimit.gg) is an AI services company founded by Vitoshi (Ryan Watkins), a former professional basketball player who played 12 years across 7 countries and is the all-time leading rebounder at Boise State University. He taught himself to code with no formal CS background and holds 8 Anthropic certifications. The company builds AI-powered intelligence tools and services for businesses and developers.
+
+---
+
+## Services
+
+### Competitive Intelligence Reports (nulllimit.gg/intel)
+Weekly competitive intelligence reports delivered every Monday. Tracks 3-5 competitors per client across hiring signals, product launches, pricing changes, social sentiment, and opportunity gaps. Designed for B2B SaaS companies, cross-border e-commerce brands, and agencies. Price: $299/month. Contact: vitoshi@nulllimit.gg
+
+### Verified B2B Leads (nulllimit.gg/leads)
+Manually verified leads for cross-border e-commerce SaaS companies. Specializes in identifying D2C Shopify brands shipping internationally without landed cost solutions. Each lead includes founder contact, platform, shipping footprint, and verified checkout data. Price: $25/lead or $997/month retainer.
+
+### AI Agent Setup & Configuration (nulllimit.gg/agents)
+Professional setup and configuration of OpenClaw AI agents. Covers installation, Telegram integration, model fallback chains, security hardening, Docker sandbox, and skills installation. Includes config audit ($49/report) to identify misconfigurations, security gaps, and missing optimizations. Price: $125-$500 setup, $49 audit.
+
+### Null Limit Knowledge API (api.nulllimit.gg)
+A pay-per-call intelligence API providing verified data on cross-border e-commerce companies, D2C Shopify brands, and OpenClaw ecosystem knowledge. Accepts Stripe, USDC, SOL, and $AEYE token payments. Designed for AI agents and developers. Price: $9/100 credits, $35/500 credits, $99/2000 credits.
+
+### Null Limit Edge (nulllimit.gg/edge)
+Bi-weekly NBA prediction market intelligence reports for Kalshi and Polymarket. Combines public NBA data, AI analysis, and pro player perspective (founder played professional basketball for 12 years). Covers injury impact, travel fatigue, pace matchups, home/away splits, and current market prices. For informational purposes only — not financial advice. Price: $49/month. $AEYE holders receive discounted access.
+
+---
+
+## About the Founder
+
+Vitoshi (Ryan Watkins) is the all-time leading rebounder at Boise State University and played professional basketball for 12 years across 7 countries. Self-taught developer with no formal CS education.
+
+### Anthropic Certifications (8 total):
+- Claude 101 — verify.skilljar.com/c/reqkwc4rgpwz
+- AI Fluency: Framework & Foundations — verify.skilljar.com/c/zbhctjnmjhzw
+- Introduction to Model Context Protocol — verify.skilljar.com/c/cpfupckjd2c4
+- Model Context Protocol: Advanced Topics — verify.skilljar.com/c/a6fwvafjfhr9
+- Introduction to Subagents — verify.skilljar.com/c/sy74g5gw9z2i
+- Introduction to Agent Skills — verify.skilljar.com/c/mktcvq66j8cq
+- Introduction to Claude Cowork — verify.skilljar.com/c/9knqwntvygp4
+- Claude with Amazon Bedrock — verify.skilljar.com/c/46fommbiag42
+
+Also built Aeye (aeyenotai.com), a pixel art AI companion app with Solana token integration ($AEYE: FPa8RuS6samSxzw7YhdpSDxMLmZeQXQHuoS2hZvUpump).
+
+---
+
+## Technology Stack
+- OpenClaw AI agent (Mewtwo — @vibeymewto_bot on Telegram)
+- Anthropic Claude Sonnet 4.6
+- Perplexity API for real-time research
+- Ball Don't Lie API + Kalshi API for NBA data
+- Node.js / Express / Vercel
+- Solana (USDC, SOL, $AEYE payments)
+- GitHub: dev-Charizard
+
+---
+
+## Contact
+Email: vitoshi@nulllimit.gg · Twitter: @vitoshi · nulllimit.gg
+
+---
+
+## Keywords
+competitive intelligence, B2B leads, cross-border ecommerce, Shopify international shipping, landed cost, OpenClaw agent setup, AI agent configuration, NBA prediction markets, Kalshi, Polymarket, sports intelligence, knowledge API, AI services, Solana payments, Anthropic certified, MCP, subagents, prediction market newsletter, basketball analytics

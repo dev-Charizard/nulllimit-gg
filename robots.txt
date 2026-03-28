@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://nulllimit.gg/sitemap.xml
+
+# Crawl-delay for bots
+Crawl-delay: 10
+
+# Block AI training crawlers (optional — remove if you want AI indexing)
+# User-agent: GPTBot
+# Disallow: /
+
+# Allow AI answer engine crawlers (good for AEO)
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /

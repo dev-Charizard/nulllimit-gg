@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" mode="multiply"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#090909"/>
+
+  <!-- Grain overlay -->
+  <rect width="1200" height="630" fill="#ffffff" filter="url(#noise)" opacity="0.035"/>
+
+  <!-- Scanlines -->
+  <rect width="1200" height="630" fill="url(#scanlines)" opacity="0.04"/>
+
+  <!-- Border -->
+  <rect x="32" y="32" width="1136" height="566" fill="none" stroke="#242424" stroke-width="0.5"/>
+
+  <!-- Top left label -->
+  <text x="64" y="80" font-family="'JetBrains Mono', monospace" font-size="12" fill="#444444" letter-spacing="3">NULL LIMIT</text>
+
+  <!-- Main wordmark -->
+  <text x="64" y="320" font-family="'JetBrains Mono', monospace" font-size="96" font-weight="700" fill="#f5f5f0" letter-spacing="-2">null;</text>
+
+  <!-- Cursor blink block -->
+  <rect x="348" y="240" width="10" height="80" fill="#f5f5f0" opacity="0.9"/>
+
+  <!-- Tagline -->
+  <text x="64" y="380" font-family="'JetBrains Mono', monospace" font-size="18" fill="#666666" letter-spacing="2">Undefined by design.</text>
+
+  <!-- Services row -->
+  <text x="64" y="540" font-family="'JetBrains Mono', monospace" font-size="12" fill="#333333" letter-spacing="2">Leads · Agents · Intel · API · Edge</text>
+
+  <!-- URL -->
+  <text x="1136" y="540" font-family="'JetBrains Mono', monospace" font-size="12" fill="#333333" letter-spacing="1" text-anchor="end">nulllimit.gg</text>
+
+  <!-- Corner brackets -->
+  <path d="M32 32 L32 80 M32 32 L80 32" stroke="#333333" stroke-width="1" fill="none"/>
+  <path d="M1168 32 L1168 80 M1168 32 L1120 32" stroke="#333333" stroke-width="1" fill="none"/>
+  <path d="M32 598 L32 550 M32 598 L80 598" stroke="#333333" stroke-width="1" fill="none"/>
+  <path d="M1168 598 L1168 550 M1168 598 L1120 598" stroke="#333333" stroke-width="1" fill="none"/>
+</svg>
