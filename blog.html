@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Null Limit</title>
+<meta name="description" content="Intelligence dispatches from the edge of AI, crypto, and the builder economy. Written by Vitoshi, former pro athlete turned AI developer.">
+<link rel="canonical" href="https://nulllimit.gg/blog">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #161616;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8e6e0;
+    --muted: #6b6965;
+    --accent: #c8f547;
+    --accent2: #ff4d2e;
+    --serif: 'Playfair Display', Georgia, serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,10,10,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.4rem 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--text);
+  }
+
+  .nav-links a.active {
+    color: var(--accent);
+  }
+
+  /* MASTHEAD */
+  .masthead {
+    padding-top: 120px;
+    padding-bottom: 60px;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    max-width: 1400px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+  }
+
+  .masthead-left {}
+
+  .masthead-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .masthead-label::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .masthead-title {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+
+  .masthead-title em {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .masthead-right {
+    padding-bottom: 0.5rem;
+  }
+
+  .masthead-desc {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 420px;
+    margin-bottom: 2rem;
+  }
+
+  .masthead-meta {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .masthead-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .masthead-meta-num {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .masthead-meta-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* CATEGORIES BAR */
+  .categories-bar {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 5vw;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .category-tab {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .category-tab:hover { color: var(--text); }
+  .category-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* MAIN GRID */
+  .blog-layout {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 4rem 5vw;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 5rem;
+  }
+
+  /* FEATURED POST */
+  .featured-post {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    padding-bottom: 4rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4rem;
+  }
+
+  .featured-image {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    aspect-ratio: 16/10;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .featured-image-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--border2);
+    letter-spacing: 0.1em;
+    position: relative;
+  }
+
+  /* Abstract geometric decoration for featured image */
+  .featured-image-inner::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 180px;
+    height: 180px;
+    border: 1px solid rgba(200,245,71,0.15);
+    border-radius: 50%;
+  }
+
+  .featured-image-inner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 120px;
+    height: 120px;
+    border: 1px solid rgba(200,245,71,0.08);
+  }
+
+  .featured-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 0.3rem 0.6rem;
+  }
+
+  .featured-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .post-category {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .featured-title {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .featured-title:hover { color: var(--accent); cursor: pointer; }
+
+  .post-excerpt {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .post-meta-dot {
+    width: 3px;
+    height: 3px;
+    background: var(--muted);
+    border-radius: 50%;
+  }
+
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--border2);
+    transition: all 0.2s;
+    width: fit-content;
+  }
+
+  .read-more:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,245,71,0.05);
+  }
+
+  .read-more-arrow {
+    transition: transform 0.2s;
+  }
+
+  .read-more:hover .read-more-arrow { transform: translateX(4px); }
+
+  /* POST GRID */
+  .posts-main {}
+
+  .posts-grid {
+    display: grid;
+    gap: 0;
+  }
+
+  .post-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.2s;
+    cursor: pointer;
+    gap: 1rem;
+  }
+
+  .post-card:first-child { border-top: 1px solid var(--border); }
+  .post-card:hover { padding-left: 1rem; }
+
+  .post-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .post-card-title {
+    font-family: var(--serif);
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    flex: 1;
+    padding-right: 2rem;
+    transition: color 0.2s;
+  }
+
+  .post-card:hover .post-card-title { color: var(--accent); }
+
+  .post-card-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--border2);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .post-card-excerpt {
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 600px;
+  }
+
+  .post-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .post-tag {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+
+  .post-card:hover .post-tag {
+    border-color: rgba(200,245,71,0.3);
+    color: var(--accent);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .sidebar-section {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+  }
+
+  .sidebar-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  /* About box */
+  .about-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+
+  .about-name {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .about-title {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .about-bio {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  /* Topics list */
+  .topics-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .topic-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .topic-item:hover { padding-left: 0.5rem; }
+
+  .topic-name {
+    font-size: 0.85rem;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+
+  .topic-item:hover .topic-name { color: var(--accent); }
+
+  .topic-count {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--muted);
+  }
+
+  /* Newsletter box */
+  .newsletter-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+
+  .newsletter-title {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .newsletter-desc {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .newsletter-input {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .newsletter-input::placeholder { color: var(--muted); }
+  .newsletter-input:focus { border-color: var(--accent); }
+
+  .newsletter-btn {
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.75rem 1rem;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-weight: 500;
+  }
+
+  .newsletter-btn:hover { opacity: 0.85; }
+
+  /* Latest signal sidebar posts */
+  .signal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .signal-item {
+    display: flex;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .signal-num {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--border);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 28px;
+    transition: color 0.2s;
+  }
+
+  .signal-item:hover .signal-num { color: var(--accent); }
+
+  .signal-content {}
+
+  .signal-title {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+    transition: color 0.2s;
+  }
+
+  .signal-item:hover .signal-title { color: var(--accent); }
+
+  .signal-date {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--muted);
+  }
+
+  /* LOAD MORE */
+  .load-more-wrap {
+    padding: 3rem 0;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .load-more-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .load-more-btn {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 0.6rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .load-more-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 5vw;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .masthead { animation: fadeUp 0.6s ease both; }
+  .featured-post { animation: fadeUp 0.6s 0.1s ease both; }
+  .post-card { animation: fadeUp 0.4s ease both; }
+  .post-card:nth-child(1) { animation-delay: 0.15s; }
+  .post-card:nth-child(2) { animation-delay: 0.2s; }
+  .post-card:nth-child(3) { animation-delay: 0.25s; }
+  .post-card:nth-child(4) { animation-delay: 0.3s; }
+  .post-card:nth-child(5) { animation-delay: 0.35s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .masthead { grid-template-columns: 1fr; gap: 2rem; }
+    .featured-post { grid-template-columns: 1fr; }
+    .blog-layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .nav-links { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .masthead { padding-top: 90px; }
+    .masthead-title { font-size: 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">null;</a>
+  <ul class="nav-links">
+    <li><a href="/">About</a></li>
+    <li><a href="/leads">Leads</a></li>
+    <li><a href="/agents">Agents</a></li>
+    <li><a href="/intel">Intel</a></li>
+    <li><a href="/api">API</a></li>
+    <li><a href="/edge">Edge</a></li>
+    <li><a href="/work">Work</a></li>
+    <li><a href="/blog" class="active">Blog</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-left">
+    <div class="masthead-label">Intelligence dispatch</div>
+    <h1 class="masthead-title">
+      The<br>
+      <em>Signal</em><br>
+      Journal
+    </h1>
+  </div>
+  <div class="masthead-right">
+    <p class="masthead-desc">
+      Dispatches from the edge of AI, crypto, and the builder economy. 
+      Written by someone who played pro ball in 7 countries and taught 
+      himself to build AI products. No CS degree. No filter.
+    </p>
+    <div class="masthead-meta">
+      <div class="masthead-meta-item">
+        <span class="masthead-meta-num">12</span>
+        <span class="masthead-meta-label">Dispatches</span>
+      </div>
+      <div class="masthead-meta-item">
+        <span class="masthead-meta-num">3</span>
+        <span class="masthead-meta-label">Topics</span>
+      </div>
+      <div class="masthead-meta-item">
+        <span class="masthead-meta-num">2026</span>
+        <span class="masthead-meta-label">Est.</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- CATEGORIES BAR -->
+<div class="categories-bar">
+  <button class="category-tab active" onclick="filterPosts('all')">All</button>
+  <button class="category-tab" onclick="filterPosts('ai')">Artificial Intelligence</button>
+  <button class="category-tab" onclick="filterPosts('crypto')">Crypto & Web3</button>
+  <button class="category-tab" onclick="filterPosts('macro')">Macro Economics</button>
+  <button class="category-tab" onclick="filterPosts('builder')">Builder Playbook</button>
+</div>
+
+<!-- MAIN LAYOUT -->
+<main class="blog-layout">
+
+  <!-- POSTS MAIN -->
+  <div class="posts-main">
+
+    <!-- FEATURED -->
+    <article class="featured-post">
+      <div class="featured-image">
+        <div class="featured-image-inner">
+          <div class="featured-badge">Featured</div>
+          <svg width="60" height="60" viewBox="0 0 60 60" fill="none" style="opacity:0.2">
+            <circle cx="30" cy="30" r="29" stroke="rgba(200,245,71,0.8)" stroke-width="0.5"/>
+            <path d="M30 10L30 50M10 30L50 30" stroke="rgba(200,245,71,0.8)" stroke-width="0.5"/>
+            <circle cx="30" cy="30" r="8" stroke="rgba(200,245,71,0.8)" stroke-width="0.5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="featured-content">
+        <span class="post-category">Builder Playbook</span>
+        <h2 class="featured-title">Your First AI Agent: What Nobody Tells You Before You Start</h2>
+        <p class="post-excerpt">
+          I spent 3 months setting up, breaking, and rebuilding an AI agent from scratch. 
+          No CS degree. No prior experience with deployment infrastructure. Just a 
+          basketball background and a refusal to quit. Here is everything I wish someone 
+          had told me before I burned $18 in tokens in a single loop.
+        </p>
+        <div class="post-meta">
+          <span>Vitoshi</span>
+          <span class="post-meta-dot"></span>
+          <span>Apr 2, 2026</span>
+          <span class="post-meta-dot"></span>
+          <span>8 min read</span>
+        </div>
+        <a href="/blog/your-first-ai-agent" class="read-more">
+          Read dispatch <span class="read-more-arrow">→</span>
+        </a>
+      </div>
+    </article>
+
+    <!-- POST LIST -->
+    <div class="posts-grid" id="posts-grid">
+
+      <article class="post-card" data-category="ai" onclick="window.location='/blog/two-tier-radar'">
+        <div class="post-card-header">
+          <h3 class="post-card-title">The Two-Tier Radar: How I Cut My AI Agent's Cost by 97%</h3>
+          <span class="post-card-num">001</span>
+        </div>
+        <p class="post-card-excerpt">
+          My trading engine was burning $18 a day calling Claude on every 5-minute cycle. 
+          The fix was embarrassingly simple once I understood what was actually expensive.
+        </p>
+        <div class="post-card-footer">
+          <span class="post-tag">AI</span>
+          <span class="post-tag">Cost Optimization</span>
+          <span class="post-meta-dot"></span>
+          <span>Apr 1, 2026</span>
+          <span class="post-meta-dot"></span>
+          <span>5 min read</span>
+        </div>
+      </article>
+
+      <article class="post-card" data-category="crypto" onclick="window.location='/blog/btc-prediction-markets'">
+        <div class="post-card-header">
+          <h3 class="post-card-title">Why BTC on Polymarket Beats Direct Trading for Beginners</h3>
+          <span class="post-card-num">002</span>
+        </div>
+        <p class="post-card-excerpt">
+          Prediction markets let you bet on price direction without managing positions, 
+          leverage, or liquidation risk. Here is the structure I use for short-duration crypto markets.
+        </p>
+        <div class="post-card-footer">
+          <span class="post-tag">Crypto</span>
+          <span class="post-tag">Prediction Markets</span>
+          <span class="post-meta-dot"></span>
+          <span>Mar 28, 2026</span>
+          <span class="post-meta-dot"></span>
+          <span>6 min read</span>
+        </div>
+      </article>
+
+      <article class="post-card" data-category="builder" onclick="window.location='/blog/athlete-to-developer'">
+        <div class="post-card-header">
+          <h3 class="post-card-title">The Athlete-to-Developer Pipeline Nobody Talks About</h3>
+          <span class="post-card-num">003</span>
+        </div>
+        <p class="post-card-excerpt">
+          12 years. 7 countries. Zero CS classes. The skills that made me competitive 
+          on the court are the same ones that let me ship 6 live AI products in under a year.
+        </p>
+        <div class="post-card-footer">
+          <span class="post-tag">Builder</span>
+          <span class="post-tag">Career</span>
+          <span class="post-meta-dot"></span>
+          <span>Mar 22, 2026</span>
+          <span class="post-meta-dot"></span>
+          <span>7 min read</span>
+        </div>
+      </article>
+
+      <article class="post-card" data-category="macro" onclick="window.location='/blog/fed-prediction-markets'">
+        <div class="post-card-header">
+          <h3 class="post-card-title">Trading the Fed: How AI Agents Read Macro Before Markets Do</h3>
+          <span class="post-card-num">004</span>
+        </div>
+        <p class="post-card-excerpt">
+          Fed meeting minutes, CPI releases, and employment data all move prediction 
+          markets before most retail traders process what happened. Here is the data pipeline I built.
+        </p>
+        <div class="post-card-footer">
+          <span class="post-tag">Macro</span>
+          <span class="post-tag">AI Agents</span>
+          <span class="post-meta-dot"></span>
+          <span>Mar 18, 2026</span>
+          <span class="post-meta-dot"></span>
+          <span>6 min read</span>
+        </div>
+      </article>
+
+      <article class="post-card" data-category="ai" onclick="window.location='/blog/openclaw-setup'">
+        <div class="post-card-header">
+          <h3 class="post-card-title">Setting Up OpenClaw on a $150 Mini PC: The Complete Guide</h3>
+          <span class="post-card-num">005</span>
+        </div>
+        <p class="post-card-excerpt">
+          You do not need a cloud server. A Lenovo ThinkCentre M75n running Ubuntu 22.04 
+          is all it takes to run a 24/7 AI agent that never sleeps and never costs you 
+          more than $3/day in API calls.
+        </p>
+        <div class="post-card-footer">
+          <span class="post-tag">AI</span>
+          <span class="post-tag">Infrastructure</span>
+          <span class="post-meta-dot"></span>
+          <span>Mar 15, 2026</span>
+          <span class="post-meta-dot"></span>
+          <span>9 min read</span>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="load-more-wrap">
+      <div class="load-more-line"></div>
+      <button class="load-more-btn">Load more dispatches</button>
+      <div class="load-more-line"></div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- About -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">The author</div>
+      <div class="about-box">
+        <div class="about-name">Vitoshi</div>
+        <div class="about-title">@devCharizard · Null Limit founder</div>
+        <p class="about-bio">
+          Former pro basketball player. 12 years. 7 countries. 
+          All-time leading rebounder at Boise State. Self-taught AI developer. 
+          No CS degree. 6 live products. Building in public.
+        </p>
+      </div>
+    </div>
+
+    <!-- Topics -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">Topics</div>
+      <div class="topics-list">
+        <div class="topic-item" onclick="filterPosts('ai')">
+          <span class="topic-name">Artificial Intelligence</span>
+          <span class="topic-count">5 posts</span>
+        </div>
+        <div class="topic-item" onclick="filterPosts('crypto')">
+          <span class="topic-name">Crypto & Web3</span>
+          <span class="topic-count">3 posts</span>
+        </div>
+        <div class="topic-item" onclick="filterPosts('macro')">
+          <span class="topic-name">Macro Economics</span>
+          <span class="topic-count">2 posts</span>
+        </div>
+        <div class="topic-item" onclick="filterPosts('builder')">
+          <span class="topic-name">Builder Playbook</span>
+          <span class="topic-count">4 posts</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">The signal</div>
+      <div class="newsletter-box">
+        <div class="newsletter-title">Weekly dispatch</div>
+        <p class="newsletter-desc">
+          No noise. Just the one thing worth knowing this week in AI, 
+          crypto, and the builder economy.
+        </p>
+        <div class="newsletter-form">
+          <input type="email" class="newsletter-input" placeholder="your@email.com">
+          <button class="newsletter-btn">Subscribe →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Latest -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">Recent dispatches</div>
+      <div class="signal-list">
+        <div class="signal-item">
+          <span class="signal-num">01</span>
+          <div class="signal-content">
+            <div class="signal-title">The Two-Tier Radar: How I Cut Costs by 97%</div>
+            <div class="signal-date">Apr 1, 2026</div>
+          </div>
+        </div>
+        <div class="signal-item">
+          <span class="signal-num">02</span>
+          <div class="signal-content">
+            <div class="signal-title">BTC on Polymarket vs Direct Trading</div>
+            <div class="signal-date">Mar 28, 2026</div>
+          </div>
+        </div>
+        <div class="signal-item">
+          <span class="signal-num">03</span>
+          <div class="signal-content">
+            <div class="signal-title">The Athlete-to-Developer Pipeline</div>
+            <div class="signal-date">Mar 22, 2026</div>
+          </div>
+        </div>
+        <div class="signal-item">
+          <span class="signal-num">04</span>
+          <div class="signal-content">
+            <div class="signal-title">Trading the Fed with AI Agents</div>
+            <div class="signal-date">Mar 18, 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">null;</span>
+  <span class="footer-copy">© 2026 Null Limit · Undefined by design</span>
+</footer>
+
+<script>
+  function filterPosts(category) {
+    document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    const cards = document.querySelectorAll('.post-card');
+    cards.forEach(card => {
+      if (category === 'all' || card.dataset.category === category) {
+        card.style.display = 'grid';
+        card.style.animation = 'fadeUp 0.3s ease both';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+</script>
+</body>
+</html>
