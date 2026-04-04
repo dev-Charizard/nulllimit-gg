@@ -1,0 +1,243 @@
+<!--
+================================================================
+STRIPE CHECKOUT BUTTONS — nulllimit.gg
+================================================================
+Copy the relevant button into each page file.
+Add the shared CSS once per page inside <style> tags.
+================================================================
+-->
+
+<!-- ============================================================
+SHARED CSS — Add once inside <style> in each page's <head>
+============================================================ -->
+<style>
+  .stripe-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: var(--mono, 'JetBrains Mono', monospace);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 14px 28px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .stripe-btn-primary {
+    background: #f5f5f0;
+    color: #090909;
+  }
+
+  .stripe-btn-primary:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  .stripe-btn-outline {
+    background: transparent;
+    color: #f5f5f0;
+    border: 0.5px solid #333333;
+  }
+
+  .stripe-btn-outline:hover {
+    border-color: #f5f5f0;
+    background: rgba(245,245,240,0.05);
+  }
+
+  .stripe-btn-accent {
+    background: #c8f547;
+    color: #090909;
+  }
+
+  .stripe-btn-accent:hover {
+    background: #d4ff55;
+    transform: translateY(-1px);
+  }
+
+  .stripe-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+  }
+
+  .pricing-block {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .pricing-note {
+    font-family: var(--mono, 'JetBrains Mono', monospace);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: #666666;
+    margin-top: 8px;
+  }
+
+  .stripe-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono, 'JetBrains Mono', monospace);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #666666;
+    margin-top: 12px;
+  }
+
+  .stripe-badge::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+  }
+</style>
+
+
+<!-- ============================================================
+LEADS PAGE — /leads
+Add after your pricing section
+============================================================ -->
+
+<!-- Leads: Per Lead ($25) -->
+<div class="pricing-block">
+  <a href="https://buy.stripe.com/28E28sbbUaih1xF7sb97G06"
+     target="_blank"
+     rel="noopener"
+     class="stripe-btn stripe-btn-primary">
+    Buy leads — $25 per lead →
+  </a>
+  <a href="https://buy.stripe.com/test_6oUdRafx12JF7gBdFe8AE00"
+     target="_blank"
+     rel="noopener"
+     class="stripe-btn stripe-btn-outline">
+    Monthly retainer — $997/mo →
+  </a>
+  <!-- NOTE: Replace leads retainer URL with live mode link once Stripe verifies -->
+  <div class="stripe-badge">Secure checkout powered by Stripe</div>
+  <p class="pricing-note">Minimum 20 leads per order. Delivered within 5 business days.</p>
+</div>
+
+
+<!-- ============================================================
+AGENTS PAGE — /agents
+Add after your pricing section
+============================================================ -->
+
+<!-- Agent Setup: Basic ($125) + Full ($500) -->
+<div class="pricing-block">
+  <a href="https://buy.stripe.com/5kQ00k4NwfCB1xFfYH97G08"
+     target="_blank"
+     rel="noopener"
+     class="stripe-btn stripe-btn-outline">
+    Basic setup — $125 →
+  </a>
+  <a href="https://buy.stripe.com/bJe4gA7ZI8a9ekrdQz97G02"
+     target="_blank"
+     rel="noopener"
+     class="stripe-btn stripe-btn-primary">
+    Full setup + training — $500 →
+  </a>
+  <div class="stripe-badge">Secure checkout powered by Stripe</div>
+  <p class="pricing-note">Setup completed within 48 hours. Includes 30-day support.</p>
+</div>
+
+
+<!-- ============================================================
+INTEL PAGE — /intel
+Add after your pricing section
+============================================================ -->
+
+<!-- Intel Reports ($299/mo) -->
+<div class="pricing-block">
+  <a href="https://buy.stripe.com/dRm5kEfsa2PP9079Aj97G03"
+     target="_blank"
+     rel="noopener"
+     class="stripe-btn stripe-btn-primary">
+    Subscribe — $299/month →
+  </a>
+  <div class="stripe-badge">Secure checkout powered by Stripe</div>
+  <p class="pricing-note">Cancel anytime. First report delivered Monday after signup.</p>
+</div>
+
+
+<!-- ============================================================
+EDGE PAGE — /edge
+Add after your pricing section
+============================================================ -->
+
+<!-- Null Limit Edge ($49/mo) -->
+<div class="pricing-block">
+  <a href="https://buy.stripe.com/14AbJ2fsafCB5NV6o797G01"
+     target="_blank"
+     rel="noopener"
+     class="stripe-btn stripe-btn-accent">
+    Get Edge access — $49/month →
+  </a>
+  <div class="stripe-badge">Secure checkout powered by Stripe</div>
+  <p class="pricing-note">Cancel anytime. Prediction market signals delivered weekly.</p>
+</div>
+
+
+<!-- ============================================================
+API PAGE — /api
+Replace existing pricing buttons or add below each tier
+============================================================ -->
+
+<!-- API Starter ($9) -->
+<a href="https://buy.stripe.com/aFa3cwfsa621fov13N97G07"
+   target="_blank"
+   rel="noopener"
+   class="stripe-btn stripe-btn-outline">
+  Get Starter — $9 →
+</a>
+
+<!-- API Pro ($35) -->
+<a href="https://buy.stripe.com/aFaaEYeo6eyxccjcMv97G05"
+   target="_blank"
+   rel="noopener"
+   class="stripe-btn stripe-btn-outline">
+  Get Pro — $35 →
+</a>
+
+<!-- API Scale ($99) -->
+<a href="https://buy.stripe.com/5kQcN64Nw6210tB8wf97G04"
+   target="_blank"
+   rel="noopener"
+   class="stripe-btn stripe-btn-primary">
+  Get Scale — $99 →
+</a>
+
+<div class="stripe-badge">Secure checkout powered by Stripe</div>
+
+
+<!-- ============================================================
+WORK PAGE — /work
+Add a simple CTA — no Stripe needed, just email link
+============================================================ -->
+
+<!-- Work page CTA -->
+<div class="pricing-block">
+  <a href="mailto:vitoshi@nulllimit.gg?subject=Hire%20Inquiry"
+     class="stripe-btn stripe-btn-primary">
+    Start a conversation →
+  </a>
+  <p class="pricing-note">Response within 24 hours.</p>
+</div>
+
+
+<!-- ============================================================
+REMINDER: leads retainer test link needs replacing
+Replace this URL once Stripe live mode is verified:
+https://buy.stripe.com/test_6oUdRafx12JF7gBdFe8AE00
+With the new live mode URL from dashboard.stripe.com
+============================================================ -->
