@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I Burned $18 in 4 Hours Building My First AI Agent — Null Limit</title>
+  <meta name="description" content="The real version of building AI agents. What nobody tells you about fallback loops, token costs, and running an agent 24/7 on your own hardware." />
+  <link rel="canonical" href="https://nulllimit.gg/blog/your-first-ai-agent" />
+  <meta property="og:title" content="I Burned $18 in 4 Hours Building My First AI Agent" />
+  <meta property="og:description" content="The real version of building AI agents. Not the polished demo version." />
+  <meta property="og:url" content="https://nulllimit.gg/blog/your-first-ai-agent" />
+  <meta property="og:type" content="article" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:creator" content="@devCharizard" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Syne:wght@400;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #090909; --g900: #111111; --g800: #1a1a1a; --g700: #242424;
+      --g600: #333333; --g400: #666666; --g200: #aaaaaa; --g100: #d4d4d4;
+      --white: #f5f5f0; --accent: #c8f547;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Syne', sans-serif;
+      --serif: 'Playfair Display', Georgia, serif;
+    }
+    html { background: var(--black); color: var(--white); font-family: var(--sans); scroll-behavior: smooth; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); opacity: 0.35; pointer-events: none; z-index: 100; }
+
+    /* NAV */
+    .site { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 36px 0; border-bottom: 0.5px solid var(--g700); }
+    .nav-mark { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--white); display: flex; align-items: center; text-decoration: none; }
+    .nav-cursor { display: inline-block; width: 2px; height: 18px; background: var(--white); margin-left: 2px; border-radius: 1px; animation: blink 1.1s step-end infinite; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--g400); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
+
+    /* ARTICLE LAYOUT */
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: 80px 40px 120px; }
+
+    /* BREADCRUMB */
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--g400); margin-bottom: 48px; }
+    .breadcrumb a { color: var(--g400); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--white); }
+    .breadcrumb-sep { color: var(--g700); }
+
+    /* ARTICLE HEADER */
+    .article-header { margin-bottom: 56px; }
+    .article-category { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .article-category::before { content: ''; display: inline-block; width: 20px; height: 0.5px; background: var(--accent); }
+    .article-title { font-family: var(--serif); font-size: clamp(32px, 5vw, 56px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; color: var(--white); margin-bottom: 28px; }
+    .article-meta { display: flex; align-items: center; gap: 16px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--g400); padding-bottom: 28px; border-bottom: 0.5px solid var(--g700); }
+    .article-meta-dot { width: 3px; height: 3px; background: var(--g600); border-radius: 50%; }
+    .article-read-time { color: var(--g600); }
+
+    /* ARTICLE BODY */
+    .article-body { font-family: var(--sans); font-size: 18px; font-weight: 400; color: var(--g200); line-height: 1.8; }
+    .article-body p { margin-bottom: 28px; }
+    .article-body p:last-child { margin-bottom: 0; }
+    .article-body strong { color: var(--white); font-weight: 700; }
+    .article-body em { font-style: italic; }
+    .article-body hr { border: none; border-top: 0.5px solid var(--g700); margin: 48px 0; }
+    .article-body h2 { font-family: var(--serif); font-size: clamp(22px, 3vw, 32px); font-weight: 700; color: var(--white); letter-spacing: -0.01em; line-height: 1.2; margin: 56px 0 24px; padding-top: 8px; }
+    .article-body h2:first-child { margin-top: 0; }
+    .article-body a { color: var(--accent); text-decoration: none; border-bottom: 0.5px solid rgba(200,245,71,0.3); transition: border-color 0.2s; }
+    .article-body a:hover { border-bottom-color: var(--accent); }
+    .article-body code { font-family: var(--mono); font-size: 14px; background: var(--g900); border: 0.5px solid var(--g700); color: var(--accent); padding: 2px 8px; border-radius: 2px; }
+
+    /* CALLOUT BOX */
+    .callout { background: var(--g900); border: 0.5px solid var(--g700); border-left: 2px solid var(--accent); padding: 24px 28px; margin: 40px 0; }
+    .callout p { font-family: var(--mono); font-size: 13px; color: var(--g200); line-height: 1.7; margin: 0; }
+
+    /* PULL QUOTE */
+    .pull-quote { border-top: 0.5px solid var(--g700); border-bottom: 0.5px solid var(--g700); padding: 32px 0; margin: 48px 0; }
+    .pull-quote p { font-family: var(--serif); font-size: clamp(20px, 3vw, 28px); font-style: italic; color: var(--white); line-height: 1.4; margin: 0; }
+
+    /* TIER BLOCKS */
+    .tier-block { background: var(--g900); border: 0.5px solid var(--g700); padding: 24px 28px; margin: 12px 0; }
+    .tier-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .tier-desc { font-family: var(--sans); font-size: 15px; color: var(--g200); line-height: 1.65; margin: 0; }
+
+    /* SIGNATURE */
+    .article-signature { margin-top: 64px; padding-top: 40px; border-top: 0.5px solid var(--g700); }
+    .signature-name { font-family: var(--serif); font-size: 24px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .signature-bio { font-family: var(--mono); font-size: 11px; color: var(--g400); line-height: 1.7; letter-spacing: 0.03em; margin-bottom: 24px; }
+    .signature-links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .sig-link { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--g400); text-decoration: none; border: 0.5px solid var(--g700); padding: 8px 16px; transition: all 0.2s; }
+    .sig-link:hover { color: var(--white); border-color: var(--g400); }
+    .sig-link.accent { background: var(--accent); color: var(--black); border-color: var(--accent); font-weight: 700; }
+    .sig-link.accent:hover { background: #d4ff55; border-color: #d4ff55; }
+
+    /* RELATED */
+    .related { margin-top: 80px; padding-top: 48px; border-top: 0.5px solid var(--g700); }
+    .related-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--g400); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+    .related-label::after { content: ''; flex: 1; height: 0.5px; background: var(--g700); }
+    .related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .related-card { background: var(--g900); padding: 28px; text-decoration: none; display: block; transition: background 0.2s; }
+    .related-card:hover { background: var(--g800); }
+    .related-cat { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .related-title { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--white); line-height: 1.3; }
+
+    /* FOOTER */
+    footer { border-top: 0.5px solid var(--g700); padding: 40px 0; display: flex; justify-content: space-between; align-items: center; }
+    .footer-mark { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--g600); }
+    .footer-right { font-family: var(--mono); font-size: 10px; color: var(--g600); letter-spacing: 0.1em; text-align: right; line-height: 2; }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .article-wrap { animation: fadeUp 0.6s ease both; }
+
+    @media (max-width: 768px) {
+      .site { padding: 0 24px; }
+      .article-wrap { padding: 60px 0 80px; }
+      .related-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <nav>
+      <a href="/" class="nav-mark">null;<span class="nav-cursor"></span></a>
+      <ul class="nav-links">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#projects">Projects</a></li>
+        <li><a href="/leads">Leads</a></li>
+        <li><a href="/agents">Agents</a></li>
+        <li><a href="/api">API</a></li>
+        <li><a href="/work">Work</a></li>
+        <li><a href="/blog" class="active">Blog</a></li>
+        <li><a href="/ebooks">eBooks</a></li>
+        <li><a href="mailto:vitoshi@nulllimit.gg">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="article-wrap">
+
+    <div class="breadcrumb">
+      <a href="/">null;</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="/blog">Blog</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Your First AI Agent</span>
+    </div>
+
+    <header class="article-header">
+      <div class="article-category">Builder Playbook</div>
+      <h1 class="article-title">I Burned $18 in 4 Hours Building My First AI Agent. Here's What Nobody Tells You.</h1>
+      <div class="article-meta">
+        <span>Vitoshi</span>
+        <span class="article-meta-dot"></span>
+        <span>April 6, 2026</span>
+        <span class="article-meta-dot"></span>
+        <span class="article-read-time">8 min read</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <p>Let me set the scene.</p>
+
+      <p>It's 2am. My ThinkCentre M75n is humming on the desk. I've got an AI agent running — or at least I think I do. OpenClaw is installed, the gateway is live, and Mewtwo (that's what I named him) is connected to Telegram. I send a test message. He responds. I'm gassed.</p>
+
+      <p>Then I check my Anthropic billing dashboard.</p>
+
+      <div class="pull-quote">
+        <p>$18. In four hours.</p>
+      </div>
+
+      <p>I sat there for a second just staring at the number. Not because $18 is going to break me — but because I had no idea what caused it, and that feeling right there? That's the feeling you need to get comfortable with if you're going to build in this space. The moment where the thing you built is running, but you don't fully understand <em>how</em> yet.</p>
+
+      <p>That's what this post is about. Not the polished version of building AI agents. The real version.</p>
+
+      <hr>
+
+      <h2>How I Got Here</h2>
+
+      <p>Twelve years playing professional basketball. Seven countries. When I retired, I had no CS degree, no bootcamp, no network in tech. What I had was a refusal to accept that this world wasn't for me.</p>
+
+      <p>I started <strong>Null Limit</strong> as a company built on one thesis: that the skills that make someone elite at anything — discipline, pattern recognition, the ability to operate under pressure — are the same skills that make someone a great builder. You don't need a four-year degree to understand systems. You need reps.</p>
+
+      <p>So I got reps.</p>
+
+      <p>I built things that broke. I rebuilt them. I shipped six live products in under a year — an AI companion app, a competitive intelligence engine, a BTC trading radar, a <a href="https://nulllimit.gg/api">knowledge API</a>, a <a href="https://nulllimit.gg/leads">lead generation service</a>, an <a href="https://vitoshi.gumroad.com/l/your-first-ai-agent">eBook series</a>. None of it with a single line of venture capital. All of it solo.</p>
+
+      <p>The $18 night was one of the most important nights in that process.</p>
+
+      <hr>
+
+      <h2>The Loop Nobody Warns You About</h2>
+
+      <p>Here's what happened: I had configured my AI agent with a fallback model. The idea was smart — if Claude hits a limit or has an issue, fall back to another model automatically. What I didn't know was that I had the wrong model ID in my config. Not wrong as in <em>bad</em> — wrong as in <em>invalid</em>. The model string didn't exist.</p>
+
+      <p>So what happened when Claude tried to fall back? It called an invalid model. That failed. Then it tried to fall back <em>again</em>. That failed. Then again. And again. An infinite retry loop burning API tokens every single cycle, running all night while I slept.</p>
+
+      <p>$18.</p>
+
+      <p>The fix was a single line in a JSON config file. Change <code>gemini-3-flash</code> to <code>gemini-2.5-flash</code>. That's it. Four characters. But I only found it because I had to <em>go looking</em> — and going looking taught me more about how these systems actually work than any tutorial ever did.</p>
+
+      <div class="callout">
+        <p>This is the part of building AI agents that nobody's writing blog posts about. Not because it's a secret — because most of the people writing about AI agents haven't actually run one 24/7 on their own hardware and watched the billing dashboard in real time.</p>
+      </div>
+
+      <hr>
+
+      <h2>What Actually Runs an Agent</h2>
+
+      <p>Most people think of an AI agent as a chatbot. You send a message, it responds, end of story. That model is fine for demos. It's not what's actually happening when you're running an agent in production.</p>
+
+      <p>A real AI agent has five layers:</p>
+
+      <div class="tier-block">
+        <div class="tier-label">01 — Runtime</div>
+        <p class="tier-desc">The system that keeps the agent alive, processes incoming messages, manages context, and routes requests to the right model. I use OpenClaw, which runs as a system service on my M75n Linux machine. It starts when the machine boots and never stops unless I tell it to.</p>
+      </div>
+
+      <div class="tier-block">
+        <div class="tier-label">02 — Model</div>
+        <p class="tier-desc">The actual intelligence. Claude Sonnet 4.6 is my primary. Gemini 2.5 Flash is my fallback for high-volume, lower-stakes tasks. Model selection isn't just a preference decision — it's a cost architecture decision.</p>
+      </div>
+
+      <div class="tier-block">
+        <div class="tier-label">03 — Tools and Skills</div>
+        <p class="tier-desc">What the agent can actually <em>do</em>. Web search, file access, code execution, API calls. Without tools an agent is just a text box. With them it's an autonomous operator.</p>
+      </div>
+
+      <div class="tier-block">
+        <div class="tier-label">04 — Memory</div>
+        <p class="tier-desc">How the agent maintains context across conversations. This is one of the hardest problems in agent design and most tutorials gloss over it completely.</p>
+      </div>
+
+      <div class="tier-block">
+        <div class="tier-label">05 — Communication Layer</div>
+        <p class="tier-desc">How you actually talk to it. Mine uses Telegram. When I message @vibeymewto_bot, Mewtwo picks it up, processes it, and responds. From anywhere in the world, on any device, with full context of our history.</p>
+      </div>
+
+      <p style="margin-top: 28px;">Understanding all five layers is the difference between having a demo and having infrastructure.</p>
+
+      <hr>
+
+      <h2>The Two-Tier Trick That Cut My Costs by 97%</h2>
+
+      <p>After the $18 night I became obsessed with token cost efficiency. Not because I couldn't afford the usage — because efficiency is respect for the system you're building. Wasteful architecture is a sign you don't understand what you built.</p>
+
+      <p>The breakthrough came from my BTC trading engine.</p>
+
+      <p>I had built a radar that runs every five minutes, analyzing Bitcoin price action and generating a signal: buy, sell, or hold. My first version called Claude on every single cycle. Every five minutes, a full LLM call. Even when the market was flat. Even when the signal was obviously neutral. That's 288 Claude calls per day just for one tool.</p>
+
+      <p>The fix was embarrassingly obvious once I saw it.</p>
+
+      <div class="tier-block">
+        <div class="tier-label">Tier 1 — Pure math</div>
+        <p class="tier-desc">RSI, volume, momentum, trend direction — all calculated locally with zero API calls. This runs on every cycle. If the signal confidence is below 65%, the decision is <em>no signal</em> and the engine stops there. No LLM needed.</p>
+      </div>
+
+      <div class="tier-block">
+        <div class="tier-label">Tier 2 — LLM confirmation</div>
+        <p class="tier-desc">Only when Tier 1 produces a high-confidence signal does the engine escalate to Claude or Gemini for deeper analysis. This happens maybe 10-15% of cycles.</p>
+      </div>
+
+      <p style="margin-top: 28px;"><strong>Result: 97% cost reduction.</strong> Same signal quality. Sometimes better, because the LLM isn't being called to confirm obvious nothing.</p>
+
+      <p>This pattern — do the cheap computation first, only escalate to expensive computation when justified — applies to almost every AI agent use case. It's not a trick. It's good engineering.</p>
+
+      <hr>
+
+      <h2>What I'm Building Now</h2>
+
+      <p>Null Limit today is a stack of interconnected systems, all running on the same philosophical foundation: build lean, build real, build things that actually work.</p>
+
+      <p><strong>Mewtwo</strong> is my operations agent. He runs 24/7 on the M75n, handles research tasks, monitors the trading radar, and is my first point of contact for anything I need done when I'm away from the keyboard.</p>
+
+      <p><strong>Makima</strong> is my content intelligence agent. She runs on-demand on my MacBook, writes blog posts and tweets, researches prospects for the ghost-writing service, and is slowly becoming the marketing engine for everything else I build.</p>
+
+      <p><strong>The BTC radar</strong> runs on a cron job, feeding signals into a prediction market strategy I'm developing on Kalshi.</p>
+
+      <p><strong>The Knowledge API</strong> serves structured intelligence to other developers and AI agents who want clean data without building the collection layer themselves.</p>
+
+      <p>None of this is theory. All of it is running right now, in production, generating real data.</p>
+
+      <hr>
+
+      <h2>The Thing About Being a Former Athlete</h2>
+
+      <p>People ask me sometimes how I went from basketball to AI development without a technical background, and I always give the same answer: the same way I got good at basketball. Repetition, film study, and refusing to accept that the gap between where I was and where I wanted to be was permanent.</p>
+
+      <p>Basketball is a game of systems. Offense. Defense. Personnel. Every team you face has tendencies, and your job is to read them faster than they can hide them. Building software is the same thing. Systems with patterns. Inputs with predictable outputs. The ability to look at a broken thing and ask <em>why</em> before you ask <em>how to fix it</em>.</p>
+
+      <div class="pull-quote">
+        <p>The $18 loop wasn't a failure. It was film study.</p>
+      </div>
+
+      <hr>
+
+      <h2>Start Here</h2>
+
+      <p>If you're building your first AI agent and you want to avoid the mistakes I made, the most important thing I can tell you is this: run it small first. One model. One tool. One communication channel. Get it stable, understand every component, then add complexity.</p>
+
+      <p>The agents that compound in value are the ones built on foundations you actually understand.</p>
+
+      <p>I wrote a full beginner's guide to getting your first OpenClaw agent running — available now at <a href="https://nulllimit.gg/ebooks">nulllimit.gg/ebooks</a>. Everything I know about setup, configuration, cost management, and the eight mistakes that will burn your budget before you realize what happened.</p>
+
+      <p>Want your own agent set up and running? That's exactly what we do at <a href="https://nulllimit.gg/agents">Null Limit</a> — fully configured, secured, and connected to your workflow in one session.</p>
+
+      <p>If you want to follow the build in real time, every post lives at <a href="https://nulllimit.gg/blog">nulllimit.gg/blog</a> and on <a href="https://x.com/devCharizard">@devCharizard</a> — pulled directly from what's actually happening in the stack.</p>
+
+      <p>No filter. No polish. Just the work.</p>
+
+    </div>
+
+    <!-- SIGNATURE -->
+    <div class="article-signature">
+      <div class="signature-name">— Vitoshi</div>
+      <div class="signature-bio">
+        Former pro basketball player. 12 years. 7 countries. Self-taught AI developer.<br>
+        Founder of Null Limit. Building AI agents, intelligence tools, and developer APIs<br>
+        for people who were never supposed to be in the room.
+      </div>
+      <div class="signature-links">
+        <a href="https://nulllimit.gg/ebooks" class="sig-link accent">Get the eBook →</a>
+        <a href="https://nulllimit.gg/agents" class="sig-link">AI Agent Setup</a>
+        <a href="https://x.com/devCharizard" class="sig-link">@devCharizard</a>
+        <a href="https://nulllimit.gg/blog" class="sig-link">More posts</a>
+      </div>
+    </div>
+
+    <!-- RELATED POSTS -->
+    <div class="related">
+      <div class="related-label">More dispatches</div>
+      <div class="related-grid">
+        <a href="/blog/two-tier-radar" class="related-card">
+          <div class="related-cat">AI</div>
+          <div class="related-title">How I Cut My Agent's Cost by 97% With a Two-Tier Radar</div>
+        </a>
+        <a href="/blog/athlete-to-developer" class="related-card">
+          <div class="related-cat">Builder</div>
+          <div class="related-title">The Athlete-to-Developer Pipeline Nobody Talks About</div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="site">
+    <footer>
+      <div class="footer-mark">null;</div>
+      <div class="footer-right">
+        <div>nulllimit.gg</div>
+        <div>© 2026 Null Limit</div>
+      </div>
+    </footer>
+  </div>
+
+</body>
+</html>
