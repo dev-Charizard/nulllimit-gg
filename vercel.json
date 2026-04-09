@@ -2,8 +2,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/blog/your-first-ai-agent", "destination": "/blog/your-first-ai-agent.html" },
-    { "source": "/blog/the-agent-economy-is-already-here", "destination": "/blog/the-agent-economy-is-already-here.html" },
+    { "source": "/blog/your-first-ai-agent", "destination": "/your-first-ai-agent.html" },
+    { "source": "/blog/the-agent-economy-is-already-here", "destination": "/the-agent-economy-is-already-here.html" },
     { "source": "/blog/two-tier-radar", "destination": "/blog/two-tier-radar.html" },
     { "source": "/blog/btc-prediction-markets", "destination": "/blog/btc-prediction-markets.html" },
     { "source": "/blog/athlete-to-developer", "destination": "/blog/athlete-to-developer.html" },
