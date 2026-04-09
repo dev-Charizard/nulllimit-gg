@@ -1,3 +1,21 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/blog/your-first-ai-agent", "destination": "/blog/your-first-ai-agent.html" },
+    { "source": "/blog/the-agent-economy-is-already-here", "destination": "/blog/the-agent-economy-is-already-here.html" },
+    { "source": "/blog/two-tier-radar", "destination": "/blog/two-tier-radar.html" },
+    { "source": "/blog/btc-prediction-markets", "destination": "/blog/btc-prediction-markets.html" },
+    { "source": "/blog/athlete-to-developer", "destination": "/blog/athlete-to-developer.html" },
+    { "source": "/blog/fed-prediction-markets", "destination": "/blog/fed-prediction-markets.html" },
+    { "source": "/blog/openclaw-setup", "destination": "/blog/openclaw-setup.html" },
+    { "source": "/ebooks", "destination": "/ebooks.html" },
+    { "source": "/blog", "destination": "/blog.html" },
+    { "source": "/leads", "destination": "/leads.html" },
+    { "source": "/agents", "destination": "/agents.html" },
+    { "source": "/intel", "destination": "/intel.html" },
+    { "source": "/api", "destination": "/api.html" },
+    { "source": "/edge", "destination": "/edge.html" },
+    { "source": "/work", "destination": "/work.html" }
+  ]
 }
