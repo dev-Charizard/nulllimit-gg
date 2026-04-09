@@ -1,5 +1,4 @@
 {
-  "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
     { "source": "/blog/your-first-ai-agent", "destination": "/your-first-ai-agent.html" },
