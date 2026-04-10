@@ -8,6 +8,7 @@
     { "source": "/blog/athlete-to-developer", "destination": "/athlete-to-developer.html" },
     { "source": "/blog/fed-prediction-markets", "destination": "/fed-prediction-markets.html" },
     { "source": "/blog/openclaw-setup", "destination": "/openclaw-setup.html" },
+    { "source": "/consulting", "destination": "/consulting.html" },
     { "source": "/ebooks", "destination": "/ebooks.html" },
     { "source": "/blog", "destination": "/blog.html" },
     { "source": "/leads", "destination": "/leads.html" },
