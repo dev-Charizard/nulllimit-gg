@@ -23,9 +23,11 @@
     nav { display: flex; justify-content: space-between; align-items: center; padding: 36px 0; border-bottom: 0.5px solid var(--g700); opacity: 0; animation: fadeUp 0.6s ease forwards; }
     .nav-mark { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--white); display: flex; align-items: center; text-decoration: none; letter-spacing: -0.01em; }
     .nav-cursor { display: inline-block; width: 2px; height: 18px; background: var(--white); margin-left: 2px; border-radius: 1px; animation: blink 1.1s step-end infinite; }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links { display: flex; gap: 28px; list-style: none; flex-wrap: wrap; }
     .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--g400); text-decoration: none; transition: color 0.2s; }
     .nav-links a:hover { color: var(--white); }
+    .nav-links a.nav-highlight { color: #c8f547; }
+    .nav-links a.nav-highlight:hover { color: var(--white); }
     .hero { padding: 120px 0 100px; position: relative; }
     .hero-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--g400); margin-bottom: 32px; opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards; }
     .hero-title { font-family: var(--sans); font-size: clamp(52px, 8vw, 96px); font-weight: 800; line-height: 0.95; letter-spacing: -0.03em; color: var(--white); margin-bottom: 40px; opacity: 0; animation: fadeUp 0.7s ease 0.2s forwards; }
@@ -66,7 +68,6 @@
     .project-card:hover .project-link { color: var(--white); }
     .project-link-arrow { display: inline-block; transition: transform 0.2s; }
     .project-card:hover .project-link-arrow { transform: translate(3px, -3px); }
-    /* BLOG CTA SECTION */
     .blog-cta { padding: 80px 0; border-top: 0.5px solid var(--g700); }
     .blog-cta-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
     .blog-cta-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--g400); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
@@ -104,7 +105,7 @@
       .blog-cta-inner { grid-template-columns: 1fr; gap: 40px; }
       html { cursor: auto; }
       .cursor-dot, .cursor-ring { display: none; }
-      .nav-links { gap: 20px; }
+      .nav-links { gap: 16px; }
       .nav-links a { font-size: 10px; }
     }
   </style>
@@ -121,6 +122,8 @@
         <li><a href="#projects">Projects</a></li>
         <li><a href="/leads">Leads</a></li>
         <li><a href="/agents">Agents</a></li>
+        <li><a href="/consulting">Consulting</a></li>
+        <li><a href="/aiguy" class="nav-highlight">Small Biz AI Guy</a></li>
         <li><a href="/api">API</a></li>
         <li><a href="/work">Work</a></li>
         <li><a href="/blog">Blog</a></li>
