@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="The honest story of building a Kalshi SOL trading bot from zero. What worked, what failed, and what the data actually told us about prediction markets and AI."/>
+  <meta name="author" content="Vitoshi · Null Limit"/>
+  <meta property="og:title" content="We Built an AI Trading Bot in 2 Weeks — Here's What Actually Happened"/>
+  <meta property="og:description" content="The honest story of building a Kalshi SOL trading bot. 55% overall win rate. 69% when focused. Here's what the data actually said."/>
+  <meta property="og:type" content="article"/>
+  <title>We Built an AI Trading Bot in 2 Weeks — Null Limit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --black:  #090909;
+      --white:  #f5f5f0;
+      --green:  #c8f547;
+      --gray-1: #111111;
+      --gray-2: #1a1a1a;
+      --gray-3: #242424;
+      --gray-4: #333333;
+      --gray-5: #666666;
+      --gray-6: #aaaaaa;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--green); border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.18s ease, height 0.18s ease;
+      mix-blend-mode: difference;
+    }
+    .cursor.hover { width: 30px; height: 30px; }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1000; opacity: 0.35;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 24px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(9,9,9,0.88);
+      backdrop-filter: blur(14px);
+    }
+    .nav-logo { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gray-6); text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s; }
+    .nav-logo:hover { color: var(--white); }
+    .nav-logo span { color: var(--green); }
+    .nav-links { display: flex; gap: 36px; align-items: center; }
+    .nav-links a { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-5); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--black); background: var(--green); padding: 10px 22px; text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.82; }
+
+    /* ARTICLE HERO */
+    .article-hero {
+      padding: 160px 48px 80px;
+      max-width: 860px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--gray-3);
+    }
+
+    .article-meta {
+      display: flex; gap: 20px; align-items: center;
+      margin-bottom: 32px; flex-wrap: wrap;
+    }
+    .article-category {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 700;
+      color: var(--black); background: var(--green);
+      padding: 6px 14px; letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .article-date, .article-read {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--gray-5); letter-spacing: 0.06em;
+    }
+    .article-read::before { content: '·'; margin-right: 20px; }
+
+    .article-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 5vw, 58px);
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .article-title em {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--gray-6);
+    }
+
+    .article-lede {
+      font-size: 18px;
+      color: var(--gray-6);
+      line-height: 1.7;
+      max-width: 660px;
+    }
+
+    .article-byline {
+      display: flex; align-items: center; gap: 16px;
+      margin-top: 40px; padding-top: 32px;
+      border-top: 1px solid var(--gray-3);
+    }
+    .byline-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--gray-3);
+      border: 1px solid var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: var(--green); font-weight: 700;
+    }
+    .byline-name { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--white); letter-spacing: 0.04em; }
+    .byline-handle { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-5); margin-top: 2px; }
+
+    /* ARTICLE BODY */
+    .article-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 72px 48px 120px;
+    }
+
+    /* Two-col layout: content + sidebar */
+    .article-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .article-content { min-width: 0; }
+
+    /* TYPOGRAPHY */
+    .article-content p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--gray-6);
+      margin-bottom: 24px;
+    }
+    .article-content p strong {
+      color: var(--white);
+      font-weight: 700;
+    }
+    .article-content p em {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--gray-6);
+    }
+
+    .article-content h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      margin: 56px 0 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-3);
+    }
+    .article-content h2 .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 400;
+    }
+
+    .article-content h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px; font-weight: 800;
+      color: var(--white); letter-spacing: -0.01em;
+      margin: 36px 0 14px;
+    }
+
+    /* STAT CALLOUT */
+    .stat-block {
+      background: var(--gray-1);
+      border: 1px solid var(--gray-3);
+      border-left: 3px solid var(--green);
+      padding: 28px 32px;
+      margin: 40px 0;
+    }
+    .stat-block .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(40px, 6vw, 64px);
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .stat-block .stat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: var(--gray-5);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .stat-block .stat-desc {
+      font-size: 15px; color: var(--gray-6);
+      margin-top: 12px; line-height: 1.6;
+    }
+
+    /* DATA TABLE */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 36px 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .data-table th {
+      font-size: 10px; color: var(--gray-5);
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 12px 16px; text-align: left;
+      border-bottom: 1px solid var(--gray-3);
+    }
+    .data-table td {
+      font-size: 13px; color: var(--gray-6);
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .data-table tr:hover td { background: var(--gray-1); }
+    .data-table .win { color: var(--green); font-weight: 700; }
+    .data-table .lose { color: #e05252; }
+    .data-table .highlight td { color: var(--white); background: rgba(200,245,71,0.05); }
+    .data-table .highlight td:first-child { border-left: 2px solid var(--green); }
+
+    /* PULLQUOTE */
+    .pullquote {
+      padding: 32px 0;
+      margin: 40px 0;
+      border-top: 1px solid var(--gray-3);
+      border-bottom: 1px solid var(--gray-3);
+    }
+    .pullquote p {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+      margin: 0 !important;
+    }
+    .pullquote p .accent { color: var(--green); }
+
+    /* CODE / TERMINAL */
+    .terminal {
+      background: var(--gray-1);
+      border: 1px solid var(--gray-3);
+      padding: 24px 28px;
+      margin: 32px 0;
+      overflow-x: auto;
+    }
+    .terminal-bar {
+      display: flex; gap: 6px; margin-bottom: 16px;
+    }
+    .terminal-bar span { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal-bar .r { background: #ff5f57; }
+    .terminal-bar .y { background: #febc2e; }
+    .terminal-bar .g { background: #28c840; }
+    .terminal code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; line-height: 1.8;
+      color: var(--gray-6); display: block; white-space: pre;
+    }
+    .terminal code .k { color: var(--green); }
+    .terminal code .c { color: var(--gray-5); }
+    .terminal code .v { color: #79b8ff; }
+    .terminal code .s { color: #f0ad4e; }
+
+    /* RULE CARDS */
+    .rule-cards { display: flex; flex-direction: column; gap: 16px; margin: 32px 0; }
+    .rule-card {
+      background: var(--gray-1);
+      border: 1px solid var(--gray-3);
+      padding: 24px 28px;
+      display: flex; gap: 20px; align-items: flex-start;
+    }
+    .rule-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--green);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      flex-shrink: 0; padding-top: 2px;
+    }
+    .rule-title { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .rule-desc { font-size: 14px; color: var(--gray-5); line-height: 1.6; }
+
+    /* TAKEAWAY LIST */
+    .takeaway-list { list-style: none; margin: 24px 0; }
+    .takeaway-list li {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 16px; color: var(--gray-6); line-height: 1.6;
+    }
+    .takeaway-list li:last-child { border-bottom: none; }
+    .takeaway-list li::before {
+      content: '//';
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--green);
+      flex-shrink: 0; padding-top: 3px;
+    }
+    .takeaway-list li strong { color: var(--white); }
+
+    /* SIDEBAR */
+    .article-sidebar { position: sticky; top: 100px; }
+
+    .sidebar-card {
+      background: var(--gray-1);
+      border: 1px solid var(--gray-3);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .sidebar-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: var(--green);
+      letter-spacing: 0.14em; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .sidebar-toc { list-style: none; }
+    .sidebar-toc li { margin-bottom: 10px; }
+    .sidebar-toc a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--gray-5);
+      text-decoration: none; letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .sidebar-toc a:hover { color: var(--green); }
+    .sidebar-toc .toc-num { color: var(--gray-4); margin-right: 6px; }
+
+    .sidebar-cta-card {
+      background: var(--gray-1);
+      border: 1px solid var(--gray-3);
+      padding: 24px;
+    }
+    .sidebar-cta-card p { font-size: 13px; color: var(--gray-5); line-height: 1.6; margin-bottom: 16px; }
+    .sidebar-cta-btn {
+      display: block; text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 700;
+      color: var(--black); background: var(--green);
+      padding: 12px; text-decoration: none;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: opacity 0.2s; margin-bottom: 10px;
+    }
+    .sidebar-cta-btn:hover { opacity: 0.82; }
+    .sidebar-cta-btn.outline {
+      background: transparent; color: var(--green);
+      border: 1px solid var(--green);
+    }
+    .sidebar-cta-btn.outline:hover { background: rgba(200,245,71,0.08); }
+
+    /* ARTICLE FOOTER */
+    .article-footer {
+      border-top: 1px solid var(--gray-3);
+      padding-top: 60px; margin-top: 60px;
+    }
+    .article-footer-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: var(--green);
+      letter-spacing: 0.14em; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .article-footer-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px; font-weight: 800;
+      color: var(--white); letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .article-footer p { font-size: 15px; color: var(--gray-5); line-height: 1.6; margin-bottom: 24px; }
+    .article-footer-links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .footer-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 700;
+      color: var(--black); background: var(--green);
+      padding: 12px 24px; text-decoration: none;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+    .footer-link:hover { opacity: 0.82; }
+    .footer-link.outline {
+      background: transparent; color: var(--green);
+      border: 1px solid rgba(200,245,71,0.3);
+    }
+    .footer-link.outline:hover { border-color: var(--green); }
+
+    /* TAGS */
+    .article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 40px; }
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: var(--gray-5);
+      background: var(--gray-2); border: 1px solid var(--gray-3);
+      padding: 6px 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    /* SITE FOOTER */
+    footer {
+      border-top: 1px solid var(--gray-3);
+      padding: 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-logo { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray-5); letter-spacing: 0.04em; }
+    .footer-logo span { color: var(--green); }
+    .footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-5); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .article-layout { grid-template-columns: 1fr; gap: 0; }
+      .article-sidebar { position: static; display: none; }
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .article-hero, .article-body { padding-left: 24px; padding-right: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">null<span>;</span> limit</a>
+  <div class="nav-links">
+    <a href="/blog">Blog</a>
+    <a href="/agents">Agents</a>
+    <a href="/leads">Leads</a>
+    <a href="/consulting">Consulting</a>
+    <a href="/ebooks">eBooks</a>
+    <a href="/agents" class="nav-cta">Get an Agent</a>
+  </div>
+</nav>
+
+<!-- ARTICLE HERO -->
+<header class="article-hero">
+  <div class="article-meta">
+    <span class="article-category">Builder Playbook</span>
+    <span class="article-date">April 14, 2026</span>
+    <span class="article-read">8 min read</span>
+  </div>
+
+  <h1 class="article-title">
+    We Built an AI Trading Bot in 2 Weeks —<br/>
+    <em>Here's What Actually Happened</em>
+  </h1>
+
+  <p class="article-lede">
+    The honest story of building a Kalshi SOL trading bot from zero. What worked, what failed, and what the data actually told us about prediction markets and AI.
+  </p>
+
+  <div class="article-byline">
+    <div class="byline-avatar">V</div>
+    <div>
+      <div class="byline-name">Vitoshi</div>
+      <div class="byline-handle">@devCharizard · nulllimit.gg</div>
+    </div>
+  </div>
+</header>
+
+<!-- ARTICLE BODY -->
+<main class="article-body">
+  <div class="article-layout">
+
+    <!-- CONTENT -->
+    <article class="article-content">
+
+      <!-- SECTION 1 -->
+      <h2 id="setup"><span class="section-num">// 01</span>The Setup</h2>
+      <p>Two weeks ago, I had an idea: What if I could build an AI system that predicts 15-minute price movements of Solana on Kalshi — a prediction market platform?</p>
+      <p>Not a full trading algorithm. Not a crypto hedge fund. Just: can an automated system, using real technical signals + real-time sentiment analysis, consistently predict whether SOL goes up or down in 15 minutes?</p>
+      <p>By April 12, 2026, the answer was yes. The system is live. It's trading real money.</p>
+
+      <div class="stat-block">
+        <div class="stat-num">55%</div>
+        <div class="stat-label">overall win rate</div>
+        <div class="stat-desc">69% when focused on what actually works. Here's the breakdown of how we got there — and what the data actually said.</div>
+      </div>
+
+      <p>Kalshi runs binary markets. You bet "yes" or "no" on whether something happens. For crypto, they offer <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);background:var(--gray-1);padding:2px 6px;">KXSOL15M</code> — a market that resolves to YES if SOL is higher in 15 minutes, NO if it's lower.</p>
+      <p>Most retail traders hate binary markets because you're forced to pick a direction. No hedging. No sizing down. You're right or you're wrong. But for an AI system, that's perfect. It's a classification problem: given all available data right now, will the next 15-minute candle close higher?</p>
+      <p>I sketched out 8 signals: RSI, EMA crossovers, volume spikes, momentum, Bollinger Bands, higher timeframe alignment, order book imbalance, and sentiment analysis via Perplexity + Gemini LLM. Combine them, score directionally, place a bet when confidence is high.</p>
+
+      <!-- SECTION 2 -->
+      <h2 id="week1"><span class="section-num">// 02</span>Week 1: Everything Seemed Smart</h2>
+      <p>I built <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);background:var(--gray-1);padding:2px 6px;">pre-check.js</code> (the signal scorer), <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);background:var(--gray-1);padding:2px 6px;">analyze-sentiment.js</code> (the LLM layer), and <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);background:var(--gray-1);padding:2px 6px;">paper-trade.js</code> to simulate trades without real money.</p>
+      <p>The first few trades were winners. I was gassed. The signals were working. Everything looked intelligent. Then I added a hard RSI filter. The logic was airtight: <em>"If RSI is in a danger zone, skip the trade."</em></p>
+      <p>I paper-traded for a week with that filter active. The result?</p>
+
+      <div class="stat-block">
+        <div class="stat-num">9%</div>
+        <div class="stat-label">RSI filter accuracy</div>
+        <div class="stat-desc">Out of 11 filtered signals, 10 would have been winners and 1 a loser. The filter I was sure would protect us had a 9% accuracy rate. It was killing winners to avoid one loser. I deleted it on April 7.</div>
+      </div>
+
+      <div class="pullquote">
+        <p>Your best defense sometimes <span class="accent">is</span> your worst offense. That decision alone taught me more about real trading than a year of reading about it.</p>
+      </div>
+
+      <!-- SECTION 3 -->
+      <h2 id="data"><span class="section-num">// 03</span>The Data Starts Talking</h2>
+      <p>I ran 69 paper trades. The stats engine broke down performance by session, direction, score bracket, and signal combination. The patterns were obvious.</p>
+
+      <h3>Session Breakdown</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Session</th><th>Win Rate</th><th>Note</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>NY Afterhours</td><td class="win">68%</td><td>Golden window</td></tr>
+          <tr><td>NY Market</td><td class="win">59%</td><td>Solid</td></tr>
+          <tr><td>NY Evening</td><td class="lose">38%</td><td>Disabled</td></tr>
+          <tr><td>NY Overnight</td><td class="lose">38%</td><td>Disabled</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Direction Breakdown</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Direction</th><th>Win Rate</th><th>Decision</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>UP signals</td><td class="win">69%</td><td>Keep</td></tr>
+          <tr><td>DOWN signals</td><td class="lose">45%</td><td>Disabled</td></tr>
+        </tbody>
+      </table>
+
+      <p>DOWN was a coin flip. UP was actually profitable. I could've spent months trying to make DOWN work. Instead, the data said: disable it.</p>
+
+      <h3>Score Bracket</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Confidence Score</th><th>Win Rate</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>60–64</td><td>50%</td></tr>
+          <tr><td>65–69</td><td>50%</td></tr>
+          <tr><td>70–74</td><td>54%</td></tr>
+          <tr><td>75–79</td><td class="win">75%</td></tr>
+          <tr class="highlight"><td>80+</td><td class="win">80%</td></tr>
+        </tbody>
+      </table>
+
+      <p>Higher scores = higher win rates. The system was working. The data was telling me exactly where to focus.</p>
+
+      <!-- SECTION 4 -->
+      <h2 id="risk"><span class="section-num">// 04</span>The Risk Management Layer</h2>
+      <p>By April 10, the engine was winning, but compounding was risky. After a 3-trade winning streak, the balance had compounded from $500 → $781. Then a single loss at full size brought it back to $585. Each rule below was added because the data showed a near-disaster that happened without it.</p>
+
+      <div class="rule-cards">
+        <div class="rule-card">
+          <div class="rule-num">Rule 01</div>
+          <div>
+            <div class="rule-title">Drawdown Protection</div>
+            <div class="rule-desc">If balance drops 20% from peak, cap all trades at $50 until recovery. Prevents catastrophic blowout during losing streaks.</div>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-num">Rule 02</div>
+          <div>
+            <div class="rule-title">Consecutive Loss Cooldown</div>
+            <div class="rule-desc">After 2 consecutive losses, pause trading for 30 minutes. Forces the system to step back instead of revenge-trading.</div>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-num">Rule 03</div>
+          <div>
+            <div class="rule-title">Consecutive Win Reset</div>
+            <div class="rule-desc">After 3 consecutive wins, reset the next trade to $50. Locks in compounded gains before re-exposing larger capital.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5 -->
+      <h2 id="live"><span class="section-num">// 05</span>Going Live</h2>
+      <p>By April 12, I was confident. The system had been tested on 69 paper trades, risk management was solid, and the data was clear about what worked — UP in NY Afterhours at high confidence.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <code><span class="c"># live-trade.js — running on Lenovo ThinkCentre M75n (Ubuntu)</span>
+<span class="c"># Every 5 minutes:</span>
+
+<span class="k">1.</span> Fetch SOL price data from <span class="v">Binance</span>
+<span class="k">2.</span> Calculate all <span class="v">8 signals</span>
+<span class="k">3.</span> If confidence high → fetch news sentiment via <span class="v">Perplexity</span>
+<span class="k">4.</span> If LLM agrees → place real order on <span class="v">Kalshi</span>
+<span class="k">5.</span> After 15 min → resolve trade, update balance
+
+<span class="c"># Total API cost: &lt;$1/day</span>
+<span class="c"># Gemini Flash: effectively free at this volume</span></code>
+      </div>
+
+      <p>The system is now running 24/7. <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);background:var(--gray-1);padding:2px 6px;">LIVE_TRADING_ENABLED=true</code>. Starting balance: $500.</p>
+
+      <!-- SECTION 6 -->
+      <h2 id="lessons"><span class="section-num">// 06</span>What This Actually Teaches</h2>
+      <p>Most posts about "building an AI system" skip the ugly parts. The filters that don't work. The directional asymmetry that contradicts your intuition. The moment you realize your best idea was your worst idea.</p>
+
+      <div class="pullquote">
+        <p>This isn't specific to trading. This is how you build <span class="accent">any autonomous system</span> — whether it's a trading bot, a customer service AI, or a content generation engine.</p>
+      </div>
+
+      <p>The framework:</p>
+      <ul class="takeaway-list">
+        <li><strong>Build something that has a theory behind it.</strong> Don't ship random signals. Know why each one should work.</li>
+        <li><strong>Test it on simulated data.</strong> Paper trading is imperfect but it's not nothing. 69 trades told me what I needed to know.</li>
+        <li><strong>Look at the breakdowns.</strong> Session, direction, confidence level, signal combinations. The pattern is in the cuts.</li>
+        <li><strong>Delete everything the data says isn't working.</strong> The RSI filter was logically sound. It had a 9% accuracy rate. Delete it.</li>
+        <li><strong>Add risk management in response to real near-disasters.</strong> Not hypotheticals. Let reality inform your architecture.</li>
+        <li><strong>Go live small.</strong> $500 on Kalshi teaches me more than 1000 paper trades ever could.</li>
+      </ul>
+
+      <!-- SECTION 7 -->
+      <h2 id="next"><span class="section-num">// 07</span>What's Next</h2>
+      <p>The engine is live. I'm monitoring it daily. Once we have 30+ live trades with strong performance in NY Afterhours, we'll know if this actually works with real money — psychology, slippage, all the things that change between paper and live.</p>
+      <p>If it does, the next questions are: Can we apply this to other markets on Kalshi — BTC, ETH, macro events? Can we build prediction market bots for Polymarket, Metaculus? What happens when we expand the signal set?</p>
+      <p>But that's future work. Right now, the bot is live. The code is running. The results will tell us if we were right.</p>
+
+      <!-- ARTICLE FOOTER -->
+      <div class="article-footer">
+        <div class="article-footer-label">// built by null limit</div>
+        <div class="article-footer-title">Want to build your own AI system?</div>
+        <p>The infrastructure is out there. Kalshi's API works. Perplexity's API works. Gemini Flash costs pennies. Your laptop can run it 24/7. The barrier isn't capital or education — it's the willingness to build something that might not work, test it ruthlessly, and iterate. That's the moat.</p>
+        <div class="article-footer-links">
+          <a href="/agents" class="footer-link">Get an AI Agent Setup</a>
+          <a href="/ebooks" class="footer-link outline">Get the Full Framework →</a>
+        </div>
+      </div>
+
+      <div class="article-tags">
+        <span class="tag">AI Agents</span>
+        <span class="tag">Trading Bots</span>
+        <span class="tag">Kalshi</span>
+        <span class="tag">Builder Playbook</span>
+        <span class="tag">Prediction Markets</span>
+        <span class="tag">Autonomous Systems</span>
+      </div>
+
+    </article>
+
+    <!-- SIDEBAR -->
+    <aside class="article-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-label">// contents</div>
+        <ul class="sidebar-toc">
+          <li><a href="#setup"><span class="toc-num">01</span>The Setup</a></li>
+          <li><a href="#week1"><span class="toc-num">02</span>Week 1: Everything Seemed Smart</a></li>
+          <li><a href="#data"><span class="toc-num">03</span>The Data Starts Talking</a></li>
+          <li><a href="#risk"><span class="toc-num">04</span>Risk Management Layer</a></li>
+          <li><a href="#live"><span class="toc-num">05</span>Going Live</a></li>
+          <li><a href="#lessons"><span class="toc-num">06</span>What This Teaches</a></li>
+          <li><a href="#next"><span class="toc-num">07</span>What's Next</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-cta-card">
+        <div class="sidebar-label">// null limit</div>
+        <p>We build AI agents that work while you sleep. Fully configured. Running 24/7.</p>
+        <a href="/agents" class="sidebar-cta-btn">Agent Setup — $125</a>
+        <a href="/ebooks" class="sidebar-cta-btn outline">eBook — $24</a>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<!-- SITE FOOTER -->
+<footer>
+  <div class="footer-logo">null<span>;</span> limit · <span style="color:var(--gray-5);">nulllimit.gg</span></div>
+  <div class="footer-copy">© 2026 Null Limit · Undefined by design.</div>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  // Active TOC
+  const sections = document.querySelectorAll('h2[id]');
+  const tocLinks = document.querySelectorAll('.sidebar-toc a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        tocLinks.forEach(l => l.style.color = '');
+        const active = document.querySelector(`.sidebar-toc a[href="#${e.target.id}"]`);
+        if (active) active.style.color = 'var(--green)';
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
