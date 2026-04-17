@@ -9,7 +9,7 @@
     { "source": "/blog/fed-prediction-markets", "destination": "/fed-prediction-markets.html" },
     { "source": "/blog/openclaw-setup", "destination": "/openclaw-setup.html" },
     { "source": "/blog/ai-trading-bot-2-weeks", "destination": "/ai-trading-bot-2-weeks.html" },
-    { "source": "/blog/kalshi-trading-bot", "destination": "/kalshi-trading-bot.html" },
+    { "source": "/blog/kalshi-trading-bot", "destination": "/blog-kalshi-bot.html" },
     { "source": "/aiguy", "destination": "/aiguy.html" },
     { "source": "/consulting", "destination": "/consulting.html" },
     { "source": "/ebooks", "destination": "/ebooks.html" },
