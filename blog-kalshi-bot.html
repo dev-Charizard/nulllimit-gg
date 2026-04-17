@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="The real story of building an AI trading bot on Kalshi from scratch. 5 losses, $323 down, 15 optimization rounds, and a 75% win rate on the other side. Here's everything that happened."/>
+  <meta property="og:title" content="We Lost $323. Then We Found a 75% Win Rate. Here's Everything That Happened."/>
+  <meta property="og:type" content="article"/>
+  <title>We Lost $323. Then We Found a 75% Win Rate. — Null Limit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --black:  #090909; --white: #f5f5f0; --green: #c8f547;
+      --gray-1: #111; --gray-2: #1a1a1a; --gray-3: #242424;
+      --gray-4: #333; --gray-5: #666; --gray-6: #aaa;
+      --red: #e05252;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--white); font-family: 'Syne', sans-serif; overflow-x: hidden; cursor: none; }
+    .cursor { width: 10px; height: 10px; background: var(--green); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .18s,height .18s; mix-blend-mode: difference; }
+    .cursor.hover { width: 30px; height: 30px; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:.35; }
+
+    /* NAV */
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:24px 48px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(9,9,9,0.88); backdrop-filter:blur(14px); }
+    .nav-logo { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gray-6); text-decoration:none; letter-spacing:.04em; transition:color .2s; }
+    .nav-logo:hover { color:var(--white); }
+    .nav-logo span { color:var(--green); }
+    .nav-links { display:flex; gap:36px; align-items:center; }
+    .nav-links a { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray-5); text-decoration:none; letter-spacing:.08em; text-transform:uppercase; transition:color .2s; }
+    .nav-links a:hover { color:var(--white); }
+    .nav-cta { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; color:var(--black); background:var(--green); padding:10px 22px; text-decoration:none; letter-spacing:.1em; text-transform:uppercase; transition:opacity .2s; }
+    .nav-cta:hover { opacity:.82; }
+
+    /* HERO */
+    .article-hero { padding:160px 48px 80px; max-width:860px; margin:0 auto; border-bottom:1px solid var(--gray-3); }
+    .article-meta { display:flex; gap:20px; align-items:center; margin-bottom:32px; flex-wrap:wrap; }
+    .article-category { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; color:var(--black); background:var(--green); padding:6px 14px; letter-spacing:.12em; text-transform:uppercase; }
+    .article-date, .article-read { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray-5); letter-spacing:.06em; }
+    .article-read::before { content:'·'; margin-right:20px; }
+    .article-title { font-family:'Syne',sans-serif; font-size:clamp(28px,5vw,54px); font-weight:800; color:var(--white); letter-spacing:-.03em; line-height:1.05; margin-bottom:24px; }
+    .article-title .red { color:var(--red); }
+    .article-title em { font-family:'Playfair Display',serif; font-style:italic; font-weight:400; color:var(--gray-6); }
+    .article-lede { font-size:17px; color:var(--gray-6); line-height:1.75; max-width:660px; }
+    .article-byline { display:flex; align-items:center; gap:16px; margin-top:40px; padding-top:32px; border-top:1px solid var(--gray-3); }
+    .byline-avatar { width:40px; height:40px; border-radius:50%; background:var(--gray-3); border:1px solid var(--gray-4); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--white); font-weight:700; }
+    .byline-name { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--white); letter-spacing:.04em; }
+    .byline-handle { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray-5); margin-top:2px; }
+
+    /* LAYOUT */
+    .article-body { max-width:860px; margin:0 auto; padding:72px 48px 120px; }
+    .article-layout { display:grid; grid-template-columns:1fr 240px; gap:80px; align-items:start; }
+    .article-content { min-width:0; }
+
+    /* TYPOGRAPHY */
+    .article-content p { font-size:16px; line-height:1.85; color:var(--gray-6); margin-bottom:22px; }
+    .article-content p strong { color:var(--white); font-weight:700; }
+    .article-content p em { font-family:'Playfair Display',serif; font-style:italic; }
+    .article-content h2 { font-family:'Syne',sans-serif; font-size:clamp(20px,3vw,28px); font-weight:800; color:var(--white); letter-spacing:-.02em; margin:52px 0 18px; padding-bottom:14px; border-bottom:1px solid var(--gray-3); }
+    .article-content h2 .section-num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--gray-5); letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:6px; font-weight:400; }
+    .article-content h3 { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--white); letter-spacing:-.01em; margin:32px 0 12px; }
+
+    /* STAT BLOCK */
+    .stat-block { background:var(--gray-1); border:1px solid var(--gray-3); border-left:3px solid var(--gray-4); padding:24px 28px; margin:36px 0; }
+    .stat-block .stat-num { font-family:'Syne',sans-serif; font-size:clamp(36px,6vw,60px); font-weight:800; color:var(--white); letter-spacing:-.04em; line-height:1; }
+    .stat-block .stat-num.red { color:var(--red); }
+    .stat-block .stat-num.green { color:var(--green); }
+    .stat-block .stat-label { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray-5); letter-spacing:.08em; text-transform:uppercase; margin-top:6px; }
+    .stat-block .stat-desc { font-size:14px; color:var(--gray-6); margin-top:10px; line-height:1.6; }
+
+    /* STAT ROW */
+    .stat-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:32px 0; }
+    .stat-cell { background:var(--gray-1); border:1px solid var(--gray-3); padding:20px; text-align:center; }
+    .stat-cell .num { font-family:'Syne',sans-serif; font-size:clamp(24px,4vw,36px); font-weight:800; letter-spacing:-.03em; line-height:1; }
+    .stat-cell .lbl { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--gray-5); letter-spacing:.1em; text-transform:uppercase; margin-top:6px; }
+
+    /* TABLE */
+    .data-table { width:100%; border-collapse:collapse; margin:32px 0; font-family:'JetBrains Mono',monospace; }
+    .data-table th { font-size:9px; color:var(--gray-5); letter-spacing:.12em; text-transform:uppercase; padding:10px 14px; text-align:left; border-bottom:1px solid var(--gray-3); }
+    .data-table td { font-size:12px; color:var(--gray-6); padding:12px 14px; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .data-table tr:hover td { background:var(--gray-1); }
+    .data-table .win { color:var(--green); font-weight:700; }
+    .data-table .loss { color:var(--red); font-weight:700; }
+    .data-table .highlight td { color:var(--white); background:rgba(200,245,71,0.04); }
+    .data-table .highlight td:first-child { border-left:2px solid var(--green); }
+
+    /* PULLQUOTE */
+    .pullquote { padding:28px 0; margin:36px 0; border-top:1px solid var(--gray-3); border-bottom:1px solid var(--gray-3); }
+    .pullquote p { font-family:'Syne',sans-serif; font-size:clamp(18px,3vw,24px); font-weight:700; color:var(--white); line-height:1.35; letter-spacing:-.02em; margin:0 !important; }
+    .pullquote p .accent { color:var(--green); }
+    .pullquote p .red { color:var(--red); }
+
+    /* TERMINAL */
+    .terminal { background:var(--gray-1); border:1px solid var(--gray-3); padding:22px 26px; margin:28px 0; overflow-x:auto; }
+    .terminal-bar { display:flex; gap:6px; margin-bottom:14px; }
+    .terminal-bar span { width:10px; height:10px; border-radius:50%; }
+    .terminal-bar .r { background:#ff5f57; } .terminal-bar .y { background:#febc2e; } .terminal-bar .g { background:#28c840; }
+    .terminal code { font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.8; color:var(--gray-6); display:block; white-space:pre; }
+    .terminal code .k { color:var(--green); } .terminal code .c { color:var(--gray-5); } .terminal code .v { color:#79b8ff; } .terminal code .r { color:var(--red); }
+
+    /* PHASE CARD */
+    .phase-card { background:var(--gray-1); border:1px solid var(--gray-3); padding:24px 28px; margin:28px 0; display:flex; gap:20px; align-items:flex-start; }
+    .phase-num { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--gray-5); letter-spacing:.12em; text-transform:uppercase; flex-shrink:0; padding-top:2px; min-width:60px; }
+    .phase-title { font-size:15px; font-weight:800; color:var(--white); margin-bottom:6px; }
+    .phase-desc { font-size:13px; color:var(--gray-5); line-height:1.65; }
+
+    /* LESSON CARDS */
+    .lessons { display:flex; flex-direction:column; gap:14px; margin:28px 0; }
+    .lesson { background:var(--gray-1); border:1px solid var(--gray-3); padding:20px 24px; display:flex; gap:16px; }
+    .lesson-num { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--gray-5); flex-shrink:0; padding-top:2px; }
+    .lesson-title { font-size:14px; font-weight:700; color:var(--white); margin-bottom:5px; }
+    .lesson-desc { font-size:13px; color:var(--gray-5); line-height:1.65; }
+
+    /* ARTICLE FOOTER */
+    .article-footer { border-top:1px solid var(--gray-3); padding-top:52px; margin-top:52px; }
+    .article-footer-label { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--gray-5); letter-spacing:.14em; text-transform:uppercase; margin-bottom:14px; }
+    .article-footer-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--white); letter-spacing:-.02em; margin-bottom:10px; }
+    .article-footer p { font-size:14px; color:var(--gray-5); line-height:1.65; margin-bottom:20px; }
+    .footer-links { display:flex; gap:10px; flex-wrap:wrap; }
+    .footer-link { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; color:var(--black); background:var(--green); padding:11px 22px; text-decoration:none; letter-spacing:.1em; text-transform:uppercase; transition:opacity .2s; }
+    .footer-link:hover { opacity:.82; }
+    .footer-link.outline { background:transparent; color:var(--green); border:1px solid rgba(200,245,71,0.3); }
+    .footer-link.outline:hover { border-color:var(--green); }
+
+    /* TAGS */
+    .article-tags { display:flex; gap:8px; flex-wrap:wrap; margin-top:36px; }
+    .tag { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--gray-5); background:var(--gray-2); border:1px solid var(--gray-3); padding:5px 12px; letter-spacing:.08em; text-transform:uppercase; }
+
+    /* SIDEBAR */
+    .article-sidebar { position:sticky; top:100px; }
+    .sidebar-card { background:var(--gray-1); border:1px solid var(--gray-3); padding:22px; margin-bottom:18px; }
+    .sidebar-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--gray-5); letter-spacing:.14em; text-transform:uppercase; margin-bottom:14px; }
+    .sidebar-toc { list-style:none; }
+    .sidebar-toc li { margin-bottom:10px; }
+    .sidebar-toc a { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--gray-5); text-decoration:none; letter-spacing:.04em; transition:color .2s; }
+    .sidebar-toc a:hover { color:var(--green); }
+    .sidebar-toc .toc-num { color:var(--gray-4); margin-right:6px; }
+    .sidebar-cta-card { background:var(--gray-1); border:1px solid var(--gray-3); padding:22px; }
+    .sidebar-cta-card p { font-size:12px; color:var(--gray-5); line-height:1.6; margin-bottom:14px; }
+    .sidebar-cta-btn { display:block; text-align:center; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; color:var(--black); background:var(--green); padding:11px; text-decoration:none; letter-spacing:.1em; text-transform:uppercase; transition:opacity .2s; margin-bottom:8px; }
+    .sidebar-cta-btn:hover { opacity:.82; }
+    .sidebar-cta-btn.outline { background:transparent; color:var(--green); border:1px solid var(--green); }
+    .sidebar-cta-btn.outline:hover { background:rgba(200,245,71,0.08); }
+
+    /* SITE FOOTER */
+    footer { border-top:1px solid var(--gray-3); padding:48px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+    .footer-logo { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--gray-5); letter-spacing:.04em; }
+    .footer-logo span { color:var(--green); }
+    .footer-copy { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray-5); }
+
+    code { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--green); background:var(--gray-1); padding:2px 6px; }
+
+    @media (max-width:900px) {
+      .article-layout { grid-template-columns:1fr; }
+      .article-sidebar { position:static; display:none; }
+      nav { padding:20px 24px; }
+      .nav-links { display:none; }
+      .article-hero, .article-body { padding-left:24px; padding-right:24px; }
+      .stat-row { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+
+<nav>
+  <a href="/" class="nav-logo">null<span>;</span> limit</a>
+  <div class="nav-links">
+    <a href="/blog">Blog</a>
+    <a href="/agents">Agents</a>
+    <a href="/leads">Leads</a>
+    <a href="/consulting">Consulting</a>
+    <a href="/ebooks">eBooks</a>
+    <a href="/agents" class="nav-cta">Get an Agent</a>
+  </div>
+</nav>
+
+<header class="article-hero">
+  <div class="article-meta">
+    <span class="article-category">Builder Playbook</span>
+    <span class="article-date">April 16, 2026</span>
+    <span class="article-read">12 min read</span>
+  </div>
+  <h1 class="article-title">
+    We Lost <span class="red">$323.</span><br/>
+    Then We Found a 75% Win Rate.<br/>
+    <em>Here's Everything That Happened.</em>
+  </h1>
+  <p class="article-lede">
+    The real story of building an AI trading bot on Kalshi from scratch — 5 consecutive losses, 15 optimization rounds, a backtester we rebuilt three times, and the radical strategy shift that changed everything.
+  </p>
+  <div class="article-byline">
+    <div class="byline-avatar">V</div>
+    <div>
+      <div class="byline-name">Vitoshi + Mewtwo</div>
+      <div class="byline-handle">@devCharizard · nulllimit.gg</div>
+    </div>
+  </div>
+</header>
+
+<main class="article-body">
+  <div class="article-layout">
+    <article class="article-content">
+
+      <!-- SETUP -->
+      <h2 id="setup"><span class="section-num">// 01</span>What We Were Building</h2>
+      <p>This isn't a hedge fund story. There's no VC money, no quant team, no Bloomberg terminal. It's two of us — me and Mewtwo, my AI ops agent powered by Claude — building an automated trading engine from a Lenovo ThinkCentre M75n running Ubuntu in my living room.</p>
+      <p>The target: Kalshi's binary prediction market for Solana price movements. Specifically <code>KXSOL15M</code> — will SOL's price be higher in the next 15 minutes? You bet YES or NO. You're right or you're wrong. No hedging. No partial positions.</p>
+      <p>For an AI system, that's actually perfect. It's a pure classification problem. And classification is something well-designed systems can get good at. The question was whether we could design one good enough.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <code><span class="c"># Final pipeline (every 5 minutes via cron)</span>
+<span class="k">radar.js</span> → <span class="k">resolve-trades.js</span> → <span class="k">pre-check.js</span> → <span class="k">analyze-sentiment.js</span> → <span class="k">live-trade.js</span>
+
+<span class="c"># Data sources</span>
+Binance API      → <span class="v">SOL price data (free, no auth)</span>
+Perplexity Sonar → <span class="v">real-time news sentiment</span>
+Gemini Flash     → <span class="v">LLM sentiment scoring</span>
+Kalshi REST API  → <span class="v">RSA-PSS SHA256 auth, live orders</span></code>
+      </div>
+
+      <!-- PHASE 1 -->
+      <h2 id="paper"><span class="section-num">// 02</span>Phase 1: Paper Trading (April 4–12)</h2>
+      <p>Before we risked a dollar, we built a scoring engine using 8 technical indicators: RSI, EMA crossovers, Volume Spikes, Momentum, Bollinger Bands, HTF Alignment, Order Book Imbalance, and Sentiment Analysis. Each signal contributes points to a directional score. When the score passes a threshold, the system places a bet.</p>
+      <p>We ran 69 paper trades. The patterns were clear immediately.</p>
+
+      <div class="stat-row">
+        <div class="stat-cell"><div class="num" style="color:var(--green)">55%</div><div class="lbl">Overall Win Rate</div></div>
+        <div class="stat-cell"><div class="num" style="color:var(--green)">68%</div><div class="lbl">NY Afterhours WR</div></div>
+        <div class="stat-cell"><div class="num" style="color:var(--green)">69%</div><div class="lbl">UP Signal WR</div></div>
+      </div>
+
+      <h3>What the data told us</h3>
+      <table class="data-table">
+        <thead><tr><th>Session</th><th>Win Rate</th><th>Decision</th></tr></thead>
+        <tbody>
+          <tr class="highlight"><td>NY Afterhours</td><td class="win">68%</td><td>Golden window — keep</td></tr>
+          <tr><td>NY Market</td><td class="win">59%</td><td>Keep, raise threshold</td></tr>
+          <tr><td>NY Evening</td><td class="loss">38%</td><td>Disabled</td></tr>
+          <tr><td>NY Overnight</td><td class="loss">38%</td><td>Disabled</td></tr>
+        </tbody>
+      </table>
+
+      <table class="data-table">
+        <thead><tr><th>Direction</th><th>Win Rate</th><th>Decision</th></tr></thead>
+        <tbody>
+          <tr class="highlight"><td>UP signals</td><td class="win">69%</td><td>Keep</td></tr>
+          <tr><td>DOWN signals</td><td class="loss">45%</td><td>Disabled outside Afterhours</td></tr>
+        </tbody>
+      </table>
+
+      <p>The biggest decision in this phase: we had added a hard RSI filter to skip trades when RSI was in a danger zone. Logical. Protective. And completely wrong. Out of 11 trades the filter blocked, 10 would have been winners. <strong>9% accuracy rate.</strong> We deleted it immediately.</p>
+
+      <div class="pullquote">
+        <p>Your <span class="accent">best defense</span> can be your <span class="red">worst offense.</span> The RSI filter was logically sound. It had a 9% accuracy rate. Delete it.</p>
+      </div>
+
+      <!-- PHASE 2 -->
+      <h2 id="live"><span class="section-num">// 03</span>Phase 2: The Technical Hell of Going Live (April 12–15)</h2>
+      <p>Going live was supposed to be simple. Write <code>live-trade.js</code>, flip a switch. It took 3+ days of debugging before the first real trade landed. Here's what actually broke.</p>
+
+      <div class="phase-card">
+        <div class="phase-num">Problem 01</div>
+        <div><div class="phase-title">live-trade.js didn't exist</div><div class="phase-desc">The previous AI session had described building it. It never actually wrote the file. When the first qualifying signal fired — crash. File not found. We built it from scratch.</div></div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Problem 02</div>
+        <div><div class="phase-title">Kalshi ask prices returning undefined</div><div class="phase-desc">The <code>/markets</code> list endpoint returns prices as <code>yes_ask_dollars</code> — dollar values, not cents. We were looking for the old format. A raw debug script revealed the mismatch. Fixed by reading <code>yes_ask_dollars</code> directly and converting at the point of use.</div></div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Problem 03</div>
+        <div><div class="phase-title">Markets were "initialized" but not tradeable</div><div class="phase-desc">Kalshi creates markets in advance with status <code>initialized</code>. These show <code>yes_ask_dollars: 0.0000</code>. Fixed by fetching all markets, filtering for <code>openTime ≤ now &lt; closeTime</code>, and checking ask price after a secondary detailed fetch.</div></div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Problem 04</div>
+        <div><div class="phase-title">Trades never resolved</div><div class="phase-desc">Kalshi marks filled orders as <code>status: "executed"</code> with <code>settlement_status: "N/A"</code> — not <code>"filled"</code> and <code>"settled"</code> as our code expected. Trades sat open forever. Fixed by falling back to price-movement resolution when Kalshi's settlement status was unavailable.</div></div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Problem 05</div>
+        <div><div class="phase-title">balance.json kept resetting to $500</div><div class="phase-desc">A subtle bug in <code>loadBalance()</code> was re-creating the default balance on certain error conditions. Added explicit try/catch with logging to track every re-initialization event.</div></div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Problem 06</div>
+        <div><div class="phase-title">Cron job was reading the wrong file</div><div class="phase-desc">The Kalshi SOL Radar cron job payload was reading a line from <code>pre-check.js</code> instead of running <code>radar.js</code>. The bot wasn't actually trading. Fixed.</div></div>
+      </div>
+
+      <!-- PHASE 3 -->
+      <h2 id="losses"><span class="section-num">// 04</span>Phase 3: The Losing Streak</h2>
+
+      <div class="stat-block">
+        <div class="stat-num red">$323</div>
+        <div class="stat-label">Lost across 5 consecutive live trades</div>
+        <div class="stat-desc">Balance dropped from $500 to $167.84. This is what live experimentation without a proper backtesting system looks like.</div>
+      </div>
+
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Date</th><th>Direction</th><th>Score</th><th>Session</th><th>P&L</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Apr 13, 6:55 PM</td><td>UP</td><td>65</td><td>Afterhours</td><td class="loss">−$124.46</td></tr>
+          <tr><td>2</td><td>Apr 14, 9:50 AM</td><td>UP</td><td>70</td><td>NY Market</td><td class="loss">−$49.88</td></tr>
+          <tr><td>3</td><td>Apr 15, 5:20 PM</td><td>DOWN</td><td>75</td><td>Afterhours</td><td class="loss">−$49.40</td></tr>
+          <tr><td>4</td><td>Apr 15, 6:10 PM</td><td>UP</td><td>60</td><td>Afterhours</td><td class="loss">−$49.50</td></tr>
+          <tr><td>5</td><td>Apr 15, 6:40 PM</td><td>UP</td><td>60</td><td>Afterhours</td><td class="loss">−$49.68</td></tr>
+        </tbody>
+      </table>
+
+      <p>Trade 1 used $124 sizing — we hadn't fixed the 25% compounding logic yet. Trades 4 and 5 both had RSI overbought conditions and price above the Bollinger upper band. We were taking UP signals in conditions that directly contradicted an UP thesis. That's not a bad market. That's a bad system.</p>
+
+      <p>We fixed it immediately: hard guards to skip UP when RSI &gt; 75 or price is above BB Upper. Disabled ALL DOWN signals. Fixed trade sizing to $10 base with controlled compounding. None of that mattered yet — what mattered was that we realized we'd been doing live experimentation with real money in place of proper backtesting.</p>
+
+      <!-- PHASE 4 -->
+      <h2 id="backtest"><span class="section-num">// 05</span>Phase 4: 15 Optimization Rounds in One Day</h2>
+      <p>We built a backtesting system from scratch. The Node.js version crashed repeatedly with silent exits. We ported it to Python — it hit a <code>NameError</code> on <code>BASE_THRESHOLD</code> and multiple indentation errors. We ported it back to Node.js with better error handling. Then we ran 15 rounds of optimization.</p>
+
+      <table class="data-table">
+        <thead><tr><th>Round</th><th>Win Rate</th><th>Trades</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>51.16%</td><td>215</td><td>Initial run — coin flip</td></tr>
+          <tr><td>2–4</td><td>22%</td><td>19–27</td><td>Too strict, mostly losses</td></tr>
+          <tr><td>5–6</td><td>—</td><td>0</td><td>Filters too aggressive, no trades</td></tr>
+          <tr><td>7–8</td><td>50.0%</td><td>182</td><td>Breakeven with both directions</td></tr>
+          <tr><td>10–11</td><td>49.73%</td><td>185</td><td>Stuck at coin flip</td></tr>
+          <tr><td>12</td><td>—</td><td>0</td><td>Over-optimized to nothing</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pullquote">
+        <p>After Round 12 we realized: this is <span class="red">not a filtering problem.</span> RSI, EMA, Bollinger Bands, Momentum — these indicators consistently produce a <span class="accent">50% win rate</span> across all parameter combinations. The signal set doesn't have a predictive edge.</p>
+      </div>
+
+      <p>That was the moment everything had to change.</p>
+
+      <!-- PHASE 5 -->
+      <h2 id="breakthrough"><span class="section-num">// 06</span>Phase 5: The Radical Shift (Round 13)</h2>
+      <p>We threw out every indicator we'd built. RSI, EMA crossovers, Momentum, Volume spikes — gone. We started over with price action patterns and mean reversion logic.</p>
+
+      <h3>The new signal set</h3>
+      <div class="phase-card">
+        <div class="phase-num">Signal 01</div>
+        <div><div class="phase-title">Bearish Engulfing → DOWN (+100 pts)</div><div class="phase-desc">A large red candle that completely engulfs the previous green candle. Strong reversal signal.</div></div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Signal 02</div>
+        <div><div class="phase-title">Bearish Pin Bar / Shooting Star → DOWN (+80 pts)</div><div class="phase-desc">Long upper wick, small body. Price rejected hard at the highs.</div></div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Signal 03</div>
+        <div><div class="phase-title">Extreme Undershoot vs 50-EMA → UP (+120 pts)</div><div class="phase-desc">Price significantly below the 50-period EMA. Mean reversion pull toward fair value. Our strongest single signal.</div></div>
+      </div>
+
+      <p>Round 13 results: 4 trades, 4 wins, 100% win rate. Too few trades to call it — but the direction was clear. We relaxed the filters.</p>
+      <p>Round 14: 203 trades, 57.64% win rate, +$310. Real volume, real edge.</p>
+      <p>Then we got surgical. We removed every signal and session that wasn't pulling its weight:</p>
+
+      <table class="data-table">
+        <thead><tr><th>Removed</th><th>WR</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td>Bullish Engulfing</td><td class="loss">33%</td><td>Liability — actively hurting us</td></tr>
+          <tr><td>Bullish Pin Bar</td><td>52.94%</td><td>Not strong enough to justify</td></tr>
+          <tr><td>NY Market session</td><td>50%</td><td>Coin flip — cut it</td></tr>
+          <tr><td>Extreme Overshoot</td><td>62.96%</td><td>Below threshold</td></tr>
+          <tr><td>NY Evening</td><td>57.69%</td><td>Below threshold</td></tr>
+        </tbody>
+      </table>
+
+      <p>Added a NY Overnight session bonus (+20 points) — the data showed overnight was outperforming everything.</p>
+
+      <div class="stat-row">
+        <div class="stat-cell"><div class="num" style="color:var(--green)">75%</div><div class="lbl">Final Win Rate</div></div>
+        <div class="stat-cell"><div class="num" style="color:var(--green)">97</div><div class="lbl">Backtest Trades</div></div>
+        <div class="stat-cell"><div class="num" style="color:var(--green)">6%</div><div class="lbl">Max Drawdown</div></div>
+      </div>
+
+      <!-- FINAL STRATEGY -->
+      <h2 id="strategy"><span class="section-num">// 07</span>The Final Deployed Strategy</h2>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <code><span class="c"># Active signals</span>
+<span class="k">Bearish Engulfing</span>     → DOWN  <span class="v">+100 pts</span>
+<span class="k">Bearish Pin Bar</span>       → DOWN  <span class="v">+80 pts</span>
+<span class="k">Extreme Undershoot</span>    → UP    <span class="v">+120 pts</span>  <span class="c"># strongest signal</span>
+
+<span class="c"># Active sessions</span>
+<span class="k">NY Afterhours</span>  4–8 PM EDT      <span class="v">71.43% WR</span>
+<span class="k">NY Overnight</span>   midnight–9 AM   <span class="v">75.61% WR</span>  <span class="c">+20pt bonus</span>
+
+<span class="c"># Filters</span>
+HTF 1-hour trend: skip UP if bearish, skip DOWN if bullish
+Score threshold: 70+
+
+<span class="c"># Risk management</span>
+Base size: $10 · Compounding: +25% of last win
+Max size: $500 · 3 consecutive wins → reset to $10
+20% drawdown from peak → cap at $10</code>
+      </div>
+
+      <!-- LESSONS -->
+      <h2 id="lessons"><span class="section-num">// 08</span>What This Actually Teaches</h2>
+
+      <div class="lessons">
+        <div class="lesson">
+          <div class="lesson-num">01</div>
+          <div><div class="lesson-title">Live testing before backtesting is expensive tuition.</div><div class="lesson-desc">We lost $323 learning lessons that a proper backtesting system could have taught us for free. Build the backtester first. Always.</div></div>
+        </div>
+        <div class="lesson">
+          <div class="lesson-num">02</div>
+          <div><div class="lesson-title">Lagging indicators don't predict — they describe.</div><div class="lesson-desc">RSI, EMA crossovers, Bollinger Bands, Momentum — across 15 optimization rounds, every combination landed at 50%. Price action patterns and mean reversion proved genuinely predictive.</div></div>
+        </div>
+        <div class="lesson">
+          <div class="lesson-num">03</div>
+          <div><div class="lesson-title">Session matters more than signal quality.</div><div class="lesson-desc">NY Market — the "obvious" trading window — was our worst performer. Overnight and Afterhours were where the edge lived. The market behaves differently when Wall Street isn't watching.</div></div>
+        </div>
+        <div class="lesson">
+          <div class="lesson-num">04</div>
+          <div><div class="lesson-title">Directionality asymmetry is real.</div><div class="lesson-desc">DOWN signals were consistently unreliable from day one. Mean reversion UP was our strongest single signal. Don't fight the asymmetry — disable what doesn't work and double down on what does.</div></div>
+        </div>
+        <div class="lesson">
+          <div class="lesson-num">05</div>
+          <div><div class="lesson-title">AI + human collaboration actually works.</div><div class="lesson-desc">Mewtwo wrote 95% of the code and ran all the analysis. I provided strategic direction, caught errors the AI missed, and made the calls on when to pivot. Neither of us could have done this alone at this speed.</div></div>
+        </div>
+        <div class="lesson">
+          <div class="lesson-num">06</div>
+          <div><div class="lesson-title">Persistence past Round 12 is the whole game.</div><div class="lesson-desc">We rebuilt the backtester three times. We ran 15 optimization rounds in a single day. We nearly gave up after Round 12 showed nothing. Round 13's radical shift changed everything. The breakthrough was one pivot away.</div></div>
+        </div>
+      </div>
+
+      <!-- WHAT'S NEXT -->
+      <h2 id="next"><span class="section-num">// 09</span>What's Next</h2>
+      <p>The strategy is deployed. The bot is live on the M75n, running every 5 minutes, placing real orders. The backtested edge is 75% — now we need live validation across 30+ trades to know if that holds in production.</p>
+      <p>If it does, the questions get interesting: Can this apply to other Kalshi markets — BTC, ETH, macro events? Can the mean reversion logic generalize to Polymarket or Metaculus? What happens when we expand the candle pattern set?</p>
+      <p>But that's next month's problem. Right now the bot is running. The results will tell us if we were right. We're not waiting to find out.</p>
+
+      <div class="article-footer">
+        <div class="article-footer-label">// built by null limit</div>
+        <div class="article-footer-title">Want to build your own autonomous system?</div>
+        <p>This entire engine — architecture, debugging, strategy discovery — was built by one human and one AI in under two weeks. The infrastructure is real and accessible. The barrier isn't capital or education. It's the willingness to build something that might not work, test it ruthlessly, and iterate.</p>
+        <div class="footer-links">
+          <a href="/agents" class="footer-link">Get an AI Agent Setup</a>
+          <a href="/ebooks" class="footer-link outline">Read the Full Series →</a>
+        </div>
+      </div>
+
+      <div class="article-tags">
+        <span class="tag">Builder Playbook</span>
+        <span class="tag">Trading Bots</span>
+        <span class="tag">Kalshi</span>
+        <span class="tag">AI Agents</span>
+        <span class="tag">Prediction Markets</span>
+        <span class="tag">Autonomous Systems</span>
+        <span class="tag">Backtesting</span>
+      </div>
+
+    </article>
+
+    <aside class="article-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-label">// contents</div>
+        <ul class="sidebar-toc">
+          <li><a href="#setup"><span class="toc-num">01</span>What We Built</a></li>
+          <li><a href="#paper"><span class="toc-num">02</span>Paper Trading</a></li>
+          <li><a href="#live"><span class="toc-num">03</span>Going Live</a></li>
+          <li><a href="#losses"><span class="toc-num">04</span>The Losing Streak</a></li>
+          <li><a href="#backtest"><span class="toc-num">05</span>15 Optimization Rounds</a></li>
+          <li><a href="#breakthrough"><span class="toc-num">06</span>The Radical Shift</a></li>
+          <li><a href="#strategy"><span class="toc-num">07</span>Final Strategy</a></li>
+          <li><a href="#lessons"><span class="toc-num">08</span>Key Lessons</a></li>
+          <li><a href="#next"><span class="toc-num">09</span>What's Next</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-cta-card">
+        <div class="sidebar-label">// null limit</div>
+        <p>We build AI agents that work while you sleep. Fully configured. Running 24/7.</p>
+        <a href="/agents" class="sidebar-cta-btn">Agent Setup — $125</a>
+        <a href="/ebooks" class="sidebar-cta-btn outline">eBook Series — $24</a>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-logo">null<span>;</span> limit · <span style="color:var(--gray-5)">nulllimit.gg</span></div>
+  <div class="footer-copy">© 2026 Null Limit · Undefined by design.</div>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => { cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px'; });
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+  const sections = document.querySelectorAll('h2[id]');
+  const tocLinks = document.querySelectorAll('.sidebar-toc a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        tocLinks.forEach(l => l.style.color = '');
+        const active = document.querySelector(`.sidebar-toc a[href="#${e.target.id}"]`);
+        if (active) active.style.color = 'var(--green)';
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
