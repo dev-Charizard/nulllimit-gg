@@ -18,5 +18,7 @@
     { "source": "/api", "destination": "/api.html" },
     { "source": "/edge", "destination": "/edge.html" },
     { "source": "/work", "destination": "/work.html" }
+    { "source": "/blog/kalshi-trading-bot", "destination": "/kalshi-trading-bot.html" },
+    { "source": "/blog/ai-trading-bot-2-weeks", "destination": "/ai-trading-bot-2-weeks.html" },
   ]
 }
