@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Null Limit — Client Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black: #07090f;
+  --bg2: #0d1117;
+  --bg3: #131820;
+  --bg4: #181f28;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8eaf0;
+  --muted: #5a6070;
+  --muted2: #8892a0;
+  --green: #c8f547;
+  --green2: rgba(200,245,71,0.08);
+  --green3: rgba(200,245,71,0.15);
+  --red: #e05252;
+  --gold: #d4a843;
+  --blue: #4a9eff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* scanline overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px);
+  pointer-events: none; z-index: 1000;
+}
+
+/* ── HEADER ── */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(7,9,15,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo { font-family: 'Bebas Neue'; font-size: 20px; letter-spacing: 0.1em; color: var(--text); }
+.logo span { color: var(--green); }
+.header-right { display: flex; align-items: center; gap: 20px; font-size: 11px; font-family: 'DM Mono'; color: var(--muted); }
+.step-indicator { display: flex; align-items: center; gap: 6px; }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); transition: background 0.3s; }
+.step-dot.done { background: var(--green); }
+.step-dot.active { background: var(--green); box-shadow: 0 0 8px rgba(200,245,71,0.4); }
+
+/* ── PROGRESS BAR ── */
+.progress-bar {
+  height: 2px; background: var(--border);
+  position: sticky; top: 60px; z-index: 99;
+}
+.progress-fill {
+  height: 100%; background: var(--green);
+  transition: width 0.4s ease;
+  box-shadow: 0 0 10px rgba(200,245,71,0.3);
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 80px 40px 60px;
+  max-width: 900px; margin: 0 auto;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 10px; font-family: 'DM Mono'; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--green);
+  background: var(--green2); border: 1px solid var(--green3);
+  padding: 6px 14px; margin-bottom: 28px;
+}
+.hero-badge::before { content: '◈'; font-size: 12px; }
+.hero-title {
+  font-family: 'Bebas Neue'; font-size: clamp(52px,8vw,100px);
+  letter-spacing: 0.04em; line-height: 0.92;
+  color: var(--text); margin-bottom: 20px;
+}
+.hero-title span { color: var(--green); }
+.hero-sub {
+  font-size: clamp(14px,1.8vw,18px); color: var(--muted2);
+  line-height: 1.7; max-width: 600px; margin: 0 auto 40px;
+}
+.hero-meta {
+  display: flex; align-items: center; justify-content: center;
+  gap: 24px; font-size: 12px; font-family: 'DM Mono'; color: var(--muted);
+  flex-wrap: wrap;
+}
+.hero-meta span { display: flex; align-items: center; gap: 6px; }
+.hero-meta span::before { content: '//'; color: var(--green); }
+
+/* ── PROCESS OVERVIEW ── */
+.process-overview {
+  max-width: 1100px; margin: 0 auto 80px;
+  padding: 0 40px;
+}
+.section-label {
+  font-size: 10px; font-family: 'DM Mono'; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 28px; display: flex; align-items: center; gap: 12px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.process-steps {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+}
+.process-step {
+  background: var(--bg2); padding: 24px 20px;
+  position: relative; cursor: default;
+  transition: background 0.2s;
+}
+.process-step:hover { background: var(--bg3); }
+.process-step.current { background: var(--bg3); border-bottom: 2px solid var(--green); }
+.ps-num {
+  font-family: 'Bebas Neue'; font-size: 36px; color: rgba(255,255,255,0.06);
+  line-height: 1; margin-bottom: 8px;
+}
+.process-step.current .ps-num { color: rgba(200,245,71,0.15); }
+.ps-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.ps-desc { font-size: 11px; color: var(--muted2); line-height: 1.5; }
+.ps-tag {
+  display: inline-block; margin-top: 10px;
+  font-size: 9px; font-family: 'DM Mono'; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 2px 8px;
+}
+.tag-now { background: var(--green2); color: var(--green); border: 1px solid var(--green3); }
+.tag-next { background: rgba(90,96,112,0.15); color: var(--muted2); border: 1px solid var(--border2); }
+
+/* ── FORM CONTAINER ── */
+.form-container {
+  max-width: 900px; margin: 0 auto 60px;
+  padding: 0 40px;
+}
+
+/* ── FORM SECTIONS ── */
+.form-section {
+  background: var(--bg2); border: 1px solid var(--border);
+  margin-bottom: 2px; overflow: hidden;
+}
+.form-section-header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px 24px; cursor: pointer;
+  transition: background 0.2s; user-select: none;
+}
+.form-section-header:hover { background: var(--bg3); }
+.form-section.open .form-section-header { border-bottom: 1px solid var(--border); }
+.fsh-num { font-family: 'Bebas Neue'; font-size: 28px; color: var(--muted); line-height: 1; flex-shrink: 0; width: 32px; }
+.form-section.open .fsh-num { color: var(--green); }
+.fsh-content { flex: 1; }
+.fsh-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.fsh-sub { font-size: 11px; color: var(--muted2); margin-top: 2px; }
+.fsh-arrow { color: var(--muted); font-size: 16px; transition: transform 0.25s; flex-shrink: 0; }
+.form-section.open .fsh-arrow { transform: rotate(180deg); color: var(--green); }
+.fsh-status { font-size: 9px; font-family: 'DM Mono'; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; flex-shrink: 0; }
+.status-required { background: rgba(224,82,82,0.1); color: var(--red); border: 1px solid rgba(224,82,82,0.2); }
+.status-done { background: var(--green2); color: var(--green); border: 1px solid var(--green3); }
+.status-optional { background: rgba(90,96,112,0.15); color: var(--muted2); border: 1px solid var(--border2); }
+
+.form-section-body { display: none; padding: 28px 24px; }
+.form-section.open .form-section-body { display: block; }
+
+/* ── FORM FIELDS ── */
+.field-group { margin-bottom: 24px; }
+.field-group:last-child { margin-bottom: 0; }
+.field-label {
+  display: block; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted2); margin-bottom: 8px;
+}
+.field-label span { color: var(--red); margin-left: 4px; }
+.field-hint { font-size: 11px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
+
+input[type="text"], input[type="email"], input[type="tel"], input[type="url"],
+select, textarea {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text); font-family: 'DM Sans'; font-size: 13px;
+  padding: 12px 16px; outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  appearance: none; -webkit-appearance: none;
+}
+input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus,
+input[type="url"]:focus, select:focus, textarea:focus {
+  border-color: var(--green); background: var(--bg4);
+}
+input::placeholder, textarea::placeholder { color: var(--muted); }
+select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6070' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+/* two-col grid */
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
+
+/* ── OPTION CARDS (radio/checkbox style) ── */
+.option-grid { display: grid; gap: 8px; }
+.option-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.option-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 640px) { .option-grid.cols-2, .option-grid.cols-3 { grid-template-columns: 1fr; } }
+
+.option-card { position: relative; }
+.option-card input { position: absolute; opacity: 0; pointer-events: none; }
+.option-label {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; background: var(--bg3);
+  border: 1px solid var(--border2); cursor: pointer;
+  transition: all 0.2s;
+}
+.option-label:hover { border-color: var(--green3); background: var(--bg4); }
+.option-card input:checked + .option-label {
+  border-color: var(--green); background: var(--green2);
+}
+.option-check {
+  width: 16px; height: 16px; border: 1px solid var(--border2);
+  flex-shrink: 0; margin-top: 2px; display: flex;
+  align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.option-card.radio .option-check { border-radius: 50%; }
+.option-card input:checked + .option-label .option-check {
+  background: var(--green); border-color: var(--green);
+}
+.option-card input:checked + .option-label .option-check::after {
+  content: '✓'; font-size: 10px; color: var(--black); font-weight: 700;
+}
+.option-card.radio input:checked + .option-label .option-check::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--black);
+}
+.option-text { flex: 1; }
+.option-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.option-desc { font-size: 11px; color: var(--muted2); margin-top: 3px; line-height: 1.4; }
+
+/* ── PRIORITY SLIDER ── */
+.slider-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.slider-label { font-size: 12px; color: var(--muted2); flex-shrink: 0; width: 160px; }
+.slider-track { flex: 1; position: relative; }
+input[type="range"] {
+  width: 100%; height: 3px; appearance: none; -webkit-appearance: none;
+  background: var(--border2); outline: none; cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px;
+  background: var(--green); cursor: pointer; border: 2px solid var(--black);
+  box-shadow: 0 0 8px rgba(200,245,71,0.3);
+}
+.slider-val { font-family: 'DM Mono'; font-size: 12px; color: var(--green); flex-shrink: 0; width: 20px; text-align: right; }
+
+/* ── BUDGET SELECTOR ── */
+.budget-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+@media (max-width: 600px) { .budget-grid { grid-template-columns: 1fr 1fr; } }
+.budget-card { position: relative; }
+.budget-card input { position: absolute; opacity: 0; pointer-events: none; }
+.budget-label {
+  display: block; text-align: center;
+  padding: 16px 10px; background: var(--bg3);
+  border: 1px solid var(--border2); cursor: pointer;
+  transition: all 0.2s;
+}
+.budget-label:hover { border-color: var(--green3); }
+.budget-card input:checked + .budget-label { border-color: var(--green); background: var(--green2); }
+.budget-amount { font-family: 'Bebas Neue'; font-size: 22px; color: var(--text); letter-spacing: 0.04em; }
+.budget-card input:checked + .budget-label .budget-amount { color: var(--green); }
+.budget-desc { font-size: 10px; color: var(--muted); margin-top: 3px; font-family: 'DM Mono'; }
+
+/* ── URGENCY ── */
+.urgency-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+@media (max-width: 600px) { .urgency-grid { grid-template-columns: 1fr; } }
+.urgency-card { position: relative; }
+.urgency-card input { position: absolute; opacity: 0; pointer-events: none; }
+.urgency-label {
+  display: block; padding: 16px; background: var(--bg3);
+  border: 1px solid var(--border2); cursor: pointer; transition: all 0.2s;
+  text-align: center;
+}
+.urgency-label:hover { border-color: var(--green3); }
+.urgency-card input:checked + .urgency-label { border-color: var(--green); background: var(--green2); }
+.urgency-icon { font-size: 24px; margin-bottom: 8px; display: block; }
+.urgency-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.urgency-sub { font-size: 10px; color: var(--muted2); margin-top: 3px; }
+
+/* ── SUBMIT / NAV ── */
+.form-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 32px 0; max-width: 900px; margin: 0 auto;
+  padding-left: 40px; padding-right: 40px;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px; font-family: 'DM Sans'; font-size: 13px;
+  font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer; border: none; transition: all 0.2s;
+}
+.btn-primary { background: var(--green); color: var(--black); }
+.btn-primary:hover { background: #d4ff4f; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200,245,71,0.25); }
+.btn-secondary { background: transparent; color: var(--muted2); border: 1px solid var(--border2); }
+.btn-secondary:hover { border-color: var(--green3); color: var(--text); }
+.btn-ghost { background: transparent; color: var(--muted); padding: 14px 0; }
+
+/* ── SUMMARY BOX ── */
+.summary-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 28px; margin-bottom: 24px;
+}
+.summary-title { font-family: 'Bebas Neue'; font-size: 22px; letter-spacing: 0.06em; margin-bottom: 16px; color: var(--green); }
+.summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.summary-row:last-child { border-bottom: none; }
+.sr-label { color: var(--muted2); font-family: 'DM Mono'; }
+.sr-value { color: var(--text); font-weight: 500; text-align: right; max-width: 60%; }
+
+/* ── CHECKLIST (internal use) ── */
+.checklist-section {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 28px; margin-bottom: 16px;
+}
+.checklist-title { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted2); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.checklist-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.checklist-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.checklist-item:last-child { border-bottom: none; }
+.check-box { width: 18px; height: 18px; border: 1px solid var(--border2); flex-shrink: 0; cursor: pointer; transition: all 0.15s; margin-top: 2px; display: flex; align-items: center; justify-content: center; }
+.check-box.checked { background: var(--green); border-color: var(--green); }
+.check-box.checked::after { content: '✓'; font-size: 11px; color: var(--black); font-weight: 700; }
+.check-content { flex: 1; }
+.check-title { font-size: 13px; font-weight: 500; color: var(--text); }
+.check-sub { font-size: 11px; color: var(--muted2); margin-top: 3px; line-height: 1.4; }
+.check-tag { font-size: 9px; font-family: 'DM Mono'; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; margin-top: 5px; display: inline-block; }
+.check-tag.vitoshi { background: rgba(200,245,71,0.1); color: var(--green); border: 1px solid var(--green3); }
+.check-tag.client { background: rgba(74,158,255,0.1); color: var(--blue); border: 1px solid rgba(74,158,255,0.2); }
+.check-tag.auto { background: rgba(212,168,67,0.1); color: var(--gold); border: 1px solid rgba(212,168,67,0.2); }
+
+/* ── PAGE SYSTEM ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── CONFIRMATION ── */
+.confirmation {
+  max-width: 700px; margin: 80px auto; padding: 0 40px;
+  text-align: center;
+}
+.confirm-icon { font-size: 48px; margin-bottom: 24px; }
+.confirm-title { font-family: 'Bebas Neue'; font-size: clamp(42px,7vw,80px); letter-spacing: 0.04em; color: var(--green); line-height: 0.95; margin-bottom: 16px; }
+.confirm-sub { font-size: 16px; color: var(--muted2); line-height: 1.7; margin-bottom: 40px; }
+.confirm-next { background: var(--bg2); border: 1px solid var(--border); padding: 28px; text-align: left; }
+.cn-title { font-size: 11px; font-family: 'DM Mono'; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.cn-step { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.cn-step:last-child { border-bottom: none; }
+.cn-num { font-family: 'Bebas Neue'; font-size: 20px; color: var(--green); flex-shrink: 0; width: 24px; }
+.cn-text { font-size: 13px; color: var(--muted2); line-height: 1.5; }
+.cn-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+/* ── TOOLTIP ── */
+.tooltip { position: relative; display: inline-flex; }
+.tooltip-icon { width: 16px; height: 16px; border-radius: 50%; background: var(--border2); color: var(--muted2); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: help; }
+.tooltip-body { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--bg4); border: 1px solid var(--border2); padding: 10px 14px; font-size: 11px; color: var(--muted2); white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 50; min-width: 200px; white-space: normal; line-height: 1.5; }
+.tooltip:hover .tooltip-body { opacity: 1; }
+
+/* ── ADMIN VIEW ── */
+.admin-toggle { position: fixed; bottom: 24px; left: 24px; z-index: 500; }
+.admin-btn { background: var(--bg2); border: 1px solid var(--border2); color: var(--muted2); font-size: 10px; font-family: 'DM Mono'; letter-spacing: 0.1em; padding: 8px 14px; cursor: pointer; transition: all 0.2s; }
+.admin-btn:hover { border-color: var(--green3); color: var(--green); }
+
+.admin-panel { display: none; position: fixed; bottom: 60px; left: 24px; width: 320px; background: var(--bg2); border: 1px solid var(--border2); padding: 20px; z-index: 500; max-height: 70vh; overflow-y: auto; }
+.admin-panel.open { display: block; }
+.ap-title { font-size: 10px; font-family: 'DM Mono'; letter-spacing: 0.15em; text-transform: uppercase; color: var(--green); margin-bottom: 16px; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo">null<span>;</span> limit</div>
+  <div class="header-right">
+    <div class="step-indicator" id="step-dots"></div>
+    <span id="step-label">Step 1 of 5</span>
+  </div>
+</header>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:20%"></div></div>
+
+<!-- ════════════════════════════════════════
+     PAGE 1 — INTAKE / ABOUT YOU
+════════════════════════════════════════ -->
+<div class="page active" id="page-1">
+  <div class="hero">
+    <div class="hero-badge">Client Onboarding · Step 1 of 5</div>
+    <h1 class="hero-title">Let's build<br/><span>something</span><br/>that works.</h1>
+    <p class="hero-sub">This intake helps us understand your business, your goals, and exactly what kind of AI solution will make the biggest impact. Takes about 8 minutes.</p>
+    <div class="hero-meta">
+      <span>8 minutes to complete</span>
+      <span>5 sections</span>
+      <span>No fluff, no spam</span>
+    </div>
+  </div>
+
+  <div class="form-container">
+
+    <!-- SECTION 1: About You -->
+    <div class="form-section open" id="sec-about">
+      <div class="form-section-header" onclick="toggleSection('sec-about')">
+        <div class="fsh-num">01</div>
+        <div class="fsh-content">
+          <div class="fsh-title">About You & Your Business</div>
+          <div class="fsh-sub">Basic information so we know who we're building for</div>
+        </div>
+        <span class="fsh-status status-required">Required</span>
+        <span class="fsh-arrow">▾</span>
+      </div>
+      <div class="form-section-body">
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">Full Name <span>*</span></label>
+            <input type="text" placeholder="Vitoshi" id="f-name"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Email Address <span>*</span></label>
+            <input type="email" placeholder="you@yourbusiness.com" id="f-email"/>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">Business / Company Name <span>*</span></label>
+            <input type="text" placeholder="Your business name" id="f-business"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Phone / WhatsApp</label>
+            <input type="tel" placeholder="+1 (000) 000-0000" id="f-phone"/>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">Website or Social Handle</label>
+            <input type="url" placeholder="nulllimit.gg or @handle" id="f-web"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Industry / Business Type <span>*</span></label>
+            <select id="f-industry">
+              <option value="">Select your industry</option>
+              <option>Real Estate Agent / Broker</option>
+              <option>Real Estate Investor</option>
+              <option>Sports Camp / Academy</option>
+              <option>Personal Trainer / Coach</option>
+              <option>Podcaster / Content Creator</option>
+              <option>Digital Creator / Influencer</option>
+              <option>Nonprofit Organization</option>
+              <option>Restaurant / Food & Beverage</option>
+              <option>Salon / Beauty / Wellness</option>
+              <option>Medical / Dental / Clinic</option>
+              <option>Retail / E-Commerce</option>
+              <option>Local Service (Plumber, Electrician, etc.)</option>
+              <option>Event Planning / Coordination</option>
+              <option>Consulting / Professional Services</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tell us about your business in 2-3 sentences <span>*</span></label>
+          <div class="field-hint">What do you do, who do you serve, and how long have you been operating?</div>
+          <textarea placeholder="We run a basketball training camp for youth athletes ages 8-18 in the Atlanta area. We've been operating for 4 years and currently run 3 sessions per year with 80-120 kids per session." id="f-about"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Team Size</label>
+          <div class="option-grid cols-2">
+            <div class="option-card radio">
+              <input type="radio" name="team" value="solo"/>
+              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Solo / Just me</div><div class="option-desc">You run everything yourself</div></div></label>
+            </div>
+            <div class="option-card radio">
+              <input type="radio" name="team" value="2-5"/>
+              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">2–5 people</div><div class="option-desc">Small team, everyone wears multiple hats</div></div></label>
+            </div>
+            <div class="option-card radio">
+              <input type="radio" name="team" value="6-20"/>
+              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">6–20 people</div><div class="option-desc">Mid-size, some dedicated roles</div></div></label>
+            </div>
+            <div class="option-card radio">
+              <input type="radio" name="team" value="20+"/>
+              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">20+ people</div><div class="option-desc">Established organization</div></div></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: The Problem -->
+    <div class="form-section" id="sec-problem">
+      <div class="form-section-header" onclick="toggleSection('sec-problem')">
+        <div class="fsh-num">02</div>
+        <div class="fsh-content">
+          <div class="fsh-title">The Problem You're Trying to Solve</div>
+          <div class="fsh-sub">Where is your business losing the most time, money, or opportunities right now?</div>
+        </div>
+        <span class="fsh-status status-required">Required</span>
+        <span class="fsh-arrow">▾</span>
+      </div>
+      <div class="form-section-body">
+        <div class="field-group">
+          <label class="field-label">What's your biggest operational pain point? <span>*</span></label>
+          <div class="field-hint">Check all that apply — be honest, this helps us prioritize.</div>
+          <div class="option-grid cols-2">
+            <div class="option-card"><input type="checkbox" name="pain" value="leads"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Missed leads / slow response</div><div class="option-desc">Inquiries go unanswered, especially after hours</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="pain" value="followup"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Follow-up failure</div><div class="option-desc">Deals die because nobody follows up consistently</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="pain" value="admin"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Admin overload</div><div class="option-desc">Scheduling, paperwork, emails eating your week</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="pain" value="scheduling"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Booking & scheduling chaos</div><div class="option-desc">No-shows, double bookings, manual coordination</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="pain" value="content"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Content / marketing inconsistency</div><div class="option-desc">No system for posting, promoting, or growing</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="pain" value="data"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">No data or reporting</div><div class="option-desc">Operating blind — no visibility into what's working</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="pain" value="customer"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Customer communication</div><div class="option-desc">Same questions answered manually every day</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="pain" value="scale"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Can't scale</div><div class="option-desc">Everything runs through you — no system to delegate</div></div></label></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Describe the problem in your own words <span>*</span></label>
+          <div class="field-hint">The more specific, the better. What does a bad week look like?</div>
+          <textarea placeholder="Every Monday I spend 3 hours answering the same parent emails about camp schedules, payment links, and what to bring. Meanwhile registrations are sitting unconfirmed because I haven't had time to process them..." id="f-problem"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">How much time per week does this problem cost you? (estimate)</label>
+          <div class="option-grid cols-2">
+            <div class="option-card radio"><input type="radio" name="time-lost" value="1-3hrs"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">1–3 hours</div><div class="option-desc">Annoying but manageable</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="time-lost" value="3-8hrs"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">3–8 hours</div><div class="option-desc">Significant — affects productivity</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="time-lost" value="8-15hrs"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">8–15 hours</div><div class="option-desc">Major drain — it's a part-time job</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="time-lost" value="15+hrs"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">15+ hours</div><div class="option-desc">It's taking over — I need help now</div></div></label></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Estimated monthly revenue impact of this problem</label>
+          <div class="option-grid cols-2">
+            <div class="option-card radio"><input type="radio" name="rev-impact" value="under500"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Under $500</div><div class="option-desc">Low financial impact</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="rev-impact" value="500-2k"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">$500 – $2,000</div><div class="option-desc">Noticeable monthly loss</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="rev-impact" value="2k-5k"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">$2,000 – $5,000</div><div class="option-desc">Significant missed revenue</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="rev-impact" value="5k+"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">$5,000+</div><div class="option-desc">Critical — this is costing us badly</div></div></label></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: AI Experience -->
+    <div class="form-section" id="sec-ai">
+      <div class="form-section-header" onclick="toggleSection('sec-ai')">
+        <div class="fsh-num">03</div>
+        <div class="fsh-content">
+          <div class="fsh-title">Your AI Experience & Comfort Level</div>
+          <div class="fsh-sub">No wrong answers — this helps us meet you where you are</div>
+        </div>
+        <span class="fsh-status status-required">Required</span>
+        <span class="fsh-arrow">▾</span>
+      </div>
+      <div class="form-section-body">
+        <div class="field-group">
+          <label class="field-label">Have you used AI tools before? <span>*</span></label>
+          <div class="option-grid cols-2">
+            <div class="option-card radio"><input type="radio" name="ai-exp" value="none"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Never used AI tools</div><div class="option-desc">Starting from zero — that's completely fine</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="ai-exp" value="chatgpt"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">ChatGPT / basic tools only</div><div class="option-desc">Familiar with AI assistants, not automation</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="ai-exp" value="some-automation"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Some automation tools</div><div class="option-desc">Used Zapier, Make, or similar</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="ai-exp" value="advanced"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Advanced — I build with AI</div><div class="option-desc">APIs, custom workflows, AI-first operations</div></div></label></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">How comfortable are you managing a tool on your own after setup?</label>
+          <div class="option-grid cols-3">
+            <div class="option-card radio"><input type="radio" name="ai-comfort" value="low"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">I need hand-holding</div><div class="option-desc">Step-by-step guidance please</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="ai-comfort" value="mid"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">I can follow instructions</div><div class="option-desc">Show me once and I'll manage</div></div></label></div>
+            <div class="option-card radio"><input type="radio" name="ai-comfort" value="high"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">I'm comfortable independently</div><div class="option-desc">Just build it and I'll take it from there</div></div></label></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">What tools / platforms do you currently use? <span>*</span></label>
+          <div class="field-hint">Check all that apply — helps us understand your existing stack.</div>
+          <div class="option-grid cols-2">
+            <div class="option-card"><input type="checkbox" name="tools" value="gmail"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Gmail / Google Workspace</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="tools" value="outlook"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Outlook / Microsoft 365</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="tools" value="instagram"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Instagram / Facebook</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="tools" value="whatsapp"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">WhatsApp Business</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="tools" value="calendly"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Calendly / scheduling tool</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="tools" value="stripe"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Stripe / payment processor</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="tools" value="crm"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">CRM (HubSpot, Salesforce, etc.)</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="tools" value="notion"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Notion / project management</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="tools" value="shopify"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Shopify / e-commerce</div></div></label></div>
+            <div class="option-card"><input type="checkbox" name="tools" value="none"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">No formal tools — mostly manual</div></div></label></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Are there any tools or platforms we must integrate with?</label>
+          <textarea placeholder="We use a custom registration software called CampBrain and all payments go through Square. Any solution needs to connect with these." id="f-integrations" style="min-height:80px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: What You Need -->
+    <div class="form-section" id="sec-solution">
+      <div class="form-section-header" onclick="toggleSection('sec-solution')">
+        <div class="fsh-num">04</div>
+        <div class="fsh-content">
+          <div class="fsh-title">What You Need Built</div>
+          <div class="fsh-sub">Tell us the type of solution and what it needs to do</div>
+        </div>
+        <span class="fsh-status status-required">Required</span>
+        <span class="fsh-arrow">▾</span>
+      </div>
+      <div class="form-section-body">
+        <div class="field-group">
+          <label class="field-label">What type of AI solution are you looking for? <span>*</span></label>
+          <div class="field-hint">Select the closest match — we'll refine during the discovery call.</div>
+          <div class="option-grid cols-2">
+            <div class="option-card radio">
+              <input type="radio" name="solution-type" value="agent"/>
+              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">🤖 AI Agent</div><div class="option-desc">Autonomous — runs tasks, responds, acts on your behalf 24/7 without you</div></div></label>
+            </div>
+            <div class="option-card radio">
+              <input type="radio" name="solution-type" value="chatbot"/>
+              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">💬 AI Chatbot</div><div class="option-desc">Answers questions, qualifies leads, handles FAQs on your site or social</div></div></label>
+            </div>
+            <div class="option-card radio">
+              <input type="radio" name="solution-type" value="automation"/>
+              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">⚙️ AI Automation</div><div class="option-desc">Connects your tools, automates workflows, removes manual steps</div></div></label>
+            </div>
+            <div class="option-card radio">
+              <input type="radio" name="solution-type" value="dashboard"/>
+              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">📊 AI Dashboard / Reporting</div><div class="option-desc">Surfaces data insights, tracks performance, generates reports automatically</div></div></label>
+            </div>
+            <div class="option-card radio">
+              <input type="radio" name="solution-type" value="content"/>
+              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">✍️ AI Content System</div><div class="option-desc">Generates, schedules, repurposes, and distributes content automatically</div></div></label>
+            </div>
+            <div class="option-card radio">
+              <input type="radio" name="solution-type" value="unsure"/>
+              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">🤷 Not sure yet</div><div class="option-desc">I know the problem — help me figure out the right solution</div></div></label>
+            </div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Describe what you want the solution to do <span>*</span></label>
+          <div class="field-hint">Be as specific as possible. Walk us through a typical use case.</div>
+          <textarea placeholder="When a parent fills out the registration form on our website, I want the agent to automatically send a confirmation email, a payment link, a welcome packet with what to bring, and then a reminder 48 hours before camp starts. I also want it to answer common questions that come in through our Instagram DMs." id="f-solution-desc"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Priority features — rank what matters most</label>
+          <div class="field-hint">Drag to rank or use the sliders (1 = highest priority)</div>
+          <div class="slider-row"><span class="slider-label">24/7 availability</span><div class="slider-track"><input type="range" min="1" max="5" value="3" oninput="updateSlider(this)"/></div><span class="slider-val">3</span></div>
+          <div class="slider-row"><span class="slider-label">Speed of response</span><div class="slider-track"><input type="range" min="1" max="5" value="3" oninput="updateSlider(this)"/></div><span class="slider-val">3</span></div>
+          <div class="slider-row"><span class="slider-label">Personalization</span><div class="slider-track"><input type="range" min="1" max="5" value="3" oninput="updateSlider(this)"/></div><span class="slider-val">3</span></div>
+          <div class="slider-row"><span class="slider-label">Ease of use for me</span><div class="slider-track"><input type="range" min="1" max="5" value="3" oninput="updateSlider(this)"/></div><span class="slider-val">3</span></div>
+          <div class="slider-row"><span class="slider-label">Integration with tools</span><div class="slider-track"><input type="range" min="1" max="5" value="3" oninput="updateSlider(this)"/></div><span class="slider-val">3</span></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">What does success look like to you?</label>
+          <div class="field-hint">6 months from now, if this is working perfectly — what changed?</div>
+          <textarea placeholder="I'm spending 80% less time on emails, every lead gets a response within 5 minutes, registration is fully automated, and I have more mental space to focus on developing athletes instead of answering the same questions." id="f-success" style="min-height:90px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Budget & Timeline -->
+    <div class="form-section" id="sec-budget">
+      <div class="form-section-header" onclick="toggleSection('sec-budget')">
+        <div class="fsh-num">05</div>
+        <div class="fsh-content">
+          <div class="fsh-title">Budget & Timeline</div>
+          <div class="fsh-sub">Helps us recommend the right solution tier for your situation</div>
+        </div>
+        <span class="fsh-status status-optional">Optional but helpful</span>
+        <span class="fsh-arrow">▾</span>
+      </div>
+      <div class="form-section-body">
+        <div class="field-group">
+          <label class="field-label">Setup budget range</label>
+          <div class="budget-grid">
+            <div class="budget-card"><input type="radio" name="budget" value="125"/><label class="budget-label"><div class="budget-amount">$125</div><div class="budget-desc">Basic setup</div></label></div>
+            <div class="budget-card"><input type="radio" name="budget" value="300"/><label class="budget-label"><div class="budget-amount">$300</div><div class="budget-desc">Standard build</div></label></div>
+            <div class="budget-card"><input type="radio" name="budget" value="500"/><label class="budget-label"><div class="budget-amount">$500</div><div class="budget-desc">Full system</div></label></div>
+            <div class="budget-card"><input type="radio" name="budget" value="custom"/><label class="budget-label"><div class="budget-amount">Custom</div><div class="budget-desc">Enterprise / complex</div></label></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">How urgent is this?</label>
+          <div class="urgency-grid">
+            <div class="urgency-card"><input type="radio" name="urgency" value="exploring"/><label class="urgency-label"><span class="urgency-icon">🔍</span><div class="urgency-title">Exploring</div><div class="urgency-sub">No rush, gathering info</div></label></div>
+            <div class="urgency-card"><input type="radio" name="urgency" value="soon"/><label class="urgency-label"><span class="urgency-icon">📅</span><div class="urgency-title">Within a month</div><div class="urgency-sub">Ready when it's right</div></label></div>
+            <div class="urgency-card"><input type="radio" name="urgency" value="now"/><label class="urgency-label"><span class="urgency-icon">🔥</span><div class="urgency-title">As soon as possible</div><div class="urgency-sub">This is costing us now</div></label></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">How did you find Null Limit?</label>
+          <select id="f-source">
+            <option value="">Select one</option>
+            <option>Instagram (@nulllimit.gg)</option>
+            <option>TikTok (@smallbiz.aiguy)</option>
+            <option>Twitter / X (@devCharizard)</option>
+            <option>Referred by someone</option>
+            <option>nulllimit.gg website</option>
+            <option>Google / search</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Anything else we should know?</label>
+          <textarea placeholder="Any context, constraints, past experiences with tech vendors, specific requirements, or things that are non-negotiable for you." id="f-other" style="min-height:80px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end form-container -->
+
+  <div class="form-nav">
+    <span class="btn btn-ghost">← Back to nulllimit.gg</span>
+    <button class="btn btn-primary" onclick="goToPage(2)">Continue to Summary →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 2 — SUMMARY & REVIEW
+════════════════════════════════════════ -->
+<div class="page" id="page-2">
+  <div class="hero" style="padding-bottom:40px;">
+    <div class="hero-badge">Step 2 of 5 · Review Your Submission</div>
+    <h1 class="hero-title" style="font-size:clamp(40px,6vw,76px);">Review &<br/><span>Confirm</span></h1>
+    <p class="hero-sub">Make sure everything looks right before we move to your onboarding checklist.</p>
+  </div>
+
+  <div class="form-container">
+    <div class="summary-box">
+      <div class="summary-title">// Your Submission Summary</div>
+      <div class="summary-row"><span class="sr-label">Name</span><span class="sr-value" id="sum-name">—</span></div>
+      <div class="summary-row"><span class="sr-label">Business</span><span class="sr-value" id="sum-business">—</span></div>
+      <div class="summary-row"><span class="sr-label">Industry</span><span class="sr-value" id="sum-industry">—</span></div>
+      <div class="summary-row"><span class="sr-label">Email</span><span class="sr-value" id="sum-email">—</span></div>
+      <div class="summary-row"><span class="sr-label">Solution Type</span><span class="sr-value" id="sum-solution">—</span></div>
+      <div class="summary-row"><span class="sr-label">Budget</span><span class="sr-value" id="sum-budget">—</span></div>
+      <div class="summary-row"><span class="sr-label">Urgency</span><span class="sr-value" id="sum-urgency">—</span></div>
+      <div class="summary-row"><span class="sr-label">Main Pain Points</span><span class="sr-value" id="sum-pain">—</span></div>
+    </div>
+
+    <!-- INTERNAL PROCESS CHECKLIST -->
+    <div style="margin-bottom:8px;font-size:10px;font-family:'DM Mono';letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);padding:0 2px;">// Internal Process — What Happens Next</div>
+
+    <div class="checklist-section">
+      <div class="checklist-title">Phase 1 — Intake & Review (Today)</div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Intake form received and reviewed</div><div class="check-sub">Vitoshi reviews the client submission, flags key needs, and assigns solution category</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Client profile created internally</div><div class="check-sub">Business details, pain points, and solution type logged in the client file</div><span class="check-tag auto">Auto</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Confirmation email sent to client</div><div class="check-sub">Acknowledgement of receipt + what to expect next + timeline for discovery call scheduling</div><span class="check-tag auto">Auto</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Initial solution recommendation drafted</div><div class="check-sub">Based on intake data, Vitoshi identifies the most likely solution tier and approach</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-title">Phase 2 — Discovery Call (Within 48hrs)</div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">30-minute discovery call scheduled</div><div class="check-sub">Client books via Calendly link sent in confirmation email</div><span class="check-tag client">Client</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Deep-dive into workflow and tools</div><div class="check-sub">Walk through current operations, identify integration points, confirm solution type</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Client asks all their questions</div><div class="check-sub">Full transparency on what they're getting, how it works, what they manage vs what runs automatically</div><span class="check-tag client">Client</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Final solution confirmed and scoped</div><div class="check-sub">Exact deliverables, integrations, timeline, and pricing agreed on the call</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-title">Phase 3 — Proposal & Agreement (Within 24hrs of call)</div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Custom proposal sent</div><div class="check-sub">Scope of work, deliverables, pricing, timeline, and what's included vs not included</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Client reviews and approves proposal</div><div class="check-sub">Client has 48hrs to review, ask questions, and confirm or request changes</div><span class="check-tag client">Client</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Service agreement signed</div><div class="check-sub">Simple one-page agreement covering scope, delivery, and payment terms</div><span class="check-tag client">Client</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">50% deposit payment processed</div><div class="check-sub">Via Stripe — remaining 50% due on delivery</div><span class="check-tag client">Client</span></div>
+      </div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-title">Phase 4 — Build (Timeline per scope)</div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Client credentials and access shared</div><div class="check-sub">API keys, platform logins, tool access needed to build the integration</div><span class="check-tag client">Client</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Agent / automation built and configured</div><div class="check-sub">Full build based on agreed scope — AI model, workflows, integrations, responses</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Internal testing completed</div><div class="check-sub">Full QA pass — all workflows tested, edge cases handled, responses reviewed</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Client review and feedback session</div><div class="check-sub">Live demo of the system — client tests it, requests adjustments</div><span class="check-tag client">Client</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Revisions implemented</div><div class="check-sub">Up to 2 rounds of revisions included in all packages</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-title">Phase 5 — Launch & Handoff</div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">System goes live</div><div class="check-sub">Agent / automation activated in production — real traffic, real results</div><span class="check-tag auto">Go Live</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Client training and walkthrough</div><div class="check-sub">30-minute handoff call — how to monitor, how to update, what to do if something breaks</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Documentation delivered</div><div class="check-sub">Written guide specific to their system — how it works, how to modify, who to contact</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">Final payment processed</div><div class="check-sub">Remaining 50% due on delivery confirmation</div><span class="check-tag client">Client</span></div>
+      </div>
+      <div class="checklist-item">
+        <div class="check-box" onclick="toggleCheck(this)"></div>
+        <div class="check-content"><div class="check-title">30-day check-in scheduled</div><div class="check-sub">Follow-up call one month post-launch — performance review and optimization opportunities</div><span class="check-tag vitoshi">Vitoshi</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="form-nav">
+    <button class="btn btn-secondary" onclick="goToPage(1)">← Edit Answers</button>
+    <button class="btn btn-primary" onclick="goToPage(3)">Submit & Continue →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 3 — WHAT TO EXPECT
+════════════════════════════════════════ -->
+<div class="page" id="page-3">
+  <div class="confirmation">
+    <div class="confirm-icon">◈</div>
+    <div class="confirm-title">You're in<br/>the system.</div>
+    <p class="confirm-sub">Your intake has been submitted. Here's exactly what happens next — no vague "we'll be in touch." A real timeline, a real process.</p>
+    <div class="confirm-next">
+      <div class="cn-title">// What happens next</div>
+      <div class="cn-step">
+        <div class="cn-num">1</div>
+        <div class="cn-text"><strong>Within 2 hours</strong>You'll receive a confirmation email with your submission summary and a Calendly link to book your discovery call.</div>
+      </div>
+      <div class="cn-step">
+        <div class="cn-num">2</div>
+        <div class="cn-text"><strong>Within 48 hours</strong>Discovery call happens. We go deep on your workflow, confirm the solution, and scope exactly what we're building.</div>
+      </div>
+      <div class="cn-step">
+        <div class="cn-num">3</div>
+        <div class="cn-text"><strong>Within 24hrs of call</strong>You receive a custom proposal with full scope, pricing, and timeline. No surprises.</div>
+      </div>
+      <div class="cn-step">
+        <div class="cn-num">4</div>
+        <div class="cn-text"><strong>You approve — we build</strong>Simple agreement, 50% to start. We build, test, you review, we refine. Then we launch.</div>
+      </div>
+      <div class="cn-step">
+        <div class="cn-num">5</div>
+        <div class="cn-text"><strong>30-day check-in</strong>One month after launch — we review performance, optimize, and confirm everything is working exactly as expected.</div>
+      </div>
+    </div>
+    <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="https://nulllimit.gg" style="text-decoration:none;"><button class="btn btn-secondary">← Back to nulllimit.gg</button></a>
+      <button class="btn btn-primary" onclick="goToPage(1)">Submit Another Inquiry</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL TOGGLE -->
+<div class="admin-toggle">
+  <button class="admin-btn" onclick="toggleAdmin()">◧ Internal View</button>
+</div>
+<div class="admin-panel" id="admin-panel">
+  <div class="ap-title">// Vitoshi — Internal Use Only</div>
+  <div style="font-size:11px;color:var(--muted2);line-height:1.7;">
+    <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+      <div style="color:var(--green);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;font-family:'DM Mono';">Legend</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span style="background:rgba(200,245,71,0.1);color:var(--green);border:1px solid rgba(200,245,71,0.2);padding:2px 8px;font-size:9px;font-family:'DM Mono';">Vitoshi</span>
+        <span style="background:rgba(74,158,255,0.1);color:var(--blue);border:1px solid rgba(74,158,255,0.2);padding:2px 8px;font-size:9px;font-family:'DM Mono';">Client</span>
+        <span style="background:rgba(212,168,67,0.1);color:var(--gold);border:1px solid rgba(212,168,67,0.2);padding:2px 8px;font-size:9px;font-family:'DM Mono';">Auto</span>
+      </div>
+    </div>
+    <div style="color:var(--muted2);">Use the checklist on Page 2 to track each client through the full 5-phase process. Check items off as they're completed. The checklist is independent per page load — for persistent tracking, copy to your CRM or Notion.</div>
+  </div>
+</div>
+
+<script>
+// ── STEPS ──
+const totalSteps = 5;
+function updateProgress(step) {
+  const pct = (step / totalSteps) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('step-label').textContent = `Step ${step} of ${totalSteps}`;
+  const dots = document.getElementById('step-dots');
+  dots.innerHTML = '';
+  for (let i = 1; i <= totalSteps; i++) {
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i < step ? ' done' : i === step ? ' active' : '');
+    dots.appendChild(d);
+  }
+}
+updateProgress(1);
+
+// ── PAGE NAVIGATION ──
+function goToPage(n) {
+  if (n === 2) buildSummary();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + n).classList.add('active');
+  window.scrollTo(0, 0);
+  updateProgress(n === 1 ? 1 : n === 2 ? 3 : 5);
+}
+
+// ── SECTION TOGGLE ──
+function toggleSection(id) {
+  const sec = document.getElementById(id);
+  sec.classList.toggle('open');
+}
+
+// ── SLIDERS ──
+function updateSlider(el) {
+  el.parentElement.nextElementSibling.textContent = el.value;
+}
+
+// ── CHECKBOXES (checklist) ──
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+}
+
+// ── SUMMARY ──
+function buildSummary() {
+  const get = id => document.getElementById(id)?.value || '—';
+  const checked = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value).join(', ') || '—';
+  const radio = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '—';
+
+  document.getElementById('sum-name').textContent = get('f-name');
+  document.getElementById('sum-business').textContent = get('f-business');
+  document.getElementById('sum-industry').textContent = get('f-industry');
+  document.getElementById('sum-email').textContent = get('f-email');
+  document.getElementById('sum-solution').textContent = radio('solution-type');
+  document.getElementById('sum-budget').textContent = radio('budget') !== '—' ? '$' + radio('budget') : '—';
+  document.getElementById('sum-urgency').textContent = radio('urgency');
+  document.getElementById('sum-pain').textContent = checked('pain');
+}
+
+// ── ADMIN PANEL ──
+function toggleAdmin() {
+  document.getElementById('admin-panel').classList.toggle('open');
+}
+
+// ── AUTO-OPEN SECTIONS ON CLICK NEXT ──
+document.querySelectorAll('.form-section-header').forEach(header => {
+  header.addEventListener('click', function() {
+    const section = this.parentElement;
+    const wasOpen = section.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.form-section').forEach(s => s.classList.remove('open'));
+    if (!wasOpen) section.classList.add('open');
+  });
+});
+</script>
+</body>
+</html>

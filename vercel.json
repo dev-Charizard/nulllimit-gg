@@ -1,24 +1,89 @@
 {
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/blog/your-first-ai-agent", "destination": "/your-first-ai-agent.html" },
-    { "source": "/blog/the-agent-economy-is-already-here", "destination": "/the-agent-economy-is-already-here.html" },
-    { "source": "/blog/two-tier-radar", "destination": "/two-tier-radar.html" },
-    { "source": "/blog/btc-prediction-markets", "destination": "/btc-prediction-markets.html" },
-    { "source": "/blog/athlete-to-developer", "destination": "/athlete-to-developer.html" },
-    { "source": "/blog/fed-prediction-markets", "destination": "/fed-prediction-markets.html" },
-    { "source": "/blog/openclaw-setup", "destination": "/openclaw-setup.html" },
-    { "source": "/blog/ai-trading-bot-2-weeks", "destination": "/ai-trading-bot-2-weeks.html" },
-    { "source": "/blog/kalshi-trading-bot", "destination": "/blog-kalshi-bot.html" },
-    { "source": "/aiguy", "destination": "/aiguy.html" },
-    { "source": "/consulting", "destination": "/consulting.html" },
-    { "source": "/ebooks", "destination": "/ebooks.html" },
-    { "source": "/blog", "destination": "/blog.html" },
-    { "source": "/leads", "destination": "/leads.html" },
-    { "source": "/agents", "destination": "/agents.html" },
-    { "source": "/intel", "destination": "/intel.html" },
-    { "source": "/api", "destination": "/api.html" },
-    { "source": "/edge", "destination": "/edge.html" },
-    { "source": "/work", "destination": "/work.html" }
+    {
+      "source": "/blog/your-first-ai-agent",
+      "destination": "/your-first-ai-agent.html"
+    },
+    {
+      "source": "/blog/the-agent-economy-is-already-here",
+      "destination": "/the-agent-economy-is-already-here.html"
+    },
+    {
+      "source": "/blog/two-tier-radar",
+      "destination": "/two-tier-radar.html"
+    },
+    {
+      "source": "/blog/btc-prediction-markets",
+      "destination": "/btc-prediction-markets.html"
+    },
+    {
+      "source": "/blog/athlete-to-developer",
+      "destination": "/athlete-to-developer.html"
+    },
+    {
+      "source": "/blog/fed-prediction-markets",
+      "destination": "/fed-prediction-markets.html"
+    },
+    {
+      "source": "/blog/openclaw-setup",
+      "destination": "/openclaw-setup.html"
+    },
+    {
+      "source": "/blog/ai-trading-bot-2-weeks",
+      "destination": "/ai-trading-bot-2-weeks.html"
+    },
+    {
+      "source": "/blog/kalshi-trading-bot",
+      "destination": "/blog-kalshi-bot.html"
+    },
+    {
+      "source": "/aiguy",
+      "destination": "/aiguy.html"
+    },
+    {
+      "source": "/consulting",
+      "destination": "/consulting.html"
+    },
+    {
+      "source": "/ebooks",
+      "destination": "/ebooks.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog.html"
+    },
+    {
+      "source": "/leads",
+      "destination": "/leads.html"
+    },
+    {
+      "source": "/agents",
+      "destination": "/agents.html"
+    },
+    {
+      "source": "/intel",
+      "destination": "/intel.html"
+    },
+    {
+      "source": "/api",
+      "destination": "/api.html"
+    },
+    {
+      "source": "/edge",
+      "destination": "/edge.html"
+    },
+    {
+      "source": "/work",
+      "destination": "/work.html"
+    },
+    {
+      "source": "/start",
+      "destination": "/null-limit-onboarding.html"
+    },
+    {
+      "source": "/gengar",
+      "destination": "/gengar-challenge-site.html"
+    }
   ]
 }
