@@ -848,65 +848,91 @@ async function submitForm() {
   const vibes = [...document.querySelectorAll('input[name="vibe"]:checked')].map(i => i.value).join(', ');
   const features = [...document.querySelectorAll('input[name="features"]:checked')].map(i => i.value).join(', ');
 
+  // ── Value decoders
+  const decode = {
+    'has-domain': { yes: 'Yes — already owns a domain', no: 'No — needs help getting one' },
+    subdomain: { yes: 'Yes — needs a subdomain', no: 'No — main domain only', unsure: 'Not sure — needs guidance' },
+    'has-hosting': { yes: 'Yes — has existing hosting', no: 'No — needs to set up hosting', unsure: 'Not sure — needs guidance' },
+    goal: { leads: 'Generate leads / inquiries', sales: 'Make direct sales', book: 'Book appointments', credibility: 'Build credibility / online presence', community: 'Build a community / audience', other: 'Other — see notes' },
+    'has-logo': { 'yes-file': 'Yes — has a proper file (PNG/SVG/AI)', 'yes-image': 'Yes — only as an image (JPG/screenshot)', no: 'No logo yet — needs one created' },
+    'font-pref': { modern: 'Modern / Sans-serif (DM Sans, Inter, Syne)', classic: 'Classic / Serif (Playfair, Georgia)', display: 'Display / Impact (Bebas Neue, Anton)', mono: 'Monospace / Code feel (JetBrains Mono)', mixed: 'Mixed — bold headers + clean body text', unsure: 'Not sure — designer decides' },
+    'has-copy': { yes: 'Yes — copy is written and ready', partial: 'Partial — has some, needs help with rest', no: 'No — needs copy written from scratch' },
+    'has-photos': { yes: 'Yes — has own photos ready to use', partial: 'Some — may need stock photos to fill gaps', no: 'No — needs stock photos sourced', 'none-needed': 'No images needed for this site' },
+    'has-video': { yes: 'Yes — has a YouTube or Vimeo link', want: 'Wants video but does not have one yet', no: 'No video needed' },
+    'has-reviews': { yes: 'Yes — has written testimonials ready', google: 'Has Google / Yelp reviews', no: 'No reviews yet' },
+    'mobile-prio': { mobile: 'Mostly mobile (80%+ on phones)', equal: 'Split — mobile and desktop equally', desktop: 'Mostly desktop' },
+    timeline: { asap: 'ASAP — needs it live within 1–2 weeks', month: 'Within a month', flexible: 'Flexible — quality over speed', specific: 'Specific date — see deadline field' },
+    budget: { '125': '$125 — Landing page / single page', '300': '$300 — Small multi-page site (3–5 pages)', '500': '$500 — Full business website (5–8 pages)', '1000+': '$1,000+ — Complex build (e-commerce, membership)', unsure: 'Not sure — wants recommendation' },
+  };
+  const dv = (name, fallback='Not answered') => { const el = document.querySelector('input[name="'+name+'"]:checked'); if (!el) return fallback; return decode[name]?.[el.value] || el.value; };
+
   const data = {
-    // Contact
-    name,
-    email,
-    phone: document.getElementById('f-phone').value,
-    business_name: biz,
-    industry: document.getElementById('f-industry').value,
-    current_website: document.getElementById('f-current').value,
-    business_description: document.getElementById('f-biz-desc').value,
-    target_audience: document.getElementById('f-audience').value,
-    // Domain
-    has_domain: document.querySelector('input[name="has-domain"]:checked')?.value || '—',
-    domain_name: document.getElementById('f-domain')?.value || '—',
-    domain_registrar: document.getElementById('f-registrar')?.value || '—',
-    needs_subdomain: document.querySelector('input[name="subdomain"]:checked')?.value || '—',
-    subdomain_purpose: document.getElementById('f-subdomain')?.value || '—',
-    domain_want_1: document.getElementById('f-domain-want1')?.value || '—',
-    domain_want_2: document.getElementById('f-domain-want2')?.value || '—',
-    domain_want_3: document.getElementById('f-domain-want3')?.value || '—',
-    has_hosting: document.querySelector('input[name="has-hosting"]:checked')?.value || '—',
-    // Site type & goal
-    site_types: siteTypes,
-    primary_goal: document.querySelector('input[name="goal"]:checked')?.value || '—',
-    goal_extra: document.getElementById('f-goal-extra').value,
-    // Pages
-    standard_pages: selectedPages,
-    custom_pages: pages.join(' | '),
-    tab_count: document.getElementById('f-tab-count').value,
-    nav_links: document.getElementById('f-nav').value,
-    // Design
-    has_logo: document.querySelector('input[name="has-logo"]:checked')?.value || '—',
-    logo_description: document.getElementById('f-logo-desc').value,
-    brand_colors: colors,
-    color_description: document.getElementById('f-color-desc').value,
-    design_vibes: vibes,
-    font_preference: document.querySelector('input[name="font-pref"]:checked')?.value || '—',
-    // Content
-    has_copy: document.querySelector('input[name="has-copy"]:checked')?.value || '—',
-    has_photos: document.querySelector('input[name="has-photos"]:checked')?.value || '—',
-    has_video: document.querySelector('input[name="has-video"]:checked')?.value || '—',
-    tagline: document.getElementById('f-tagline').value,
-    selling_points: document.getElementById('f-selling').value,
-    has_reviews: document.querySelector('input[name="has-reviews"]:checked')?.value || '—',
-    testimonials: document.getElementById('f-testimonials').value,
-    // Features
-    features,
-    integrations: document.getElementById('f-integrations').value,
-    mobile_priority: document.querySelector('input[name="mobile-prio"]:checked')?.value || '—',
-    // Inspiration
-    inspiration_links: inspoLinks.join(', '),
-    inspiration_why: document.getElementById('f-inspo-why').value,
-    sites_to_avoid: document.getElementById('f-no-inspo').value,
-    competitors: document.getElementById('f-competitors').value,
-    // Timeline & budget
-    timeline: document.querySelector('input[name="timeline"]:checked')?.value || '—',
-    deadline: document.getElementById('f-deadline').value,
-    budget: document.querySelector('input[name="budget"]:checked')?.value || '—',
-    other_notes: document.getElementById('f-other').value,
-    how_found: document.getElementById('f-source').value,
+    // ── SECTION 1: CLIENT INFO
+    '01 | Full Name': name,
+    '02 | Email Address': email,
+    '03 | Phone / WhatsApp': document.getElementById('f-phone').value || 'Not provided',
+    '04 | Business / Brand Name': biz,
+    '05 | Industry': document.getElementById('f-industry').value || '—',
+    '06 | Current Website': document.getElementById('f-current').value || 'None',
+    '07 | Business Description': document.getElementById('f-biz-desc').value || '—',
+    '08 | Target Audience': document.getElementById('f-audience').value || '—',
+
+    // ── SECTION 2: DOMAIN & HOSTING
+    '09 | Has a Domain Already?': dv('has-domain'),
+    '10 | Domain Name (if owned)': document.getElementById('f-domain')?.value || 'N/A',
+    '11 | Domain Registrar': document.getElementById('f-registrar')?.value || 'N/A',
+    '12 | Needs a Subdomain?': dv('subdomain'),
+    '13 | Subdomain Purpose': document.getElementById('f-subdomain')?.value || 'N/A',
+    '14 | Domain Option 1 (if no domain)': document.getElementById('f-domain-want1')?.value || 'N/A',
+    '15 | Domain Option 2 (if no domain)': document.getElementById('f-domain-want2')?.value || 'N/A',
+    '16 | Domain Option 3 (if no domain)': document.getElementById('f-domain-want3')?.value || 'N/A',
+    '17 | Has Existing Hosting?': dv('has-hosting'),
+
+    // ── SECTION 3: SITE TYPE & GOAL
+    '18 | Website Type(s) Needed': siteTypes || 'Not selected',
+    '19 | Primary Goal of the Site': dv('goal'),
+    '20 | Goal — Additional Context': document.getElementById('f-goal-extra').value || 'None added',
+
+    // ── SECTION 4: PAGES & STRUCTURE
+    '21 | Standard Pages Selected': selectedPages || 'None selected',
+    '22 | Custom Pages Described': pages.join(' | ') || 'None added',
+    '23 | Number of Nav Tabs Wanted': document.getElementById('f-tab-count').value || '—',
+    '24 | Navigation Links (in order)': document.getElementById('f-nav').value || '—',
+
+    // ── SECTION 5: DESIGN & BRANDING
+    '25 | Logo Status': dv('has-logo'),
+    '26 | Logo Description / Notes': document.getElementById('f-logo-desc').value || 'None',
+    '27 | Brand Colors (hex codes)': colors || 'Not provided',
+    '28 | Color Description (in words)': document.getElementById('f-color-desc').value || 'None',
+    '29 | Design Vibe(s)': vibes || 'Not selected',
+    '30 | Font Preference': dv('font-pref'),
+
+    // ── SECTION 6: CONTENT & COPY
+    '31 | Copy / Text Ready?': dv('has-copy'),
+    '32 | Photos Available?': dv('has-photos'),
+    '33 | Video to Include?': dv('has-video'),
+    '34 | Homepage Tagline / Headline': document.getElementById('f-tagline').value || 'None provided',
+    '35 | Key Selling Points': document.getElementById('f-selling').value || 'None provided',
+    '36 | Testimonials Available?': dv('has-reviews'),
+    '37 | Testimonials (pasted)': document.getElementById('f-testimonials').value || 'None provided',
+
+    // ── SECTION 7: FEATURES & FUNCTIONALITY
+    '38 | Features Required': features || 'None selected',
+    '39 | Tool Integrations Needed': document.getElementById('f-integrations').value || 'None specified',
+    '40 | Mobile vs Desktop Priority': dv('mobile-prio'),
+
+    // ── SECTION 8: INSPIRATION
+    '41 | Inspiration Sites (URLs)': inspoLinks.join(', ') || 'None provided',
+    '42 | What They Like About Those Sites': document.getElementById('f-inspo-why').value || 'None',
+    '43 | Sites They Do NOT Want to Look Like': document.getElementById('f-no-inspo').value || 'None',
+    '44 | Competitor Websites': document.getElementById('f-competitors').value || 'None provided',
+
+    // ── SECTION 9: TIMELINE & BUDGET
+    '45 | Launch Timeline': dv('timeline'),
+    '46 | Specific Launch Deadline': document.getElementById('f-deadline').value || 'None',
+    '47 | Budget Range': dv('budget'),
+    '48 | Additional Notes': document.getElementById('f-other').value || 'Nothing added',
+    '49 | How They Found Null Limit': document.getElementById('f-source').value || '—',
   };
 
   // Show loading state
