@@ -717,10 +717,11 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 <div id="confirm-screen">
   <div class="confirm-icon">◈</div>
   <div class="confirm-title">We've got<br/>everything.</div>
-  <p class="confirm-sub">Your website intake has been submitted. Vitoshi will review it and reach out within 2 hours with next steps.</p>
+  <p class="confirm-sub">Your intake has been submitted and sent to Vitoshi. He'll review everything and be in touch soon to talk through next steps.</p>
   <div class="confirm-box">
     <div class="cb-title">// Your submission summary</div>
     <div class="cb-row"><span class="cb-label">Name</span><span class="cb-val" id="sum-name">—</span></div>
+    <div class="cb-row"><span class="cb-label">Email</span><span class="cb-val" id="sum-email-conf">—</span></div>
     <div class="cb-row"><span class="cb-label">Business</span><span class="cb-val" id="sum-biz">—</span></div>
     <div class="cb-row"><span class="cb-label">Site Type</span><span class="cb-val" id="sum-type">—</span></div>
     <div class="cb-row"><span class="cb-label">Domain</span><span class="cb-val" id="sum-domain">—</span></div>
@@ -822,26 +823,133 @@ document.addEventListener('input', updateProgress);
 document.addEventListener('change', updateProgress);
 
 // ── SUBMIT
-function submitForm() {
-  const name = document.getElementById('f-name').value;
-  const biz = document.getElementById('f-biz').value;
-  if (!name || !biz) { alert('Please fill in at least your name and business name before submitting.'); return; }
+// ── FORMSPREE ENDPOINT
+// 1. Go to formspree.io → sign up free → New Form → name it "Website Intake"
+// 2. Set notification email to vitoshi@nulllimit.gg
+// 3. Copy your form ID and replace YOUR_FORM_ID below
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mojybapw';
 
-  const types = [...document.querySelectorAll('input[name="site-type"]:checked')].map(i => i.value).join(', ');
-  const domain = document.getElementById('f-domain')?.value || document.getElementById('f-domain-want1')?.value || 'No domain yet';
-  const budget = document.querySelector('input[name="budget"]:checked')?.value || '—';
-  const timeline = document.querySelector('input[name="timeline"]:checked')?.value || '—';
+async function submitForm() {
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const biz = document.getElementById('f-biz').value.trim();
 
-  document.getElementById('sum-name').textContent = name;
-  document.getElementById('sum-biz').textContent = biz;
-  document.getElementById('sum-type').textContent = types || '—';
-  document.getElementById('sum-domain').textContent = domain;
-  document.getElementById('sum-budget').textContent = budget !== '—' ? '$' + budget : '—';
-  document.getElementById('sum-timeline').textContent = timeline;
+  if (!name || !biz || !email) {
+    alert('Please fill in your name, email, and business name before submitting.');
+    return;
+  }
 
-  document.getElementById('main-form').style.display = 'none';
-  document.getElementById('confirm-screen').style.display = 'block';
-  window.scrollTo(0, 0);
+  // Collect all form data
+  const pages = [...document.querySelectorAll('#pages-list input[type="text"]')].map(i => i.value).filter(Boolean);
+  const inspoLinks = [...document.querySelectorAll('#inspo-list input[type="url"]')].map(i => i.value).filter(Boolean);
+  const colors = [...document.querySelectorAll('#color-list .color-hex')].map(i => i.value).join(', ');
+  const siteTypes = [...document.querySelectorAll('input[name="site-type"]:checked')].map(i => i.value).join(', ');
+  const selectedPages = [...document.querySelectorAll('input[name="pages"]:checked')].map(i => i.value).join(', ');
+  const vibes = [...document.querySelectorAll('input[name="vibe"]:checked')].map(i => i.value).join(', ');
+  const features = [...document.querySelectorAll('input[name="features"]:checked')].map(i => i.value).join(', ');
+
+  const data = {
+    // Contact
+    name,
+    email,
+    phone: document.getElementById('f-phone').value,
+    business_name: biz,
+    industry: document.getElementById('f-industry').value,
+    current_website: document.getElementById('f-current').value,
+    business_description: document.getElementById('f-biz-desc').value,
+    target_audience: document.getElementById('f-audience').value,
+    // Domain
+    has_domain: document.querySelector('input[name="has-domain"]:checked')?.value || '—',
+    domain_name: document.getElementById('f-domain')?.value || '—',
+    domain_registrar: document.getElementById('f-registrar')?.value || '—',
+    needs_subdomain: document.querySelector('input[name="subdomain"]:checked')?.value || '—',
+    subdomain_purpose: document.getElementById('f-subdomain')?.value || '—',
+    domain_want_1: document.getElementById('f-domain-want1')?.value || '—',
+    domain_want_2: document.getElementById('f-domain-want2')?.value || '—',
+    domain_want_3: document.getElementById('f-domain-want3')?.value || '—',
+    has_hosting: document.querySelector('input[name="has-hosting"]:checked')?.value || '—',
+    // Site type & goal
+    site_types: siteTypes,
+    primary_goal: document.querySelector('input[name="goal"]:checked')?.value || '—',
+    goal_extra: document.getElementById('f-goal-extra').value,
+    // Pages
+    standard_pages: selectedPages,
+    custom_pages: pages.join(' | '),
+    tab_count: document.getElementById('f-tab-count').value,
+    nav_links: document.getElementById('f-nav').value,
+    // Design
+    has_logo: document.querySelector('input[name="has-logo"]:checked')?.value || '—',
+    logo_description: document.getElementById('f-logo-desc').value,
+    brand_colors: colors,
+    color_description: document.getElementById('f-color-desc').value,
+    design_vibes: vibes,
+    font_preference: document.querySelector('input[name="font-pref"]:checked')?.value || '—',
+    // Content
+    has_copy: document.querySelector('input[name="has-copy"]:checked')?.value || '—',
+    has_photos: document.querySelector('input[name="has-photos"]:checked')?.value || '—',
+    has_video: document.querySelector('input[name="has-video"]:checked')?.value || '—',
+    tagline: document.getElementById('f-tagline').value,
+    selling_points: document.getElementById('f-selling').value,
+    has_reviews: document.querySelector('input[name="has-reviews"]:checked')?.value || '—',
+    testimonials: document.getElementById('f-testimonials').value,
+    // Features
+    features,
+    integrations: document.getElementById('f-integrations').value,
+    mobile_priority: document.querySelector('input[name="mobile-prio"]:checked')?.value || '—',
+    // Inspiration
+    inspiration_links: inspoLinks.join(', '),
+    inspiration_why: document.getElementById('f-inspo-why').value,
+    sites_to_avoid: document.getElementById('f-no-inspo').value,
+    competitors: document.getElementById('f-competitors').value,
+    // Timeline & budget
+    timeline: document.querySelector('input[name="timeline"]:checked')?.value || '—',
+    deadline: document.getElementById('f-deadline').value,
+    budget: document.querySelector('input[name="budget"]:checked')?.value || '—',
+    other_notes: document.getElementById('f-other').value,
+    how_found: document.getElementById('f-source').value,
+  };
+
+  // Show loading state
+  const btn = document.querySelector('.btn-submit');
+  const originalText = btn.textContent;
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+
+  try {
+    const res = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      // Show confirmation
+      document.getElementById('sum-name').textContent = name;
+      document.getElementById('sum-biz').textContent = biz;
+      document.getElementById('sum-email-conf').textContent = email;
+      document.getElementById('sum-type').textContent = siteTypes || '—';
+      document.getElementById('sum-domain').textContent = data.domain_name !== '—' ? data.domain_name : (data.domain_want_1 !== '—' ? data.domain_want_1 + ' (wanted)' : 'No domain yet');
+      document.getElementById('sum-budget').textContent = data.budget !== '—' ? '$' + data.budget : '—';
+      document.getElementById('sum-timeline').textContent = data.timeline;
+      document.getElementById('main-form').style.display = 'none';
+      document.getElementById('confirm-screen').style.display = 'block';
+      window.scrollTo(0, 0);
+    } else {
+      const json = await res.json();
+      if (json.errors) {
+        alert('Submission error: ' + json.errors.map(e => e.message).join(', '));
+      } else {
+        alert('Something went wrong. Please email vitoshi@nulllimit.gg directly.');
+      }
+    }
+  } catch(err) {
+    alert('Network error. Please email vitoshi@nulllimit.gg directly with your details.');
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
 }
 
 function resetForm() {
