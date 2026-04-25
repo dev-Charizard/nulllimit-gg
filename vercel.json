@@ -84,6 +84,10 @@
     {
       "source": "/gengar",
       "destination": "/gengar-challenge-site.html"
+    },
+    {
+      "source": "/website",
+      "destination": "/website-intake.html"
     }
   ]
 }

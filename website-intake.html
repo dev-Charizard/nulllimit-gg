@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Website Build Intake — Null Limit</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black:#07090f;--bg2:#0d1117;--bg3:#131820;--bg4:#181f28;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#e8eaf0;--muted:#5a6070;--muted2:#8892a0;
+  --green:#c8f547;--green2:rgba(200,245,71,0.08);--green3:rgba(200,245,71,0.18);
+  --red:#e05252;--gold:#d4a843;--blue:#4a9eff;
+  --purple:#b388ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.03) 3px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:1000;}
+
+/* ── PRINT STYLES ── */
+@media print {
+  body{background:white;color:#111;}
+  body::before{display:none;}
+  .no-print{display:none!important;}
+  nav,.progress-bar{display:none;}
+  .form-section{border:1px solid #ddd;margin-bottom:16px;break-inside:avoid;}
+  .form-section-body{display:block!important;}
+  input,select,textarea{border:1px solid #ccc;background:white;color:#111;}
+  :root{--black:#fff;--bg2:#f9f9f9;--bg3:#f0f0f0;--bg4:#e8e8e8;--border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.2);--text:#111;--muted:#666;--muted2:#444;--green:#2d6a00;}
+}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(7,9,15,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 40px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Bebas Neue';font-size:18px;letter-spacing:0.1em;color:var(--text);}
+.nav-logo span{color:var(--green);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{font-size:11px;font-family:'DM Mono';letter-spacing:0.12em;text-transform:uppercase;padding:8px 16px;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-print{background:transparent;color:var(--muted2);border:1px solid var(--border2);}
+.btn-print:hover{border-color:var(--green3);color:var(--green);}
+.btn-submit{background:var(--green);color:var(--black);}
+.btn-submit:hover{background:#d4ff4f;}
+
+/* ── PROGRESS ── */
+.progress-bar{height:2px;background:var(--border);position:sticky;top:56px;z-index:99;}
+.progress-fill{height:100%;background:var(--green);transition:width 0.4s ease;box-shadow:0 0 8px rgba(200,245,71,0.3);}
+
+/* ── HERO ── */
+.hero{padding:56px 40px 40px;max-width:900px;margin:0 auto;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-family:'DM Mono';letter-spacing:0.18em;text-transform:uppercase;color:var(--green);background:var(--green2);border:1px solid var(--green3);padding:6px 14px;margin-bottom:20px;}
+.hero-title{font-family:'Bebas Neue';font-size:clamp(48px,8vw,88px);letter-spacing:0.03em;line-height:0.9;color:var(--text);margin-bottom:12px;}
+.hero-title span{color:var(--green);}
+.hero-sub{font-size:clamp(13px,1.6vw,16px);color:var(--muted2);line-height:1.7;max-width:640px;margin-bottom:20px;}
+.hero-meta{display:flex;align-items:center;gap:20px;flex-wrap:wrap;font-size:11px;font-family:'DM Mono';color:var(--muted);}
+.hero-meta span{display:flex;align-items:center;gap:6px;}
+.hero-meta span::before{content:'//';color:var(--green);}
+
+/* ── FORM CONTAINER ── */
+.form-wrap{max-width:900px;margin:0 auto;padding:0 40px 80px;}
+
+/* ── SECTION HEADERS ── */
+.form-section{background:var(--bg2);border:1px solid var(--border);margin-bottom:2px;overflow:hidden;}
+.form-section-header{display:flex;align-items:center;gap:14px;padding:18px 24px;cursor:pointer;transition:background 0.2s;user-select:none;}
+.form-section-header:hover{background:var(--bg3);}
+.form-section.open .form-section-header{border-bottom:1px solid var(--border);}
+.fsh-num{font-family:'Bebas Neue';font-size:26px;color:var(--muted);line-height:1;flex-shrink:0;width:30px;}
+.form-section.open .fsh-num{color:var(--green);}
+.fsh-info{flex:1;}
+.fsh-title{font-size:14px;font-weight:600;color:var(--text);}
+.fsh-sub{font-size:11px;color:var(--muted2);margin-top:2px;}
+.fsh-arrow{color:var(--muted);font-size:14px;transition:transform 0.25s;flex-shrink:0;}
+.form-section.open .fsh-arrow{transform:rotate(180deg);color:var(--green);}
+.fsh-req{font-size:9px;font-family:'DM Mono';letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;flex-shrink:0;}
+.req-yes{background:rgba(224,82,82,0.1);color:var(--red);border:1px solid rgba(224,82,82,0.2);}
+.req-opt{background:rgba(90,96,112,0.15);color:var(--muted2);border:1px solid var(--border2);}
+.form-section-body{display:none;padding:24px 28px;display:none;}
+.form-section.open .form-section-body{display:block;}
+
+/* ── FIELDS ── */
+.field-group{margin-bottom:22px;}
+.field-group:last-child{margin-bottom:0;}
+.field-label{display:block;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
+.field-label .req{color:var(--red);margin-left:3px;}
+.field-hint{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:8px;}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.field-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+@media(max-width:600px){.field-grid,.field-grid-3{grid-template-columns:1fr;}}
+
+input[type="text"],input[type="email"],input[type="tel"],input[type="url"],input[type="number"],select,textarea{
+  width:100%;background:var(--bg3);border:1px solid var(--border2);
+  color:var(--text);font-family:'DM Sans';font-size:13px;
+  padding:11px 14px;outline:none;
+  transition:border-color 0.2s,background 0.2s;
+  appearance:none;-webkit-appearance:none;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--green);background:var(--bg4);}
+input::placeholder,textarea::placeholder{color:var(--muted);}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6070' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;cursor:pointer;}
+textarea{resize:vertical;min-height:88px;line-height:1.6;}
+
+/* ── OPTION CARDS ── */
+.option-grid{display:grid;gap:8px;}
+.option-grid.cols-2{grid-template-columns:1fr 1fr;}
+.option-grid.cols-3{grid-template-columns:1fr 1fr 1fr;}
+.option-grid.cols-4{grid-template-columns:1fr 1fr 1fr 1fr;}
+@media(max-width:640px){.option-grid.cols-2,.option-grid.cols-3,.option-grid.cols-4{grid-template-columns:1fr 1fr;}}
+@media(max-width:400px){.option-grid{grid-template-columns:1fr!important;}}
+
+.opt-card{position:relative;}
+.opt-card input{position:absolute;opacity:0;pointer-events:none;}
+.opt-label{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--bg3);border:1px solid var(--border2);cursor:pointer;transition:all 0.2s;}
+.opt-label:hover{border-color:var(--green3);background:var(--bg4);}
+.opt-card input:checked + .opt-label{border-color:var(--green);background:var(--green2);}
+.opt-check{width:15px;height:15px;border:1px solid var(--border2);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.opt-card.radio .opt-check{border-radius:50%;}
+.opt-card input:checked + .opt-label .opt-check{background:var(--green);border-color:var(--green);}
+.opt-card input:checked + .opt-label .opt-check::after{content:'✓';font-size:9px;color:var(--black);font-weight:700;}
+.opt-card.radio input:checked + .opt-label .opt-check::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--black);}
+.opt-text .opt-title{font-size:12px;font-weight:600;color:var(--text);}
+.opt-text .opt-desc{font-size:11px;color:var(--muted2);margin-top:2px;line-height:1.4;}
+
+/* ── COLOR PICKER ── */
+.color-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border2);margin-bottom:8px;}
+.color-swatch{width:36px;height:36px;border:1px solid var(--border2);cursor:pointer;flex-shrink:0;}
+.color-hex{font-family:'DM Mono';font-size:12px;color:var(--text);background:transparent;border:none;outline:none;width:90px;}
+.color-label-text{font-size:12px;color:var(--muted2);flex:1;}
+.color-remove{font-size:10px;font-family:'DM Mono';color:var(--muted);cursor:pointer;padding:4px 8px;border:1px solid var(--border2);background:transparent;transition:all 0.2s;}
+.color-remove:hover{border-color:var(--red);color:var(--red);}
+.add-color-btn{font-size:11px;font-family:'DM Mono';letter-spacing:0.1em;text-transform:uppercase;color:var(--green);background:transparent;border:1px dashed var(--green3);padding:10px 16px;cursor:pointer;width:100%;transition:all 0.2s;margin-top:4px;}
+.add-color-btn:hover{background:var(--green2);}
+
+/* ── PAGE COUNT ── */
+.page-input-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border2);}
+.page-input-row input[type="text"]{border:none;background:transparent;padding:0;font-size:13px;}
+.page-num{font-family:'Bebas Neue';font-size:20px;color:var(--green);flex-shrink:0;width:24px;}
+.page-remove{font-size:10px;font-family:'DM Mono';color:var(--muted);cursor:pointer;padding:3px 8px;border:1px solid var(--border2);background:transparent;transition:all 0.2s;flex-shrink:0;}
+.page-remove:hover{border-color:var(--red);color:var(--red);}
+.add-page-btn{font-size:11px;font-family:'DM Mono';letter-spacing:0.1em;text-transform:uppercase;color:var(--purple);background:transparent;border:1px dashed rgba(179,136,255,0.3);padding:10px 16px;cursor:pointer;width:100%;transition:all 0.2s;margin-top:4px;}
+.add-page-btn:hover{background:rgba(179,136,255,0.06);}
+
+/* ── INSPO LINKS ── */
+.inspo-row{display:flex;gap:8px;margin-bottom:8px;}
+.inspo-row input{flex:1;}
+.inspo-remove{font-size:10px;font-family:'DM Mono';color:var(--muted);cursor:pointer;padding:0 12px;border:1px solid var(--border2);background:transparent;transition:all 0.2s;flex-shrink:0;}
+.inspo-remove:hover{border-color:var(--red);color:var(--red);}
+.add-inspo-btn{font-size:11px;font-family:'DM Mono';letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);background:transparent;border:1px dashed rgba(74,158,255,0.3);padding:10px 16px;cursor:pointer;width:100%;transition:all 0.2s;margin-top:4px;}
+.add-inspo-btn:hover{background:rgba(74,158,255,0.06);}
+
+/* ── DIVIDER ── */
+.field-divider{height:1px;background:var(--border);margin:20px 0;}
+
+/* ── CONFIRMATION ── */
+#confirm-screen{display:none;max-width:700px;margin:60px auto;padding:0 40px;text-align:center;}
+.confirm-icon{font-size:48px;margin-bottom:20px;}
+.confirm-title{font-family:'Bebas Neue';font-size:clamp(48px,8vw,80px);letter-spacing:0.03em;color:var(--green);line-height:0.9;margin-bottom:16px;}
+.confirm-sub{font-size:16px;color:var(--muted2);line-height:1.7;margin-bottom:32px;}
+.confirm-box{background:var(--bg2);border:1px solid var(--border);padding:24px 28px;text-align:left;}
+.cb-title{font-size:10px;font-family:'DM Mono';letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.cb-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.cb-row:last-child{border-bottom:none;}
+.cb-label{color:var(--muted2);font-family:'DM Mono';}
+.cb-val{color:var(--text);font-weight:500;text-align:right;max-width:60%;}
+
+@media(max-width:640px){
+  nav{padding:0 16px;}
+  .hero,.form-wrap{padding-left:16px;padding-right:16px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="no-print">
+  <div class="nav-logo">null<span>;</span> limit</div>
+  <div class="nav-right">
+    <button class="nav-btn btn-print" onclick="window.print()">⬇ Print / PDF</button>
+    <button class="nav-btn btn-submit" onclick="submitForm()">Submit →</button>
+  </div>
+</nav>
+<div class="progress-bar no-print"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">◈ Website Build Intake</div>
+  <h1 class="hero-title">Let's build your<br/><span>website.</span></h1>
+  <p class="hero-sub">Fill this out as completely as you can. Every detail helps us build exactly what you're looking for — the more specific you are, the better the result. Takes about 10 minutes.</p>
+  <div class="hero-meta">
+    <span>~10 minutes</span>
+    <span>9 sections</span>
+    <span>Sent directly to Vitoshi</span>
+  </div>
+</div>
+
+<div class="form-wrap" id="main-form">
+
+<!-- ══ 01 ABOUT YOU ══ -->
+<div class="form-section open" id="s01">
+  <div class="form-section-header" onclick="tog('s01')">
+    <div class="fsh-num">01</div>
+    <div class="fsh-info"><div class="fsh-title">About You & Your Business</div><div class="fsh-sub">Who we're building for</div></div>
+    <span class="fsh-req req-yes">Required</span>
+    <span class="fsh-arrow">▾</span>
+  </div>
+  <div class="form-section-body">
+    <div class="field-grid">
+      <div class="field-group">
+        <label class="field-label">Your Full Name <span class="req">*</span></label>
+        <input type="text" id="f-name" placeholder="First and last name"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Email Address <span class="req">*</span></label>
+        <input type="email" id="f-email" placeholder="you@yourbusiness.com"/>
+      </div>
+    </div>
+    <div class="field-grid">
+      <div class="field-group">
+        <label class="field-label">Phone / WhatsApp</label>
+        <input type="tel" id="f-phone" placeholder="+1 (000) 000-0000"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Business / Brand Name <span class="req">*</span></label>
+        <input type="text" id="f-biz" placeholder="The name as it appears publicly"/>
+      </div>
+    </div>
+    <div class="field-grid">
+      <div class="field-group">
+        <label class="field-label">Industry / Niche <span class="req">*</span></label>
+        <select id="f-industry">
+          <option value="">Select your industry</option>
+          <option>Real Estate Agent / Broker</option>
+          <option>Real Estate Investor</option>
+          <option>Sports Camp / Academy</option>
+          <option>Personal Trainer / Coach</option>
+          <option>Podcaster / Content Creator</option>
+          <option>Digital Creator / Influencer</option>
+          <option>Nonprofit Organization</option>
+          <option>Restaurant / Food & Beverage</option>
+          <option>Salon / Beauty / Wellness</option>
+          <option>Medical / Dental / Clinic</option>
+          <option>Retail / E-Commerce</option>
+          <option>Local Service (Plumber, Electrician etc.)</option>
+          <option>Event Planning / Coordination</option>
+          <option>Consulting / Professional Services</option>
+          <option>Music / Entertainment</option>
+          <option>Photography / Videography</option>
+          <option>Law / Legal Services</option>
+          <option>Education / Tutoring</option>
+          <option>Tech / SaaS / Software</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Current Website (if any)</label>
+        <input type="url" id="f-current" placeholder="https://yoursite.com or leave blank"/>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Describe your business in 2–3 sentences <span class="req">*</span></label>
+      <div class="field-hint">What do you do, who do you serve, what makes you different?</div>
+      <textarea id="f-biz-desc" placeholder="We run a youth basketball training academy in Atlanta. We train athletes ages 8–18 with a focus on skill development and college placement. We run 3 sessions per year with 100+ campers each."></textarea>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Who is your target audience / ideal customer? <span class="req">*</span></label>
+      <textarea id="f-audience" placeholder="Parents of youth athletes aged 8-18 in the Atlanta metro area, primarily middle to upper-middle class families who take sports seriously and invest in development." style="min-height:70px;"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 02 DOMAIN ══ -->
+<div class="form-section" id="s02">
+  <div class="form-section-header" onclick="tog('s02')">
+    <div class="fsh-num">02</div>
+    <div class="fsh-info"><div class="fsh-title">Domain & Hosting</div><div class="fsh-sub">Your website address and where it lives</div></div>
+    <span class="fsh-req req-yes">Required</span>
+    <span class="fsh-arrow">▾</span>
+  </div>
+  <div class="form-section-body">
+    <div class="field-group">
+      <label class="field-label">Do you already have a domain name? <span class="req">*</span></label>
+      <div class="field-hint">A domain is your website address — e.g. <strong>yourbusiness.com</strong></div>
+      <div class="option-grid cols-2">
+        <div class="opt-card radio"><input type="radio" name="has-domain" value="yes" onchange="domainToggle()"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I already own a domain</div><div class="opt-desc">You purchased it from GoDaddy, Namecheap, Spaceship, etc.</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-domain" value="no" onchange="domainToggle()"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No — I need help getting one</div><div class="opt-desc">We'll guide you through purchasing one. Costs ~$10–15/year.</div></div></label></div>
+      </div>
+    </div>
+    <div id="domain-yes-fields" style="display:none;">
+      <div class="field-group">
+        <label class="field-label">What is your domain name?</label>
+        <input type="text" id="f-domain" placeholder="yourbusiness.com"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Where did you purchase it from?</label>
+        <select id="f-registrar">
+          <option value="">Select registrar</option>
+          <option>GoDaddy</option>
+          <option>Namecheap</option>
+          <option>Spaceship</option>
+          <option>Google Domains</option>
+          <option>Cloudflare</option>
+          <option>Squarespace Domains</option>
+          <option>Other</option>
+          <option>I'm not sure</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Do you need a subdomain? <span class="req"></span></label>
+        <div class="field-hint">A subdomain is a prefix on your domain — e.g. <strong>shop.yourbusiness.com</strong> or <strong>book.yourbusiness.com</strong></div>
+        <div class="option-grid cols-3">
+          <div class="opt-card radio"><input type="radio" name="subdomain" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes</div><div class="opt-desc">I need a subdomain too</div></div></label></div>
+          <div class="opt-card radio"><input type="radio" name="subdomain" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No</div><div class="opt-desc">Just the main domain</div></div></label></div>
+          <div class="opt-card radio"><input type="radio" name="subdomain" value="unsure"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure</div><div class="opt-desc">Advise me</div></div></label></div>
+        </div>
+      </div>
+      <div class="field-group" id="subdomain-field" style="display:none;">
+        <label class="field-label">What would the subdomain be for?</label>
+        <input type="text" id="f-subdomain" placeholder="e.g. shop.mybusiness.com — for an online store"/>
+      </div>
+    </div>
+    <div id="domain-no-fields" style="display:none;">
+      <div class="field-group">
+        <label class="field-label">Do you have a name in mind for your domain?</label>
+        <div class="field-hint">Give us 2–3 options in order of preference. We'll check availability and help you register one. Keep it short, memorable, and close to your business name.</div>
+        <input type="text" id="f-domain-want1" placeholder="First choice — e.g. myacademy.com" style="margin-bottom:8px;"/>
+        <input type="text" id="f-domain-want2" placeholder="Second choice" style="margin-bottom:8px;"/>
+        <input type="text" id="f-domain-want3" placeholder="Third choice"/>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Do you have existing hosting? <span class="req">*</span></label>
+      <div class="field-hint">Hosting is where your website's files live — Vercel, Netlify, GoDaddy hosting, Squarespace, Wix, etc. If you're not sure, select no.</div>
+      <div class="option-grid cols-3">
+        <div class="opt-card radio"><input type="radio" name="has-hosting" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes</div><div class="opt-desc">I have hosting already</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-hosting" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No</div><div class="opt-desc">Need to set it up</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-hosting" value="unsure"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure</div><div class="opt-desc">Help me figure it out</div></div></label></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 03 WEBSITE TYPE & GOAL ══ -->
+<div class="form-section" id="s03">
+  <div class="form-section-header" onclick="tog('s03')">
+    <div class="fsh-num">03</div>
+    <div class="fsh-info"><div class="fsh-title">Website Type & Goal</div><div class="fsh-sub">What the site needs to do for your business</div></div>
+    <span class="fsh-req req-yes">Required</span>
+    <span class="fsh-arrow">▾</span>
+  </div>
+  <div class="form-section-body">
+    <div class="field-group">
+      <label class="field-label">What type of website do you need? <span class="req">*</span></label>
+      <div class="option-grid cols-2">
+        <div class="opt-card"><input type="checkbox" name="site-type" value="landing"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Landing Page</div><div class="opt-desc">Single page, focused on one call to action</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="site-type" value="portfolio"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Portfolio / Showcase</div><div class="opt-desc">Show your work, services, or credentials</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="site-type" value="business"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Full Business Website</div><div class="opt-desc">Multi-page site with about, services, contact etc.</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="site-type" value="ecommerce"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">E-Commerce / Online Store</div><div class="opt-desc">Sell products or services directly online</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="site-type" value="booking"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Booking / Scheduling</div><div class="opt-desc">Let clients book appointments or sessions</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="site-type" value="blog"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Blog / Content Hub</div><div class="opt-desc">Publish articles, updates, or newsletters</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="site-type" value="membership"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Membership / Community</div><div class="opt-desc">Gated content for paying members</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="site-type" value="other"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Something else</div><div class="opt-desc">Describe below</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Primary goal of the website <span class="req">*</span></label>
+      <div class="field-hint">What's the #1 thing you want visitors to do when they land on your site?</div>
+      <div class="option-grid cols-2">
+        <div class="opt-card radio"><input type="radio" name="goal" value="leads"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Generate leads / inquiries</div><div class="opt-desc">Get people to contact you or fill out a form</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="goal" value="sales"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Make direct sales</div><div class="opt-desc">Sell a product, service, or course online</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="goal" value="book"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Book appointments</div><div class="opt-desc">Let clients schedule time with you</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="goal" value="credibility"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Build credibility / presence</div><div class="opt-desc">Show people who you are and what you do</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="goal" value="community"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Build a community</div><div class="opt-desc">Newsletter signups, members, recurring audience</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="goal" value="other"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Something else</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Additional context on what you want the site to achieve</label>
+      <textarea id="f-goal-extra" placeholder="e.g. I want parents to land on the site and book a camp spot directly without having to call me. I also want to showcase testimonials and past camper success stories." style="min-height:70px;"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 04 PAGES & STRUCTURE ══ -->
+<div class="form-section" id="s04">
+  <div class="form-section-header" onclick="tog('s04')">
+    <div class="fsh-num">04</div>
+    <div class="fsh-info"><div class="fsh-title">Pages & Site Structure</div><div class="fsh-sub">What pages you need and what goes on each one</div></div>
+    <span class="fsh-req req-yes">Required</span>
+    <span class="fsh-arrow">▾</span>
+  </div>
+  <div class="form-section-body">
+    <div class="field-group">
+      <label class="field-label">Which pages do you need? <span class="req">*</span></label>
+      <div class="field-hint">Check all that apply. We'll use this to build the nav and site structure.</div>
+      <div class="option-grid cols-2">
+        <div class="opt-card"><input type="checkbox" name="pages" value="home" checked/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Home</div><div class="opt-desc">Main landing page — always included</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="about"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">About</div><div class="opt-desc">Your story, team, mission</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="services"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Services / Offerings</div><div class="opt-desc">What you offer and what it costs</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="portfolio"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Portfolio / Gallery</div><div class="opt-desc">Work samples, photos, case studies</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="blog"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Blog / News</div><div class="opt-desc">Articles, updates, content</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="testimonials"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Testimonials / Reviews</div><div class="opt-desc">Social proof from clients or customers</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="faq"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">FAQ</div><div class="opt-desc">Common questions answered</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="pricing"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Pricing</div><div class="opt-desc">Transparent pricing or packages</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="contact"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Contact</div><div class="opt-desc">Contact form, map, phone, email</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="booking"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Booking / Schedule</div><div class="opt-desc">Online appointment booking</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="shop"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Shop / Store</div><div class="opt-desc">Products listed with cart and checkout</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="pages" value="custom"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Custom page</div><div class="opt-desc">Describe below</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Custom pages or sections to add</label>
+      <div class="field-hint">Name each tab/page you want and briefly describe what goes on it.</div>
+      <div id="pages-list">
+        <div class="page-input-row"><div class="page-num">1</div><input type="text" placeholder="Page name + what it should contain — e.g. Camp Schedule: list all 3 sessions with dates, prices, and a register button"/><button class="page-remove" onclick="removePage(this)">✕</button></div>
+      </div>
+      <button class="add-page-btn" onclick="addPage()">+ Add another page</button>
+    </div>
+    <div class="field-group">
+      <label class="field-label">How many total tabs / nav links do you want? <span class="req">*</span></label>
+      <div class="field-hint">Keep it simple — most great websites have 4–6 nav items. More than 7 gets cluttered.</div>
+      <select id="f-tab-count">
+        <option value="">Select</option>
+        <option>1–2 tabs (very minimal)</option>
+        <option>3–4 tabs (clean and focused)</option>
+        <option>5–6 tabs (standard business site)</option>
+        <option>7+ tabs (content-heavy site)</option>
+        <option>No nav — single scroll page</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label class="field-label">What do you want in the navigation bar? <span class="req">*</span></label>
+      <div class="field-hint">List them in order left to right — e.g. Home · About · Services · Book Now · Contact</div>
+      <input type="text" id="f-nav" placeholder="e.g. Home · About · Programs · Schedule · Contact"/>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 05 DESIGN & BRANDING ══ -->
+<div class="form-section" id="s05">
+  <div class="form-section-header" onclick="tog('s05')">
+    <div class="fsh-num">05</div>
+    <div class="fsh-info"><div class="fsh-title">Design & Branding</div><div class="fsh-sub">Colors, fonts, logo, and how the site should feel</div></div>
+    <span class="fsh-req req-yes">Required</span>
+    <span class="fsh-arrow">▾</span>
+  </div>
+  <div class="form-section-body">
+
+    <div class="field-group">
+      <label class="field-label">Do you have a logo? <span class="req">*</span></label>
+      <div class="option-grid cols-3">
+        <div class="opt-card radio"><input type="radio" name="has-logo" value="yes-file"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I have a file</div><div class="opt-desc">PNG, SVG, or AI file</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-logo" value="yes-image"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — only as an image</div><div class="opt-desc">JPG or screenshot</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-logo" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No logo yet</div><div class="opt-desc">Need one created or just text</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">If no logo — what should the logo/brand mark look like or say?</label>
+      <textarea id="f-logo-desc" placeholder="e.g. Just my business name 'Elite Hoops Academy' in a bold modern font. No icon needed. Or: I want a simple basketball + swoosh mark with my initials EHA." style="min-height:70px;"></textarea>
+    </div>
+
+    <div class="field-divider"></div>
+
+    <div class="field-group">
+      <label class="field-label">Your brand colors <span class="req">*</span></label>
+      <div class="field-hint">Add your brand colors below. If you don't know your exact hex codes, describe the colors in words (e.g. "deep navy blue, bright orange, white"). Add up to 5.</div>
+      <div id="color-list">
+        <div class="color-row">
+          <input type="color" class="color-swatch" value="#c8f547" oninput="syncHex(this)"/>
+          <input type="text" class="color-hex" value="#c8f547" oninput="syncColor(this)" maxlength="7"/>
+          <span class="color-label-text">Primary brand color</span>
+          <button class="color-remove" onclick="removeColor(this)">Remove</button>
+        </div>
+        <div class="color-row">
+          <input type="color" class="color-swatch" value="#090909" oninput="syncHex(this)"/>
+          <input type="text" class="color-hex" value="#090909" oninput="syncColor(this)" maxlength="7"/>
+          <span class="color-label-text">Background / secondary color</span>
+          <button class="color-remove" onclick="removeColor(this)">Remove</button>
+        </div>
+      </div>
+      <button class="add-color-btn" onclick="addColor()">+ Add another color</button>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Color description (if you don't have hex codes)</label>
+      <textarea id="f-color-desc" placeholder="e.g. I want a dark navy background with bright orange accents. White text. Clean and professional but with some energy." style="min-height:60px;"></textarea>
+    </div>
+
+    <div class="field-divider"></div>
+
+    <div class="field-group">
+      <label class="field-label">Overall design vibe <span class="req">*</span></label>
+      <div class="field-hint">Check everything that resonates. It's okay to pick multiple.</div>
+      <div class="option-grid cols-3">
+        <div class="opt-card"><input type="checkbox" name="vibe" value="minimal"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Minimal</div><div class="opt-desc">Clean, lots of white space, simple</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="vibe" value="bold"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Bold & Loud</div><div class="opt-desc">Big type, strong colors, makes a statement</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="vibe" value="dark"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Dark Mode</div><div class="opt-desc">Dark background, light text</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="vibe" value="light"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Light & Airy</div><div class="opt-desc">White or cream background, soft feel</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="vibe" value="luxury"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Luxury / Premium</div><div class="opt-desc">High-end feel, gold or muted tones</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="vibe" value="techy"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Tech / Modern</div><div class="opt-desc">Futuristic, digital, startup feel</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="vibe" value="warm"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Warm & Friendly</div><div class="opt-desc">Approachable, community-focused</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="vibe" value="sporty"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Sporty / Athletic</div><div class="opt-desc">Energy, motion, performance</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="vibe" value="corporate"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Corporate / Professional</div><div class="opt-desc">Trust, credibility, formal</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Font preference</label>
+      <div class="option-grid cols-2">
+        <div class="opt-card radio"><input type="radio" name="font-pref" value="modern"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Modern / Sans-serif</div><div class="opt-desc">Clean geometric letters — DM Sans, Inter, Syne</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="font-pref" value="classic"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Classic / Serif</div><div class="opt-desc">Traditional elegant letters — Playfair, Georgia</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="font-pref" value="display"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Display / Impact</div><div class="opt-desc">Big bold headers — Bebas Neue, Anton</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="font-pref" value="mono"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Monospace / Code</div><div class="opt-desc">Technical feel — JetBrains Mono, Courier</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="font-pref" value="mixed"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Mixed — bold headers + clean body</div><div class="opt-desc">Best of both — strong titles, readable text</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="font-pref" value="unsure"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure — you decide</div><div class="opt-desc">We'll pick what fits best</div></div></label></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 06 CONTENT ══ -->
+<div class="form-section" id="s06">
+  <div class="form-section-header" onclick="tog('s06')">
+    <div class="fsh-num">06</div>
+    <div class="fsh-info"><div class="fsh-title">Content & Copy</div><div class="fsh-sub">What text, images, and media go on the site</div></div>
+    <span class="fsh-req req-yes">Required</span>
+    <span class="fsh-arrow">▾</span>
+  </div>
+  <div class="form-section-body">
+    <div class="field-group">
+      <label class="field-label">Do you have copy (written text) ready? <span class="req">*</span></label>
+      <div class="option-grid cols-3">
+        <div class="opt-card radio"><input type="radio" name="has-copy" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I have it written</div><div class="opt-desc">Ready to paste in</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-copy" value="partial"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Partially — some pages</div><div class="opt-desc">Have some, need help with rest</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-copy" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No — I need it written</div><div class="opt-desc">We'll write the copy for you</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Do you have photos or images? <span class="req">*</span></label>
+      <div class="option-grid cols-2">
+        <div class="opt-card radio"><input type="radio" name="has-photos" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I have my own photos</div><div class="opt-desc">Professional or phone photos ready to use</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-photos" value="partial"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Some — but not enough</div><div class="opt-desc">Have a few, may need stock photos for gaps</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-photos" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No — use stock photos</div><div class="opt-desc">We'll source relevant stock images</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-photos" value="none-needed"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No images needed</div><div class="opt-desc">Design/icon only site</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Do you have a video to include?</label>
+      <div class="option-grid cols-3">
+        <div class="opt-card radio"><input type="radio" name="has-video" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — YouTube or Vimeo link</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-video" value="want"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">I want video but don't have one yet</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-video" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No video needed</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Your tagline or headline (if you have one)</label>
+      <div class="field-hint">The first thing people read on your homepage. If you don't have one we'll write it.</div>
+      <input type="text" id="f-tagline" placeholder='e.g. "Train Like a Pro. Perform Like One." or "Where Athletes Become Champions."'/>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Key selling points / why choose you (list 3–5)</label>
+      <div class="field-hint">What makes you the best choice? These become your homepage feature blocks.</div>
+      <textarea id="f-selling" placeholder="1. 12 years of coaching experience&#10;2. 94% of our athletes improved their scoring average&#10;3. Small group sessions — max 12 athletes per coach&#10;4. Former D1 and pro players on staff&#10;5. Flexible payment plans available"></textarea>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Do you have testimonials / reviews to include?</label>
+      <div class="option-grid cols-3">
+        <div class="opt-card radio"><input type="radio" name="has-reviews" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — written ones</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-reviews" value="google"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Google / Yelp reviews</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="has-reviews" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not yet</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Paste your best 2–3 testimonials here (if you have them)</label>
+      <textarea id="f-testimonials" placeholder='"Coach Vitoshi changed my son\'s game completely. In 6 months he went from JV to starting varsity." — Marcus T., Atlanta GA&#10;&#10;"The best investment we made for our daughter\'s basketball career." — Jennifer L., Marietta GA' style="min-height:100px;"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 07 FEATURES & FUNCTIONALITY ══ -->
+<div class="form-section" id="s07">
+  <div class="form-section-header" onclick="tog('s07')">
+    <div class="fsh-num">07</div>
+    <div class="fsh-info"><div class="fsh-title">Features & Functionality</div><div class="fsh-sub">What the website needs to actually do</div></div>
+    <span class="fsh-req req-yes">Required</span>
+    <span class="fsh-arrow">▾</span>
+  </div>
+  <div class="form-section-body">
+    <div class="field-group">
+      <label class="field-label">Which features do you need? <span class="req">*</span></label>
+      <div class="field-hint">Check everything that applies — this determines the complexity of the build.</div>
+      <div class="option-grid cols-2">
+        <div class="opt-card"><input type="checkbox" name="features" value="contact-form"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Contact Form</div><div class="opt-desc">Sends inquiries to your email</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="booking"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Online Booking / Scheduling</div><div class="opt-desc">Calendly integration or built-in booking</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="payments"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Online Payments</div><div class="opt-desc">Stripe, PayPal, or direct checkout</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="newsletter"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Email Newsletter Signup</div><div class="opt-desc">Collect emails for your list</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="live-chat"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Live Chat / AI Chat Widget</div><div class="opt-desc">Chat bot or live support on the site</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="map"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Google Maps Integration</div><div class="opt-desc">Show your location on the site</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="social"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Social Media Feed</div><div class="opt-desc">Pull in Instagram or TikTok posts</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="gallery"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Photo / Video Gallery</div><div class="opt-desc">Scrollable or filterable gallery</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="blog"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Blog / CMS</div><div class="opt-desc">Publish posts yourself without code</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="countdown"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Countdown Timer</div><div class="opt-desc">For events, launches, or deadlines</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="multilang"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Multi-language Support</div><div class="opt-desc">Site content in more than one language</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="analytics"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Analytics Dashboard</div><div class="opt-desc">Track visitors, clicks, and conversions</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="login"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Member Login / Portal</div><div class="opt-desc">Gated area for registered users</div></div></label></div>
+        <div class="opt-card"><input type="checkbox" name="features" value="popup"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Pop-up / Lead Capture</div><div class="opt-desc">Timed or exit-intent pop-up</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Any specific integrations or tools to connect?</label>
+      <textarea id="f-integrations" placeholder="e.g. I use Calendly for bookings. Square for payments. Mailchimp for my email list. I want all three to work with the site." style="min-height:70px;"></textarea>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Mobile experience priority <span class="req">*</span></label>
+      <div class="field-hint">All our sites are mobile responsive. Tell us where most of your traffic comes from.</div>
+      <div class="option-grid cols-3">
+        <div class="opt-card radio"><input type="radio" name="mobile-prio" value="mobile"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Mostly mobile</div><div class="opt-desc">80%+ visitors on phones</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="mobile-prio" value="equal"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Split — both</div><div class="opt-desc">Mobile and desktop equally</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="mobile-prio" value="desktop"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Mostly desktop</div><div class="opt-desc">Most visitors on computers</div></div></label></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 08 INSPIRATION ══ -->
+<div class="form-section" id="s08">
+  <div class="form-section-header" onclick="tog('s08')">
+    <div class="fsh-num">08</div>
+    <div class="fsh-info"><div class="fsh-title">Inspiration & References</div><div class="fsh-sub">Sites you love — or hate</div></div>
+    <span class="fsh-req req-opt">Optional</span>
+    <span class="fsh-arrow">▾</span>
+  </div>
+  <div class="form-section-body">
+    <div class="field-group">
+      <label class="field-label">Websites you love (paste URLs)</label>
+      <div class="field-hint">Doesn't have to be in your industry — any site whose design, feel, or layout you like. We'll pull what you like about it.</div>
+      <div id="inspo-list">
+        <div class="inspo-row"><input type="url" placeholder="https://example.com"/><button class="inspo-remove" onclick="removeInspo(this)">✕</button></div>
+        <div class="inspo-row"><input type="url" placeholder="https://example.com"/><button class="inspo-remove" onclick="removeInspo(this)">✕</button></div>
+      </div>
+      <button class="add-inspo-btn" onclick="addInspo()">+ Add another inspiration site</button>
+    </div>
+    <div class="field-group">
+      <label class="field-label">What specifically do you like about those sites?</label>
+      <textarea id="f-inspo-why" placeholder="e.g. I love how Nike's site feels high-energy with big images. I like how Apple keeps it minimal with lots of white space. I want something in between — clean but with strong imagery." style="min-height:70px;"></textarea>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Websites you absolutely do NOT want to look like</label>
+      <textarea id="f-no-inspo" placeholder="e.g. Don't want it to look like a basic Wix template. Nothing too corporate and stiff. No stock-photo-heavy sites that look the same as everyone else." style="min-height:60px;"></textarea>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Competitor websites (if you want to see what's already out there)</label>
+      <textarea id="f-competitors" placeholder="e.g. My main competitors are eliteathletics.com, prohoopsatl.com. I want to look more premium than both." style="min-height:60px;"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 09 TIMELINE & BUDGET ══ -->
+<div class="form-section" id="s09">
+  <div class="form-section-header" onclick="tog('s09')">
+    <div class="fsh-num">09</div>
+    <div class="fsh-info"><div class="fsh-title">Timeline & Budget</div><div class="fsh-sub">When you need it and what you're working with</div></div>
+    <span class="fsh-req req-opt">Optional but helpful</span>
+    <span class="fsh-arrow">▾</span>
+  </div>
+  <div class="form-section-body">
+    <div class="field-group">
+      <label class="field-label">When do you need the site live? <span class="req">*</span></label>
+      <div class="option-grid cols-2">
+        <div class="opt-card radio"><input type="radio" name="timeline" value="asap"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">ASAP — urgent</div><div class="opt-desc">Need it live within 1–2 weeks</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="timeline" value="month"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Within a month</div><div class="opt-desc">No extreme rush but soon</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="timeline" value="flexible"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Flexible — get it right</div><div class="opt-desc">Quality over speed</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="timeline" value="specific"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Specific date</div><div class="opt-desc">Tied to an event or launch</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Specific launch date or deadline (if applicable)</label>
+      <input type="text" id="f-deadline" placeholder="e.g. June 1st — camp registration opens that day"/>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Budget range for the build</label>
+      <div class="option-grid cols-2">
+        <div class="opt-card radio"><input type="radio" name="budget" value="125"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$125 — Landing page / single page</div><div class="opt-desc">One focused page, clean design</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="budget" value="300"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$300 — Small multi-page site</div><div class="opt-desc">3–5 pages, basic features</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="budget" value="500"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$500 — Full business website</div><div class="opt-desc">5–8 pages, full features, integrations</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="budget" value="1000+"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$1,000+ — Complex build</div><div class="opt-desc">E-commerce, membership, custom features</div></div></label></div>
+        <div class="opt-card radio"><input type="radio" name="budget" value="unsure"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure — advise me</div><div class="opt-desc">Tell me what's right for my needs</div></div></label></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Anything else we should know?</label>
+      <textarea id="f-other" placeholder="Any constraints, strong preferences, past bad experiences with web designers, specific things that are non-negotiable, or anything that would help us build the perfect site for you." style="min-height:80px;"></textarea>
+    </div>
+    <div class="field-group">
+      <label class="field-label">How did you find Null Limit?</label>
+      <select id="f-source">
+        <option value="">Select one</option>
+        <option>Instagram (@nulllimit.gg)</option>
+        <option>Saw nulllimit.gg website</option>
+        <option>Referred by someone</option>
+        <option>TikTok</option>
+        <option>Twitter / X</option>
+        <option>Google search</option>
+        <option>Other</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMIT -->
+<div style="display:flex;align-items:center;justify-content:space-between;padding:28px 0;flex-wrap:wrap;gap:12px;">
+  <div style="font-size:11px;font-family:'DM Mono';color:var(--muted);">All fields marked <span style="color:var(--red);">*</span> are required</div>
+  <div style="display:flex;gap:10px;">
+    <button class="nav-btn btn-print" onclick="window.print()">⬇ Save as PDF</button>
+    <button class="nav-btn btn-submit" style="font-size:13px;padding:14px 28px;" onclick="submitForm()">Submit Intake →</button>
+  </div>
+</div>
+
+</div><!-- end form-wrap -->
+
+<!-- CONFIRMATION -->
+<div id="confirm-screen">
+  <div class="confirm-icon">◈</div>
+  <div class="confirm-title">We've got<br/>everything.</div>
+  <p class="confirm-sub">Your website intake has been submitted. Vitoshi will review it and reach out within 2 hours with next steps.</p>
+  <div class="confirm-box">
+    <div class="cb-title">// Your submission summary</div>
+    <div class="cb-row"><span class="cb-label">Name</span><span class="cb-val" id="sum-name">—</span></div>
+    <div class="cb-row"><span class="cb-label">Business</span><span class="cb-val" id="sum-biz">—</span></div>
+    <div class="cb-row"><span class="cb-label">Site Type</span><span class="cb-val" id="sum-type">—</span></div>
+    <div class="cb-row"><span class="cb-label">Domain</span><span class="cb-val" id="sum-domain">—</span></div>
+    <div class="cb-row"><span class="cb-label">Budget</span><span class="cb-val" id="sum-budget">—</span></div>
+    <div class="cb-row"><span class="cb-label">Timeline</span><span class="cb-val" id="sum-timeline">—</span></div>
+  </div>
+  <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <a href="https://nulllimit.gg" style="text-decoration:none;"><button class="nav-btn btn-print" style="padding:12px 24px;">← Back to nulllimit.gg</button></a>
+    <button class="nav-btn btn-submit" style="padding:12px 24px;" onclick="resetForm()">Submit Another</button>
+  </div>
+</div>
+
+<script>
+// ── SECTION TOGGLE
+function tog(id) {
+  const s = document.getElementById(id);
+  s.classList.toggle('open');
+  updateProgress();
+}
+
+// ── DOMAIN TOGGLE
+function domainToggle() {
+  const val = document.querySelector('input[name="has-domain"]:checked')?.value;
+  document.getElementById('domain-yes-fields').style.display = val === 'yes' ? 'block' : 'none';
+  document.getElementById('domain-no-fields').style.display = val === 'no' ? 'block' : 'none';
+}
+document.querySelectorAll('input[name="subdomain"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('subdomain-field').style.display = r.value === 'yes' ? 'block' : 'none';
+  });
+});
+
+// ── COLORS
+function syncHex(input) {
+  input.nextElementSibling.value = input.value;
+}
+function syncColor(input) {
+  const val = input.value;
+  if (/^#[0-9a-f]{6}$/i.test(val)) input.previousElementSibling.value = val;
+}
+function addColor() {
+  const list = document.getElementById('color-list');
+  if (list.children.length >= 5) return;
+  const row = document.createElement('div');
+  row.className = 'color-row';
+  row.innerHTML = `<input type="color" class="color-swatch" value="#ffffff" oninput="syncHex(this)"/><input type="text" class="color-hex" value="#ffffff" oninput="syncColor(this)" maxlength="7"/><span class="color-label-text">Additional color</span><button class="color-remove" onclick="removeColor(this)">Remove</button>`;
+  list.appendChild(row);
+}
+function removeColor(btn) {
+  if (document.getElementById('color-list').children.length > 1) btn.closest('.color-row').remove();
+}
+
+// ── PAGES
+let pageCount = 1;
+function addPage() {
+  pageCount++;
+  const list = document.getElementById('pages-list');
+  const row = document.createElement('div');
+  row.className = 'page-input-row';
+  row.innerHTML = `<div class="page-num">${pageCount}</div><input type="text" placeholder="Page name + what it should contain"/><button class="page-remove" onclick="removePage(this)">✕</button>`;
+  list.appendChild(row);
+}
+function removePage(btn) {
+  const list = document.getElementById('pages-list');
+  if (list.children.length > 1) {
+    btn.closest('.page-input-row').remove();
+    document.querySelectorAll('.page-num').forEach((n, i) => n.textContent = i + 1);
+    pageCount = list.children.length;
+  }
+}
+
+// ── INSPO LINKS
+function addInspo() {
+  const list = document.getElementById('inspo-list');
+  if (list.children.length >= 6) return;
+  const row = document.createElement('div');
+  row.className = 'inspo-row';
+  row.innerHTML = `<input type="url" placeholder="https://example.com"/><button class="inspo-remove" onclick="removeInspo(this)">✕</button>`;
+  list.appendChild(row);
+}
+function removeInspo(btn) {
+  const list = document.getElementById('inspo-list');
+  if (list.children.length > 1) btn.closest('.inspo-row').remove();
+}
+
+// ── PROGRESS
+function updateProgress() {
+  const sections = document.querySelectorAll('.form-section');
+  let filled = 0;
+  sections.forEach(s => {
+    const inputs = s.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]):not([type="color"]), textarea, select');
+    const radios = s.querySelectorAll('input[type="radio"]:checked');
+    const checks = s.querySelectorAll('input[type="checkbox"]:checked');
+    if ([...inputs].some(i => i.value.trim()) || radios.length > 0 || checks.length > 0) filled++;
+  });
+  document.getElementById('prog').style.width = (filled / sections.length * 100) + '%';
+}
+document.addEventListener('input', updateProgress);
+document.addEventListener('change', updateProgress);
+
+// ── SUBMIT
+function submitForm() {
+  const name = document.getElementById('f-name').value;
+  const biz = document.getElementById('f-biz').value;
+  if (!name || !biz) { alert('Please fill in at least your name and business name before submitting.'); return; }
+
+  const types = [...document.querySelectorAll('input[name="site-type"]:checked')].map(i => i.value).join(', ');
+  const domain = document.getElementById('f-domain')?.value || document.getElementById('f-domain-want1')?.value || 'No domain yet';
+  const budget = document.querySelector('input[name="budget"]:checked')?.value || '—';
+  const timeline = document.querySelector('input[name="timeline"]:checked')?.value || '—';
+
+  document.getElementById('sum-name').textContent = name;
+  document.getElementById('sum-biz').textContent = biz;
+  document.getElementById('sum-type').textContent = types || '—';
+  document.getElementById('sum-domain').textContent = domain;
+  document.getElementById('sum-budget').textContent = budget !== '—' ? '$' + budget : '—';
+  document.getElementById('sum-timeline').textContent = timeline;
+
+  document.getElementById('main-form').style.display = 'none';
+  document.getElementById('confirm-screen').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function resetForm() {
+  document.getElementById('main-form').style.display = 'block';
+  document.getElementById('confirm-screen').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+// Auto-open first section
+document.getElementById('s01').classList.add('open');
+</script>
+</body>
+</html>
