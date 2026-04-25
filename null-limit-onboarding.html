@@ -859,7 +859,7 @@ input[type="range"]::-webkit-slider-thumb {
 
   <div class="form-nav">
     <button class="btn btn-secondary" onclick="goToPage(1)">← Edit Answers</button>
-    <button class="btn btn-primary" onclick="goToPage(3)">Submit & Continue →</button>
+    <button class="btn btn-primary" id="submit-btn" onclick="submitOnboarding()">Submit & Continue →</button>
   </div>
 </div>
 
@@ -993,6 +993,88 @@ document.querySelectorAll('.form-section-header').forEach(header => {
     if (!wasOpen) section.classList.add('open');
   });
 });
+
+// ── FORMSPREE SUBMISSION
+const ONBOARDING_ENDPOINT = 'https://formspree.io/f/xjgjzbjq';
+
+async function submitOnboarding() {
+  const name = document.getElementById('f-name')?.value?.trim();
+  const email = document.getElementById('f-email')?.value?.trim();
+  const biz = document.getElementById('f-business')?.value?.trim();
+
+  if (!name || !email || !biz) {
+    alert('Please fill in your name, email, and business name before submitting.');
+    return;
+  }
+
+  // Collect all form data
+  const painPoints = [...document.querySelectorAll('input[name="pain"]:checked')].map(i => i.value).join(', ');
+  const tools = [...document.querySelectorAll('input[name="tools"]:checked')].map(i => i.value).join(', ');
+
+  const data = {
+    // About
+    name,
+    email,
+    phone: document.getElementById('f-phone')?.value || '—',
+    business_name: biz,
+    website: document.getElementById('f-web')?.value || '—',
+    industry: document.getElementById('f-industry')?.value || '—',
+    team_size: document.querySelector('input[name="team"]:checked')?.value || '—',
+    about_business: document.getElementById('f-about')?.value || '—',
+    // Problem
+    pain_points: painPoints,
+    problem_description: document.getElementById('f-problem')?.value || '—',
+    time_lost_per_week: document.querySelector('input[name="time-lost"]:checked')?.value || '—',
+    monthly_revenue_impact: document.querySelector('input[name="rev-impact"]:checked')?.value || '—',
+    // AI Experience
+    ai_experience: document.querySelector('input[name="ai-exp"]:checked')?.value || '—',
+    ai_comfort_level: document.querySelector('input[name="ai-comfort"]:checked')?.value || '—',
+    current_tools: tools,
+    required_integrations: document.getElementById('f-integrations')?.value || '—',
+    // Solution
+    solution_type: document.querySelector('input[name="solution-type"]:checked')?.value || '—',
+    solution_description: document.getElementById('f-solution-desc')?.value || '—',
+    success_vision: document.getElementById('f-success')?.value || '—',
+    // Budget & Timeline
+    budget: document.querySelector('input[name="budget"]:checked')?.value || '—',
+    urgency: document.querySelector('input[name="urgency"]:checked')?.value || '—',
+    how_found: document.getElementById('f-source')?.value || '—',
+    other_notes: document.getElementById('f-other')?.value || '—',
+  };
+
+  // Loading state
+  const btn = document.getElementById('submit-btn');
+  const orig = btn.textContent;
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+
+  try {
+    const res = await fetch(ONBOARDING_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      // Go to confirmation page
+      goToPage(3);
+    } else {
+      const json = await res.json();
+      if (json.errors) {
+        alert('Error: ' + json.errors.map(e => e.message).join(', '));
+      } else {
+        alert('Something went wrong. Please email vitoshi@nulllimit.gg directly.');
+      }
+    }
+  } catch(err) {
+    alert('Network error. Please email vitoshi@nulllimit.gg directly.');
+  } finally {
+    btn.textContent = orig;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+}
 </script>
 </body>
 </html>
