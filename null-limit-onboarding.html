@@ -170,8 +170,8 @@ body::before {
 .status-done { background: var(--green2); color: var(--green); border: 1px solid var(--green3); }
 .status-optional { background: rgba(90,96,112,0.15); color: var(--muted2); border: 1px solid var(--border2); }
 
-.form-section-body { display: none; padding: 28px 24px; }
-.form-section.open .form-section-body { display: block; }
+.form-section-body { display: none; padding: 28px 24px; } .form-section.open .form-section-body { display: block !important; }
+.form-section.open /* display controlled by .form-section.open */
 
 /* ── FORM FIELDS ── */
 .field-group { margin-bottom: 24px; }
@@ -410,7 +410,7 @@ input[type="range"]::-webkit-slider-thumb {
 
     <!-- SECTION 1: About You -->
     <div class="form-section open" id="sec-about">
-      <div class="form-section-header" onclick="toggleSection('sec-about')">
+      <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="toggleSection('sec-about')">
         <div class="fsh-num">01</div>
         <div class="fsh-content">
           <div class="fsh-title">About You & Your Business</div>
@@ -476,20 +476,20 @@ input[type="range"]::-webkit-slider-thumb {
           <label class="field-label">Team Size</label>
           <div class="option-grid cols-2">
             <div class="option-card radio">
-              <input type="radio" name="team" value="solo"/>
-              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Solo / Just me</div><div class="option-desc">You run everything yourself</div></div></label>
+              <input id="opt-101" type="radio" name="team" value="solo"/>
+              <label for="opt-101" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Solo / Just me</div><div class="option-desc">You run everything yourself</div></div></label>
             </div>
             <div class="option-card radio">
-              <input type="radio" name="team" value="2-5"/>
-              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">2–5 people</div><div class="option-desc">Small team, everyone wears multiple hats</div></div></label>
+              <input id="opt-102" type="radio" name="team" value="2-5"/>
+              <label for="opt-102" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">2–5 people</div><div class="option-desc">Small team, everyone wears multiple hats</div></div></label>
             </div>
             <div class="option-card radio">
-              <input type="radio" name="team" value="6-20"/>
-              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">6–20 people</div><div class="option-desc">Mid-size, some dedicated roles</div></div></label>
+              <input id="opt-103" type="radio" name="team" value="6-20"/>
+              <label for="opt-103" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">6–20 people</div><div class="option-desc">Mid-size, some dedicated roles</div></div></label>
             </div>
             <div class="option-card radio">
-              <input type="radio" name="team" value="20+"/>
-              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">20+ people</div><div class="option-desc">Established organization</div></div></label>
+              <input id="opt-104" type="radio" name="team" value="20+"/>
+              <label for="opt-104" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">20+ people</div><div class="option-desc">Established organization</div></div></label>
             </div>
           </div>
         </div>
@@ -498,7 +498,7 @@ input[type="range"]::-webkit-slider-thumb {
 
     <!-- SECTION 2: The Problem -->
     <div class="form-section" id="sec-problem">
-      <div class="form-section-header" onclick="toggleSection('sec-problem')">
+      <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="toggleSection('sec-problem')">
         <div class="fsh-num">02</div>
         <div class="fsh-content">
           <div class="fsh-title">The Problem You're Trying to Solve</div>
@@ -512,14 +512,14 @@ input[type="range"]::-webkit-slider-thumb {
           <label class="field-label">What's your biggest operational pain point? <span>*</span></label>
           <div class="field-hint">Check all that apply — be honest, this helps us prioritize.</div>
           <div class="option-grid cols-2">
-            <div class="option-card"><input type="checkbox" name="pain" value="leads"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Missed leads / slow response</div><div class="option-desc">Inquiries go unanswered, especially after hours</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="pain" value="followup"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Follow-up failure</div><div class="option-desc">Deals die because nobody follows up consistently</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="pain" value="admin"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Admin overload</div><div class="option-desc">Scheduling, paperwork, emails eating your week</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="pain" value="scheduling"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Booking & scheduling chaos</div><div class="option-desc">No-shows, double bookings, manual coordination</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="pain" value="content"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Content / marketing inconsistency</div><div class="option-desc">No system for posting, promoting, or growing</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="pain" value="data"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">No data or reporting</div><div class="option-desc">Operating blind — no visibility into what's working</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="pain" value="customer"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Customer communication</div><div class="option-desc">Same questions answered manually every day</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="pain" value="scale"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Can't scale</div><div class="option-desc">Everything runs through you — no system to delegate</div></div></label></div>
+            <div class="option-card"><input id="opt-1" type="checkbox" name="pain" value="leads"/><label for="opt-1" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Missed leads / slow response</div><div class="option-desc">Inquiries go unanswered, especially after hours</div></div></label></div>
+            <div class="option-card"><input id="opt-105" type="checkbox" name="pain" value="followup"/><label for="opt-105" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Follow-up failure</div><div class="option-desc">Deals die because nobody follows up consistently</div></div></label></div>
+            <div class="option-card"><input id="opt-106" type="checkbox" name="pain" value="admin"/><label for="opt-106" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Admin overload</div><div class="option-desc">Scheduling, paperwork, emails eating your week</div></div></label></div>
+            <div class="option-card"><input id="opt-107" type="checkbox" name="pain" value="scheduling"/><label for="opt-107" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Booking & scheduling chaos</div><div class="option-desc">No-shows, double bookings, manual coordination</div></div></label></div>
+            <div class="option-card"><input id="opt-108" type="checkbox" name="pain" value="content"/><label for="opt-108" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Content / marketing inconsistency</div><div class="option-desc">No system for posting, promoting, or growing</div></div></label></div>
+            <div class="option-card"><input id="opt-109" type="checkbox" name="pain" value="data"/><label for="opt-109" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">No data or reporting</div><div class="option-desc">Operating blind — no visibility into what's working</div></div></label></div>
+            <div class="option-card"><input id="opt-110" type="checkbox" name="pain" value="customer"/><label for="opt-110" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Customer communication</div><div class="option-desc">Same questions answered manually every day</div></div></label></div>
+            <div class="option-card"><input id="opt-111" type="checkbox" name="pain" value="scale"/><label for="opt-111" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Can't scale</div><div class="option-desc">Everything runs through you — no system to delegate</div></div></label></div>
           </div>
         </div>
         <div class="field-group">
@@ -530,19 +530,19 @@ input[type="range"]::-webkit-slider-thumb {
         <div class="field-group">
           <label class="field-label">How much time per week does this problem cost you? (estimate)</label>
           <div class="option-grid cols-2">
-            <div class="option-card radio"><input type="radio" name="time-lost" value="1-3hrs"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">1–3 hours</div><div class="option-desc">Annoying but manageable</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="time-lost" value="3-8hrs"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">3–8 hours</div><div class="option-desc">Significant — affects productivity</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="time-lost" value="8-15hrs"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">8–15 hours</div><div class="option-desc">Major drain — it's a part-time job</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="time-lost" value="15+hrs"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">15+ hours</div><div class="option-desc">It's taking over — I need help now</div></div></label></div>
+            <div class="option-card radio"><input id="opt-2" type="radio" name="time-lost" value="1-3hrs"/><label for="opt-2" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">1–3 hours</div><div class="option-desc">Annoying but manageable</div></div></label></div>
+            <div class="option-card radio"><input id="opt-112" type="radio" name="time-lost" value="3-8hrs"/><label for="opt-112" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">3–8 hours</div><div class="option-desc">Significant — affects productivity</div></div></label></div>
+            <div class="option-card radio"><input id="opt-113" type="radio" name="time-lost" value="8-15hrs"/><label for="opt-113" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">8–15 hours</div><div class="option-desc">Major drain — it's a part-time job</div></div></label></div>
+            <div class="option-card radio"><input id="opt-114" type="radio" name="time-lost" value="15+hrs"/><label for="opt-114" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">15+ hours</div><div class="option-desc">It's taking over — I need help now</div></div></label></div>
           </div>
         </div>
         <div class="field-group">
           <label class="field-label">Estimated monthly revenue impact of this problem</label>
           <div class="option-grid cols-2">
-            <div class="option-card radio"><input type="radio" name="rev-impact" value="under500"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Under $500</div><div class="option-desc">Low financial impact</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="rev-impact" value="500-2k"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">$500 – $2,000</div><div class="option-desc">Noticeable monthly loss</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="rev-impact" value="2k-5k"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">$2,000 – $5,000</div><div class="option-desc">Significant missed revenue</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="rev-impact" value="5k+"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">$5,000+</div><div class="option-desc">Critical — this is costing us badly</div></div></label></div>
+            <div class="option-card radio"><input id="opt-3" type="radio" name="rev-impact" value="under500"/><label for="opt-3" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Under $500</div><div class="option-desc">Low financial impact</div></div></label></div>
+            <div class="option-card radio"><input id="opt-115" type="radio" name="rev-impact" value="500-2k"/><label for="opt-115" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">$500 – $2,000</div><div class="option-desc">Noticeable monthly loss</div></div></label></div>
+            <div class="option-card radio"><input id="opt-116" type="radio" name="rev-impact" value="2k-5k"/><label for="opt-116" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">$2,000 – $5,000</div><div class="option-desc">Significant missed revenue</div></div></label></div>
+            <div class="option-card radio"><input id="opt-117" type="radio" name="rev-impact" value="5k+"/><label for="opt-117" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">$5,000+</div><div class="option-desc">Critical — this is costing us badly</div></div></label></div>
           </div>
         </div>
       </div>
@@ -550,7 +550,7 @@ input[type="range"]::-webkit-slider-thumb {
 
     <!-- SECTION 3: AI Experience -->
     <div class="form-section" id="sec-ai">
-      <div class="form-section-header" onclick="toggleSection('sec-ai')">
+      <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="toggleSection('sec-ai')">
         <div class="fsh-num">03</div>
         <div class="fsh-content">
           <div class="fsh-title">Your AI Experience & Comfort Level</div>
@@ -563,34 +563,34 @@ input[type="range"]::-webkit-slider-thumb {
         <div class="field-group">
           <label class="field-label">Have you used AI tools before? <span>*</span></label>
           <div class="option-grid cols-2">
-            <div class="option-card radio"><input type="radio" name="ai-exp" value="none"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Never used AI tools</div><div class="option-desc">Starting from zero — that's completely fine</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="ai-exp" value="chatgpt"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">ChatGPT / basic tools only</div><div class="option-desc">Familiar with AI assistants, not automation</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="ai-exp" value="some-automation"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Some automation tools</div><div class="option-desc">Used Zapier, Make, or similar</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="ai-exp" value="advanced"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Advanced — I build with AI</div><div class="option-desc">APIs, custom workflows, AI-first operations</div></div></label></div>
+            <div class="option-card radio"><input id="opt-4" type="radio" name="ai-exp" value="none"/><label for="opt-4" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Never used AI tools</div><div class="option-desc">Starting from zero — that's completely fine</div></div></label></div>
+            <div class="option-card radio"><input id="opt-118" type="radio" name="ai-exp" value="chatgpt"/><label for="opt-118" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">ChatGPT / basic tools only</div><div class="option-desc">Familiar with AI assistants, not automation</div></div></label></div>
+            <div class="option-card radio"><input id="opt-119" type="radio" name="ai-exp" value="some-automation"/><label for="opt-119" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Some automation tools</div><div class="option-desc">Used Zapier, Make, or similar</div></div></label></div>
+            <div class="option-card radio"><input id="opt-120" type="radio" name="ai-exp" value="advanced"/><label for="opt-120" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Advanced — I build with AI</div><div class="option-desc">APIs, custom workflows, AI-first operations</div></div></label></div>
           </div>
         </div>
         <div class="field-group">
           <label class="field-label">How comfortable are you managing a tool on your own after setup?</label>
           <div class="option-grid cols-3">
-            <div class="option-card radio"><input type="radio" name="ai-comfort" value="low"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">I need hand-holding</div><div class="option-desc">Step-by-step guidance please</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="ai-comfort" value="mid"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">I can follow instructions</div><div class="option-desc">Show me once and I'll manage</div></div></label></div>
-            <div class="option-card radio"><input type="radio" name="ai-comfort" value="high"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">I'm comfortable independently</div><div class="option-desc">Just build it and I'll take it from there</div></div></label></div>
+            <div class="option-card radio"><input id="opt-5" type="radio" name="ai-comfort" value="low"/><label for="opt-5" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">I need hand-holding</div><div class="option-desc">Step-by-step guidance please</div></div></label></div>
+            <div class="option-card radio"><input id="opt-121" type="radio" name="ai-comfort" value="mid"/><label for="opt-121" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">I can follow instructions</div><div class="option-desc">Show me once and I'll manage</div></div></label></div>
+            <div class="option-card radio"><input id="opt-122" type="radio" name="ai-comfort" value="high"/><label for="opt-122" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">I'm comfortable independently</div><div class="option-desc">Just build it and I'll take it from there</div></div></label></div>
           </div>
         </div>
         <div class="field-group">
           <label class="field-label">What tools / platforms do you currently use? <span>*</span></label>
           <div class="field-hint">Check all that apply — helps us understand your existing stack.</div>
           <div class="option-grid cols-2">
-            <div class="option-card"><input type="checkbox" name="tools" value="gmail"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Gmail / Google Workspace</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="tools" value="outlook"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Outlook / Microsoft 365</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="tools" value="instagram"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Instagram / Facebook</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="tools" value="whatsapp"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">WhatsApp Business</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="tools" value="calendly"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Calendly / scheduling tool</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="tools" value="stripe"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Stripe / payment processor</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="tools" value="crm"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">CRM (HubSpot, Salesforce, etc.)</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="tools" value="notion"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Notion / project management</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="tools" value="shopify"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Shopify / e-commerce</div></div></label></div>
-            <div class="option-card"><input type="checkbox" name="tools" value="none"/><label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">No formal tools — mostly manual</div></div></label></div>
+            <div class="option-card"><input id="opt-6" type="checkbox" name="tools" value="gmail"/><label for="opt-6" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Gmail / Google Workspace</div></div></label></div>
+            <div class="option-card"><input id="opt-123" type="checkbox" name="tools" value="outlook"/><label for="opt-123" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Outlook / Microsoft 365</div></div></label></div>
+            <div class="option-card"><input id="opt-124" type="checkbox" name="tools" value="instagram"/><label for="opt-124" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Instagram / Facebook</div></div></label></div>
+            <div class="option-card"><input id="opt-125" type="checkbox" name="tools" value="whatsapp"/><label for="opt-125" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">WhatsApp Business</div></div></label></div>
+            <div class="option-card"><input id="opt-126" type="checkbox" name="tools" value="calendly"/><label for="opt-126" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Calendly / scheduling tool</div></div></label></div>
+            <div class="option-card"><input id="opt-127" type="checkbox" name="tools" value="stripe"/><label for="opt-127" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Stripe / payment processor</div></div></label></div>
+            <div class="option-card"><input id="opt-128" type="checkbox" name="tools" value="crm"/><label for="opt-128" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">CRM (HubSpot, Salesforce, etc.)</div></div></label></div>
+            <div class="option-card"><input id="opt-129" type="checkbox" name="tools" value="notion"/><label for="opt-129" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Notion / project management</div></div></label></div>
+            <div class="option-card"><input id="opt-130" type="checkbox" name="tools" value="shopify"/><label for="opt-130" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">Shopify / e-commerce</div></div></label></div>
+            <div class="option-card"><input id="opt-131" type="checkbox" name="tools" value="none"/><label for="opt-131" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">No formal tools — mostly manual</div></div></label></div>
           </div>
         </div>
         <div class="field-group">
@@ -602,7 +602,7 @@ input[type="range"]::-webkit-slider-thumb {
 
     <!-- SECTION 4: What You Need -->
     <div class="form-section" id="sec-solution">
-      <div class="form-section-header" onclick="toggleSection('sec-solution')">
+      <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="toggleSection('sec-solution')">
         <div class="fsh-num">04</div>
         <div class="fsh-content">
           <div class="fsh-title">What You Need Built</div>
@@ -617,28 +617,28 @@ input[type="range"]::-webkit-slider-thumb {
           <div class="field-hint">Select the closest match — we'll refine during the discovery call.</div>
           <div class="option-grid cols-2">
             <div class="option-card radio">
-              <input type="radio" name="solution-type" value="agent"/>
-              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">🤖 AI Agent</div><div class="option-desc">Autonomous — runs tasks, responds, acts on your behalf 24/7 without you</div></div></label>
+              <input id="opt-132" type="radio" name="solution-type" value="agent"/>
+              <label for="opt-132" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">🤖 AI Agent</div><div class="option-desc">Autonomous — runs tasks, responds, acts on your behalf 24/7 without you</div></div></label>
             </div>
             <div class="option-card radio">
-              <input type="radio" name="solution-type" value="chatbot"/>
-              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">💬 AI Chatbot</div><div class="option-desc">Answers questions, qualifies leads, handles FAQs on your site or social</div></div></label>
+              <input id="opt-133" type="radio" name="solution-type" value="chatbot"/>
+              <label for="opt-133" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">💬 AI Chatbot</div><div class="option-desc">Answers questions, qualifies leads, handles FAQs on your site or social</div></div></label>
             </div>
             <div class="option-card radio">
-              <input type="radio" name="solution-type" value="automation"/>
-              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">⚙️ AI Automation</div><div class="option-desc">Connects your tools, automates workflows, removes manual steps</div></div></label>
+              <input id="opt-134" type="radio" name="solution-type" value="automation"/>
+              <label for="opt-134" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">⚙️ AI Automation</div><div class="option-desc">Connects your tools, automates workflows, removes manual steps</div></div></label>
             </div>
             <div class="option-card radio">
-              <input type="radio" name="solution-type" value="dashboard"/>
-              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">📊 AI Dashboard / Reporting</div><div class="option-desc">Surfaces data insights, tracks performance, generates reports automatically</div></div></label>
+              <input id="opt-135" type="radio" name="solution-type" value="dashboard"/>
+              <label for="opt-135" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">📊 AI Dashboard / Reporting</div><div class="option-desc">Surfaces data insights, tracks performance, generates reports automatically</div></div></label>
             </div>
             <div class="option-card radio">
-              <input type="radio" name="solution-type" value="content"/>
-              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">✍️ AI Content System</div><div class="option-desc">Generates, schedules, repurposes, and distributes content automatically</div></div></label>
+              <input id="opt-136" type="radio" name="solution-type" value="content"/>
+              <label for="opt-136" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">✍️ AI Content System</div><div class="option-desc">Generates, schedules, repurposes, and distributes content automatically</div></div></label>
             </div>
             <div class="option-card radio">
-              <input type="radio" name="solution-type" value="unsure"/>
-              <label class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">🤷 Not sure yet</div><div class="option-desc">I know the problem — help me figure out the right solution</div></div></label>
+              <input id="opt-137" type="radio" name="solution-type" value="unsure"/>
+              <label for="opt-137" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">🤷 Not sure yet</div><div class="option-desc">I know the problem — help me figure out the right solution</div></div></label>
             </div>
           </div>
         </div>
@@ -666,7 +666,7 @@ input[type="range"]::-webkit-slider-thumb {
 
     <!-- SECTION 5: Budget & Timeline -->
     <div class="form-section" id="sec-budget">
-      <div class="form-section-header" onclick="toggleSection('sec-budget')">
+      <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="toggleSection('sec-budget')">
         <div class="fsh-num">05</div>
         <div class="fsh-content">
           <div class="fsh-title">Budget & Timeline</div>
@@ -679,18 +679,18 @@ input[type="range"]::-webkit-slider-thumb {
         <div class="field-group">
           <label class="field-label">Setup budget range</label>
           <div class="budget-grid">
-            <div class="budget-card"><input type="radio" name="budget" value="125"/><label class="budget-label"><div class="budget-amount">$125</div><div class="budget-desc">Basic setup</div></label></div>
-            <div class="budget-card"><input type="radio" name="budget" value="300"/><label class="budget-label"><div class="budget-amount">$300</div><div class="budget-desc">Standard build</div></label></div>
-            <div class="budget-card"><input type="radio" name="budget" value="500"/><label class="budget-label"><div class="budget-amount">$500</div><div class="budget-desc">Full system</div></label></div>
-            <div class="budget-card"><input type="radio" name="budget" value="custom"/><label class="budget-label"><div class="budget-amount">Custom</div><div class="budget-desc">Enterprise / complex</div></label></div>
+            <div class="budget-card"><input id="opt-138" type="radio" name="budget" value="125"/><label for="opt-138" class="budget-label"><div class="budget-amount">$125</div><div class="budget-desc">Basic setup</div></label></div>
+            <div class="budget-card"><input id="opt-139" type="radio" name="budget" value="300"/><label for="opt-139" class="budget-label"><div class="budget-amount">$300</div><div class="budget-desc">Standard build</div></label></div>
+            <div class="budget-card"><input id="opt-140" type="radio" name="budget" value="500"/><label for="opt-140" class="budget-label"><div class="budget-amount">$500</div><div class="budget-desc">Full system</div></label></div>
+            <div class="budget-card"><input id="opt-141" type="radio" name="budget" value="custom"/><label for="opt-141" class="budget-label"><div class="budget-amount">Custom</div><div class="budget-desc">Enterprise / complex</div></label></div>
           </div>
         </div>
         <div class="field-group">
           <label class="field-label">How urgent is this?</label>
           <div class="urgency-grid">
-            <div class="urgency-card"><input type="radio" name="urgency" value="exploring"/><label class="urgency-label"><span class="urgency-icon">🔍</span><div class="urgency-title">Exploring</div><div class="urgency-sub">No rush, gathering info</div></label></div>
-            <div class="urgency-card"><input type="radio" name="urgency" value="soon"/><label class="urgency-label"><span class="urgency-icon">📅</span><div class="urgency-title">Within a month</div><div class="urgency-sub">Ready when it's right</div></label></div>
-            <div class="urgency-card"><input type="radio" name="urgency" value="now"/><label class="urgency-label"><span class="urgency-icon">🔥</span><div class="urgency-title">As soon as possible</div><div class="urgency-sub">This is costing us now</div></label></div>
+            <div class="urgency-card"><input id="opt-142" type="radio" name="urgency" value="exploring"/><label for="opt-142" class="urgency-label"><span class="urgency-icon">🔍</span><div class="urgency-title">Exploring</div><div class="urgency-sub">No rush, gathering info</div></label></div>
+            <div class="urgency-card"><input id="opt-143" type="radio" name="urgency" value="soon"/><label for="opt-143" class="urgency-label"><span class="urgency-icon">📅</span><div class="urgency-title">Within a month</div><div class="urgency-sub">Ready when it's right</div></label></div>
+            <div class="urgency-card"><input id="opt-144" type="radio" name="urgency" value="now"/><label for="opt-144" class="urgency-label"><span class="urgency-icon">🔥</span><div class="urgency-title">As soon as possible</div><div class="urgency-sub">This is costing us now</div></label></div>
           </div>
         </div>
         <div class="field-group">
@@ -949,7 +949,11 @@ function goToPage(n) {
 // ── SECTION TOGGLE ──
 function toggleSection(id) {
   const sec = document.getElementById(id);
-  sec.classList.toggle('open');
+  const isOpen = sec.classList.contains('open');
+  // Close all sections first
+  document.querySelectorAll('.form-section').forEach(s => s.classList.remove('open'));
+  // If it wasn't open, open it
+  if (!isOpen) sec.classList.add('open');
 }
 
 // ── SLIDERS ──

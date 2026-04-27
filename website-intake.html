@@ -75,7 +75,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,15,0.94);backdrop-filt
 .req-yes{background:rgba(224,82,82,0.1);color:var(--red);border:1px solid rgba(224,82,82,0.2);}
 .req-opt{background:rgba(90,96,112,0.15);color:var(--muted2);border:1px solid var(--border2);}
 .form-section-body{display:none;padding:24px 28px;display:none;}
-.form-section.open .form-section-body{display:block;}
+.form-section.open .form-section-body{display:block!important;}
 
 /* ── FIELDS ── */
 .field-group{margin-bottom:22px;}
@@ -195,7 +195,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 
 <!-- ══ 01 ABOUT YOU ══ -->
 <div class="form-section open" id="s01">
-  <div class="form-section-header" onclick="tog('s01')">
+  <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="tog('s01')">
     <div class="fsh-num">01</div>
     <div class="fsh-info"><div class="fsh-title">About You & Your Business</div><div class="fsh-sub">Who we're building for</div></div>
     <span class="fsh-req req-yes">Required</span>
@@ -268,7 +268,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 
 <!-- ══ 02 DOMAIN ══ -->
 <div class="form-section" id="s02">
-  <div class="form-section-header" onclick="tog('s02')">
+  <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="tog('s02')">
     <div class="fsh-num">02</div>
     <div class="fsh-info"><div class="fsh-title">Domain & Hosting</div><div class="fsh-sub">Your website address and where it lives</div></div>
     <span class="fsh-req req-yes">Required</span>
@@ -279,8 +279,8 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
       <label class="field-label">Do you already have a domain name? <span class="req">*</span></label>
       <div class="field-hint">A domain is your website address — e.g. <strong>yourbusiness.com</strong></div>
       <div class="option-grid cols-2">
-        <div class="opt-card radio"><input type="radio" name="has-domain" value="yes" onchange="domainToggle()"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I already own a domain</div><div class="opt-desc">You purchased it from GoDaddy, Namecheap, Spaceship, etc.</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-domain" value="no" onchange="domainToggle()"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No — I need help getting one</div><div class="opt-desc">We'll guide you through purchasing one. Costs ~$10–15/year.</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-1" type="radio" name="has-domain" value="yes" onchange="domainToggle()"/><label for="wi-1" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I already own a domain</div><div class="opt-desc">You purchased it from GoDaddy, Namecheap, Spaceship, etc.</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-2" type="radio" name="has-domain" value="no" onchange="domainToggle()"/><label for="wi-2" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No — I need help getting one</div><div class="opt-desc">We'll guide you through purchasing one. Costs ~$10–15/year.</div></div></label></div>
       </div>
     </div>
     <div id="domain-yes-fields" style="display:none;">
@@ -306,9 +306,9 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
         <label class="field-label">Do you need a subdomain? <span class="req"></span></label>
         <div class="field-hint">A subdomain is a prefix on your domain — e.g. <strong>shop.yourbusiness.com</strong> or <strong>book.yourbusiness.com</strong></div>
         <div class="option-grid cols-3">
-          <div class="opt-card radio"><input type="radio" name="subdomain" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes</div><div class="opt-desc">I need a subdomain too</div></div></label></div>
-          <div class="opt-card radio"><input type="radio" name="subdomain" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No</div><div class="opt-desc">Just the main domain</div></div></label></div>
-          <div class="opt-card radio"><input type="radio" name="subdomain" value="unsure"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure</div><div class="opt-desc">Advise me</div></div></label></div>
+          <div class="opt-card radio"><input id="wi-3" type="radio" name="subdomain" value="yes"/><label for="wi-3" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes</div><div class="opt-desc">I need a subdomain too</div></div></label></div>
+          <div class="opt-card radio"><input id="wi-4" type="radio" name="subdomain" value="no"/><label for="wi-4" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No</div><div class="opt-desc">Just the main domain</div></div></label></div>
+          <div class="opt-card radio"><input id="wi-5" type="radio" name="subdomain" value="unsure"/><label for="wi-5" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure</div><div class="opt-desc">Advise me</div></div></label></div>
         </div>
       </div>
       <div class="field-group" id="subdomain-field" style="display:none;">
@@ -329,9 +329,9 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
       <label class="field-label">Do you have existing hosting? <span class="req">*</span></label>
       <div class="field-hint">Hosting is where your website's files live — Vercel, Netlify, GoDaddy hosting, Squarespace, Wix, etc. If you're not sure, select no.</div>
       <div class="option-grid cols-3">
-        <div class="opt-card radio"><input type="radio" name="has-hosting" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes</div><div class="opt-desc">I have hosting already</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-hosting" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No</div><div class="opt-desc">Need to set it up</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-hosting" value="unsure"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure</div><div class="opt-desc">Help me figure it out</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-6" type="radio" name="has-hosting" value="yes"/><label for="wi-6" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes</div><div class="opt-desc">I have hosting already</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-7" type="radio" name="has-hosting" value="no"/><label for="wi-7" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No</div><div class="opt-desc">Need to set it up</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-8" type="radio" name="has-hosting" value="unsure"/><label for="wi-8" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure</div><div class="opt-desc">Help me figure it out</div></div></label></div>
       </div>
     </div>
   </div>
@@ -339,7 +339,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 
 <!-- ══ 03 WEBSITE TYPE & GOAL ══ -->
 <div class="form-section" id="s03">
-  <div class="form-section-header" onclick="tog('s03')">
+  <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="tog('s03')">
     <div class="fsh-num">03</div>
     <div class="fsh-info"><div class="fsh-title">Website Type & Goal</div><div class="fsh-sub">What the site needs to do for your business</div></div>
     <span class="fsh-req req-yes">Required</span>
@@ -349,26 +349,26 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
     <div class="field-group">
       <label class="field-label">What type of website do you need? <span class="req">*</span></label>
       <div class="option-grid cols-2">
-        <div class="opt-card"><input type="checkbox" name="site-type" value="landing"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Landing Page</div><div class="opt-desc">Single page, focused on one call to action</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="site-type" value="portfolio"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Portfolio / Showcase</div><div class="opt-desc">Show your work, services, or credentials</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="site-type" value="business"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Full Business Website</div><div class="opt-desc">Multi-page site with about, services, contact etc.</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="site-type" value="ecommerce"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">E-Commerce / Online Store</div><div class="opt-desc">Sell products or services directly online</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="site-type" value="booking"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Booking / Scheduling</div><div class="opt-desc">Let clients book appointments or sessions</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="site-type" value="blog"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Blog / Content Hub</div><div class="opt-desc">Publish articles, updates, or newsletters</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="site-type" value="membership"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Membership / Community</div><div class="opt-desc">Gated content for paying members</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="site-type" value="other"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Something else</div><div class="opt-desc">Describe below</div></div></label></div>
+        <div class="opt-card"><input id="wi-9" type="checkbox" name="site-type" value="landing"/><label for="wi-9" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Landing Page</div><div class="opt-desc">Single page, focused on one call to action</div></div></label></div>
+        <div class="opt-card"><input id="wi-10" type="checkbox" name="site-type" value="portfolio"/><label for="wi-10" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Portfolio / Showcase</div><div class="opt-desc">Show your work, services, or credentials</div></div></label></div>
+        <div class="opt-card"><input id="wi-11" type="checkbox" name="site-type" value="business"/><label for="wi-11" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Full Business Website</div><div class="opt-desc">Multi-page site with about, services, contact etc.</div></div></label></div>
+        <div class="opt-card"><input id="wi-12" type="checkbox" name="site-type" value="ecommerce"/><label for="wi-12" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">E-Commerce / Online Store</div><div class="opt-desc">Sell products or services directly online</div></div></label></div>
+        <div class="opt-card"><input id="wi-13" type="checkbox" name="site-type" value="booking"/><label for="wi-13" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Booking / Scheduling</div><div class="opt-desc">Let clients book appointments or sessions</div></div></label></div>
+        <div class="opt-card"><input id="wi-14" type="checkbox" name="site-type" value="blog"/><label for="wi-14" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Blog / Content Hub</div><div class="opt-desc">Publish articles, updates, or newsletters</div></div></label></div>
+        <div class="opt-card"><input id="wi-15" type="checkbox" name="site-type" value="membership"/><label for="wi-15" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Membership / Community</div><div class="opt-desc">Gated content for paying members</div></div></label></div>
+        <div class="opt-card"><input id="wi-16" type="checkbox" name="site-type" value="other"/><label for="wi-16" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Something else</div><div class="opt-desc">Describe below</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
       <label class="field-label">Primary goal of the website <span class="req">*</span></label>
       <div class="field-hint">What's the #1 thing you want visitors to do when they land on your site?</div>
       <div class="option-grid cols-2">
-        <div class="opt-card radio"><input type="radio" name="goal" value="leads"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Generate leads / inquiries</div><div class="opt-desc">Get people to contact you or fill out a form</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="goal" value="sales"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Make direct sales</div><div class="opt-desc">Sell a product, service, or course online</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="goal" value="book"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Book appointments</div><div class="opt-desc">Let clients schedule time with you</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="goal" value="credibility"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Build credibility / presence</div><div class="opt-desc">Show people who you are and what you do</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="goal" value="community"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Build a community</div><div class="opt-desc">Newsletter signups, members, recurring audience</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="goal" value="other"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Something else</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-17" type="radio" name="goal" value="leads"/><label for="wi-17" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Generate leads / inquiries</div><div class="opt-desc">Get people to contact you or fill out a form</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-18" type="radio" name="goal" value="sales"/><label for="wi-18" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Make direct sales</div><div class="opt-desc">Sell a product, service, or course online</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-19" type="radio" name="goal" value="book"/><label for="wi-19" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Book appointments</div><div class="opt-desc">Let clients schedule time with you</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-20" type="radio" name="goal" value="credibility"/><label for="wi-20" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Build credibility / presence</div><div class="opt-desc">Show people who you are and what you do</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-21" type="radio" name="goal" value="community"/><label for="wi-21" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Build a community</div><div class="opt-desc">Newsletter signups, members, recurring audience</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-22" type="radio" name="goal" value="other"/><label for="wi-22" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Something else</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
@@ -380,7 +380,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 
 <!-- ══ 04 PAGES & STRUCTURE ══ -->
 <div class="form-section" id="s04">
-  <div class="form-section-header" onclick="tog('s04')">
+  <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="tog('s04')">
     <div class="fsh-num">04</div>
     <div class="fsh-info"><div class="fsh-title">Pages & Site Structure</div><div class="fsh-sub">What pages you need and what goes on each one</div></div>
     <span class="fsh-req req-yes">Required</span>
@@ -391,18 +391,18 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
       <label class="field-label">Which pages do you need? <span class="req">*</span></label>
       <div class="field-hint">Check all that apply. We'll use this to build the nav and site structure.</div>
       <div class="option-grid cols-2">
-        <div class="opt-card"><input type="checkbox" name="pages" value="home" checked/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Home</div><div class="opt-desc">Main landing page — always included</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="about"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">About</div><div class="opt-desc">Your story, team, mission</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="services"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Services / Offerings</div><div class="opt-desc">What you offer and what it costs</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="portfolio"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Portfolio / Gallery</div><div class="opt-desc">Work samples, photos, case studies</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="blog"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Blog / News</div><div class="opt-desc">Articles, updates, content</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="testimonials"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Testimonials / Reviews</div><div class="opt-desc">Social proof from clients or customers</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="faq"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">FAQ</div><div class="opt-desc">Common questions answered</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="pricing"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Pricing</div><div class="opt-desc">Transparent pricing or packages</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="contact"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Contact</div><div class="opt-desc">Contact form, map, phone, email</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="booking"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Booking / Schedule</div><div class="opt-desc">Online appointment booking</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="shop"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Shop / Store</div><div class="opt-desc">Products listed with cart and checkout</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="pages" value="custom"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Custom page</div><div class="opt-desc">Describe below</div></div></label></div>
+        <div class="opt-card"><input id="wi-23" type="checkbox" name="pages" value="home" checked/><label for="wi-23" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Home</div><div class="opt-desc">Main landing page — always included</div></div></label></div>
+        <div class="opt-card"><input id="wi-24" type="checkbox" name="pages" value="about"/><label for="wi-24" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">About</div><div class="opt-desc">Your story, team, mission</div></div></label></div>
+        <div class="opt-card"><input id="wi-25" type="checkbox" name="pages" value="services"/><label for="wi-25" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Services / Offerings</div><div class="opt-desc">What you offer and what it costs</div></div></label></div>
+        <div class="opt-card"><input id="wi-26" type="checkbox" name="pages" value="portfolio"/><label for="wi-26" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Portfolio / Gallery</div><div class="opt-desc">Work samples, photos, case studies</div></div></label></div>
+        <div class="opt-card"><input id="wi-27" type="checkbox" name="pages" value="blog"/><label for="wi-27" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Blog / News</div><div class="opt-desc">Articles, updates, content</div></div></label></div>
+        <div class="opt-card"><input id="wi-28" type="checkbox" name="pages" value="testimonials"/><label for="wi-28" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Testimonials / Reviews</div><div class="opt-desc">Social proof from clients or customers</div></div></label></div>
+        <div class="opt-card"><input id="wi-29" type="checkbox" name="pages" value="faq"/><label for="wi-29" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">FAQ</div><div class="opt-desc">Common questions answered</div></div></label></div>
+        <div class="opt-card"><input id="wi-30" type="checkbox" name="pages" value="pricing"/><label for="wi-30" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Pricing</div><div class="opt-desc">Transparent pricing or packages</div></div></label></div>
+        <div class="opt-card"><input id="wi-31" type="checkbox" name="pages" value="contact"/><label for="wi-31" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Contact</div><div class="opt-desc">Contact form, map, phone, email</div></div></label></div>
+        <div class="opt-card"><input id="wi-32" type="checkbox" name="pages" value="booking"/><label for="wi-32" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Booking / Schedule</div><div class="opt-desc">Online appointment booking</div></div></label></div>
+        <div class="opt-card"><input id="wi-33" type="checkbox" name="pages" value="shop"/><label for="wi-33" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Shop / Store</div><div class="opt-desc">Products listed with cart and checkout</div></div></label></div>
+        <div class="opt-card"><input id="wi-34" type="checkbox" name="pages" value="custom"/><label for="wi-34" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Custom page</div><div class="opt-desc">Describe below</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
@@ -435,7 +435,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 
 <!-- ══ 05 DESIGN & BRANDING ══ -->
 <div class="form-section" id="s05">
-  <div class="form-section-header" onclick="tog('s05')">
+  <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="tog('s05')">
     <div class="fsh-num">05</div>
     <div class="fsh-info"><div class="fsh-title">Design & Branding</div><div class="fsh-sub">Colors, fonts, logo, and how the site should feel</div></div>
     <span class="fsh-req req-yes">Required</span>
@@ -446,9 +446,9 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
     <div class="field-group">
       <label class="field-label">Do you have a logo? <span class="req">*</span></label>
       <div class="option-grid cols-3">
-        <div class="opt-card radio"><input type="radio" name="has-logo" value="yes-file"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I have a file</div><div class="opt-desc">PNG, SVG, or AI file</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-logo" value="yes-image"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — only as an image</div><div class="opt-desc">JPG or screenshot</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-logo" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No logo yet</div><div class="opt-desc">Need one created or just text</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-35" type="radio" name="has-logo" value="yes-file"/><label for="wi-35" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I have a file</div><div class="opt-desc">PNG, SVG, or AI file</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-36" type="radio" name="has-logo" value="yes-image"/><label for="wi-36" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — only as an image</div><div class="opt-desc">JPG or screenshot</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-37" type="radio" name="has-logo" value="no"/><label for="wi-37" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No logo yet</div><div class="opt-desc">Need one created or just text</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
@@ -488,26 +488,26 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
       <label class="field-label">Overall design vibe <span class="req">*</span></label>
       <div class="field-hint">Check everything that resonates. It's okay to pick multiple.</div>
       <div class="option-grid cols-3">
-        <div class="opt-card"><input type="checkbox" name="vibe" value="minimal"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Minimal</div><div class="opt-desc">Clean, lots of white space, simple</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="vibe" value="bold"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Bold & Loud</div><div class="opt-desc">Big type, strong colors, makes a statement</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="vibe" value="dark"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Dark Mode</div><div class="opt-desc">Dark background, light text</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="vibe" value="light"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Light & Airy</div><div class="opt-desc">White or cream background, soft feel</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="vibe" value="luxury"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Luxury / Premium</div><div class="opt-desc">High-end feel, gold or muted tones</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="vibe" value="techy"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Tech / Modern</div><div class="opt-desc">Futuristic, digital, startup feel</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="vibe" value="warm"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Warm & Friendly</div><div class="opt-desc">Approachable, community-focused</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="vibe" value="sporty"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Sporty / Athletic</div><div class="opt-desc">Energy, motion, performance</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="vibe" value="corporate"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Corporate / Professional</div><div class="opt-desc">Trust, credibility, formal</div></div></label></div>
+        <div class="opt-card"><input id="wi-38" type="checkbox" name="vibe" value="minimal"/><label for="wi-38" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Minimal</div><div class="opt-desc">Clean, lots of white space, simple</div></div></label></div>
+        <div class="opt-card"><input id="wi-39" type="checkbox" name="vibe" value="bold"/><label for="wi-39" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Bold & Loud</div><div class="opt-desc">Big type, strong colors, makes a statement</div></div></label></div>
+        <div class="opt-card"><input id="wi-40" type="checkbox" name="vibe" value="dark"/><label for="wi-40" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Dark Mode</div><div class="opt-desc">Dark background, light text</div></div></label></div>
+        <div class="opt-card"><input id="wi-41" type="checkbox" name="vibe" value="light"/><label for="wi-41" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Light & Airy</div><div class="opt-desc">White or cream background, soft feel</div></div></label></div>
+        <div class="opt-card"><input id="wi-42" type="checkbox" name="vibe" value="luxury"/><label for="wi-42" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Luxury / Premium</div><div class="opt-desc">High-end feel, gold or muted tones</div></div></label></div>
+        <div class="opt-card"><input id="wi-43" type="checkbox" name="vibe" value="techy"/><label for="wi-43" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Tech / Modern</div><div class="opt-desc">Futuristic, digital, startup feel</div></div></label></div>
+        <div class="opt-card"><input id="wi-44" type="checkbox" name="vibe" value="warm"/><label for="wi-44" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Warm & Friendly</div><div class="opt-desc">Approachable, community-focused</div></div></label></div>
+        <div class="opt-card"><input id="wi-45" type="checkbox" name="vibe" value="sporty"/><label for="wi-45" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Sporty / Athletic</div><div class="opt-desc">Energy, motion, performance</div></div></label></div>
+        <div class="opt-card"><input id="wi-46" type="checkbox" name="vibe" value="corporate"/><label for="wi-46" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Corporate / Professional</div><div class="opt-desc">Trust, credibility, formal</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
       <label class="field-label">Font preference</label>
       <div class="option-grid cols-2">
-        <div class="opt-card radio"><input type="radio" name="font-pref" value="modern"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Modern / Sans-serif</div><div class="opt-desc">Clean geometric letters — DM Sans, Inter, Syne</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="font-pref" value="classic"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Classic / Serif</div><div class="opt-desc">Traditional elegant letters — Playfair, Georgia</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="font-pref" value="display"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Display / Impact</div><div class="opt-desc">Big bold headers — Bebas Neue, Anton</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="font-pref" value="mono"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Monospace / Code</div><div class="opt-desc">Technical feel — JetBrains Mono, Courier</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="font-pref" value="mixed"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Mixed — bold headers + clean body</div><div class="opt-desc">Best of both — strong titles, readable text</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="font-pref" value="unsure"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure — you decide</div><div class="opt-desc">We'll pick what fits best</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-47" type="radio" name="font-pref" value="modern"/><label for="wi-47" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Modern / Sans-serif</div><div class="opt-desc">Clean geometric letters — DM Sans, Inter, Syne</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-48" type="radio" name="font-pref" value="classic"/><label for="wi-48" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Classic / Serif</div><div class="opt-desc">Traditional elegant letters — Playfair, Georgia</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-49" type="radio" name="font-pref" value="display"/><label for="wi-49" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Display / Impact</div><div class="opt-desc">Big bold headers — Bebas Neue, Anton</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-50" type="radio" name="font-pref" value="mono"/><label for="wi-50" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Monospace / Code</div><div class="opt-desc">Technical feel — JetBrains Mono, Courier</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-51" type="radio" name="font-pref" value="mixed"/><label for="wi-51" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Mixed — bold headers + clean body</div><div class="opt-desc">Best of both — strong titles, readable text</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-52" type="radio" name="font-pref" value="unsure"/><label for="wi-52" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure — you decide</div><div class="opt-desc">We'll pick what fits best</div></div></label></div>
       </div>
     </div>
   </div>
@@ -515,7 +515,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 
 <!-- ══ 06 CONTENT ══ -->
 <div class="form-section" id="s06">
-  <div class="form-section-header" onclick="tog('s06')">
+  <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="tog('s06')">
     <div class="fsh-num">06</div>
     <div class="fsh-info"><div class="fsh-title">Content & Copy</div><div class="fsh-sub">What text, images, and media go on the site</div></div>
     <span class="fsh-req req-yes">Required</span>
@@ -525,26 +525,26 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
     <div class="field-group">
       <label class="field-label">Do you have copy (written text) ready? <span class="req">*</span></label>
       <div class="option-grid cols-3">
-        <div class="opt-card radio"><input type="radio" name="has-copy" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I have it written</div><div class="opt-desc">Ready to paste in</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-copy" value="partial"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Partially — some pages</div><div class="opt-desc">Have some, need help with rest</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-copy" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No — I need it written</div><div class="opt-desc">We'll write the copy for you</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-53" type="radio" name="has-copy" value="yes"/><label for="wi-53" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I have it written</div><div class="opt-desc">Ready to paste in</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-54" type="radio" name="has-copy" value="partial"/><label for="wi-54" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Partially — some pages</div><div class="opt-desc">Have some, need help with rest</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-55" type="radio" name="has-copy" value="no"/><label for="wi-55" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No — I need it written</div><div class="opt-desc">We'll write the copy for you</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
       <label class="field-label">Do you have photos or images? <span class="req">*</span></label>
       <div class="option-grid cols-2">
-        <div class="opt-card radio"><input type="radio" name="has-photos" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I have my own photos</div><div class="opt-desc">Professional or phone photos ready to use</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-photos" value="partial"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Some — but not enough</div><div class="opt-desc">Have a few, may need stock photos for gaps</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-photos" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No — use stock photos</div><div class="opt-desc">We'll source relevant stock images</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-photos" value="none-needed"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No images needed</div><div class="opt-desc">Design/icon only site</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-56" type="radio" name="has-photos" value="yes"/><label for="wi-56" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — I have my own photos</div><div class="opt-desc">Professional or phone photos ready to use</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-57" type="radio" name="has-photos" value="partial"/><label for="wi-57" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Some — but not enough</div><div class="opt-desc">Have a few, may need stock photos for gaps</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-58" type="radio" name="has-photos" value="no"/><label for="wi-58" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No — use stock photos</div><div class="opt-desc">We'll source relevant stock images</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-59" type="radio" name="has-photos" value="none-needed"/><label for="wi-59" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No images needed</div><div class="opt-desc">Design/icon only site</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
       <label class="field-label">Do you have a video to include?</label>
       <div class="option-grid cols-3">
-        <div class="opt-card radio"><input type="radio" name="has-video" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — YouTube or Vimeo link</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-video" value="want"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">I want video but don't have one yet</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-video" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No video needed</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-60" type="radio" name="has-video" value="yes"/><label for="wi-60" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — YouTube or Vimeo link</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-61" type="radio" name="has-video" value="want"/><label for="wi-61" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">I want video but don't have one yet</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-62" type="radio" name="has-video" value="no"/><label for="wi-62" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">No video needed</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
@@ -560,9 +560,9 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
     <div class="field-group">
       <label class="field-label">Do you have testimonials / reviews to include?</label>
       <div class="option-grid cols-3">
-        <div class="opt-card radio"><input type="radio" name="has-reviews" value="yes"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — written ones</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-reviews" value="google"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Google / Yelp reviews</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="has-reviews" value="no"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not yet</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-63" type="radio" name="has-reviews" value="yes"/><label for="wi-63" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Yes — written ones</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-64" type="radio" name="has-reviews" value="google"/><label for="wi-64" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Google / Yelp reviews</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-65" type="radio" name="has-reviews" value="no"/><label for="wi-65" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not yet</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
@@ -574,7 +574,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 
 <!-- ══ 07 FEATURES & FUNCTIONALITY ══ -->
 <div class="form-section" id="s07">
-  <div class="form-section-header" onclick="tog('s07')">
+  <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="tog('s07')">
     <div class="fsh-num">07</div>
     <div class="fsh-info"><div class="fsh-title">Features & Functionality</div><div class="fsh-sub">What the website needs to actually do</div></div>
     <span class="fsh-req req-yes">Required</span>
@@ -585,20 +585,20 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
       <label class="field-label">Which features do you need? <span class="req">*</span></label>
       <div class="field-hint">Check everything that applies — this determines the complexity of the build.</div>
       <div class="option-grid cols-2">
-        <div class="opt-card"><input type="checkbox" name="features" value="contact-form"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Contact Form</div><div class="opt-desc">Sends inquiries to your email</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="booking"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Online Booking / Scheduling</div><div class="opt-desc">Calendly integration or built-in booking</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="payments"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Online Payments</div><div class="opt-desc">Stripe, PayPal, or direct checkout</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="newsletter"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Email Newsletter Signup</div><div class="opt-desc">Collect emails for your list</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="live-chat"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Live Chat / AI Chat Widget</div><div class="opt-desc">Chat bot or live support on the site</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="map"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Google Maps Integration</div><div class="opt-desc">Show your location on the site</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="social"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Social Media Feed</div><div class="opt-desc">Pull in Instagram or TikTok posts</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="gallery"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Photo / Video Gallery</div><div class="opt-desc">Scrollable or filterable gallery</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="blog"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Blog / CMS</div><div class="opt-desc">Publish posts yourself without code</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="countdown"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Countdown Timer</div><div class="opt-desc">For events, launches, or deadlines</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="multilang"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Multi-language Support</div><div class="opt-desc">Site content in more than one language</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="analytics"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Analytics Dashboard</div><div class="opt-desc">Track visitors, clicks, and conversions</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="login"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Member Login / Portal</div><div class="opt-desc">Gated area for registered users</div></div></label></div>
-        <div class="opt-card"><input type="checkbox" name="features" value="popup"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Pop-up / Lead Capture</div><div class="opt-desc">Timed or exit-intent pop-up</div></div></label></div>
+        <div class="opt-card"><input id="wi-66" type="checkbox" name="features" value="contact-form"/><label for="wi-66" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Contact Form</div><div class="opt-desc">Sends inquiries to your email</div></div></label></div>
+        <div class="opt-card"><input id="wi-67" type="checkbox" name="features" value="booking"/><label for="wi-67" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Online Booking / Scheduling</div><div class="opt-desc">Calendly integration or built-in booking</div></div></label></div>
+        <div class="opt-card"><input id="wi-68" type="checkbox" name="features" value="payments"/><label for="wi-68" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Online Payments</div><div class="opt-desc">Stripe, PayPal, or direct checkout</div></div></label></div>
+        <div class="opt-card"><input id="wi-69" type="checkbox" name="features" value="newsletter"/><label for="wi-69" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Email Newsletter Signup</div><div class="opt-desc">Collect emails for your list</div></div></label></div>
+        <div class="opt-card"><input id="wi-70" type="checkbox" name="features" value="live-chat"/><label for="wi-70" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Live Chat / AI Chat Widget</div><div class="opt-desc">Chat bot or live support on the site</div></div></label></div>
+        <div class="opt-card"><input id="wi-71" type="checkbox" name="features" value="map"/><label for="wi-71" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Google Maps Integration</div><div class="opt-desc">Show your location on the site</div></div></label></div>
+        <div class="opt-card"><input id="wi-72" type="checkbox" name="features" value="social"/><label for="wi-72" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Social Media Feed</div><div class="opt-desc">Pull in Instagram or TikTok posts</div></div></label></div>
+        <div class="opt-card"><input id="wi-73" type="checkbox" name="features" value="gallery"/><label for="wi-73" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Photo / Video Gallery</div><div class="opt-desc">Scrollable or filterable gallery</div></div></label></div>
+        <div class="opt-card"><input id="wi-74" type="checkbox" name="features" value="blog"/><label for="wi-74" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Blog / CMS</div><div class="opt-desc">Publish posts yourself without code</div></div></label></div>
+        <div class="opt-card"><input id="wi-75" type="checkbox" name="features" value="countdown"/><label for="wi-75" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Countdown Timer</div><div class="opt-desc">For events, launches, or deadlines</div></div></label></div>
+        <div class="opt-card"><input id="wi-76" type="checkbox" name="features" value="multilang"/><label for="wi-76" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Multi-language Support</div><div class="opt-desc">Site content in more than one language</div></div></label></div>
+        <div class="opt-card"><input id="wi-77" type="checkbox" name="features" value="analytics"/><label for="wi-77" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Analytics Dashboard</div><div class="opt-desc">Track visitors, clicks, and conversions</div></div></label></div>
+        <div class="opt-card"><input id="wi-78" type="checkbox" name="features" value="login"/><label for="wi-78" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Member Login / Portal</div><div class="opt-desc">Gated area for registered users</div></div></label></div>
+        <div class="opt-card"><input id="wi-79" type="checkbox" name="features" value="popup"/><label for="wi-79" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Pop-up / Lead Capture</div><div class="opt-desc">Timed or exit-intent pop-up</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
@@ -609,9 +609,9 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
       <label class="field-label">Mobile experience priority <span class="req">*</span></label>
       <div class="field-hint">All our sites are mobile responsive. Tell us where most of your traffic comes from.</div>
       <div class="option-grid cols-3">
-        <div class="opt-card radio"><input type="radio" name="mobile-prio" value="mobile"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Mostly mobile</div><div class="opt-desc">80%+ visitors on phones</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="mobile-prio" value="equal"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Split — both</div><div class="opt-desc">Mobile and desktop equally</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="mobile-prio" value="desktop"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Mostly desktop</div><div class="opt-desc">Most visitors on computers</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-80" type="radio" name="mobile-prio" value="mobile"/><label for="wi-80" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Mostly mobile</div><div class="opt-desc">80%+ visitors on phones</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-81" type="radio" name="mobile-prio" value="equal"/><label for="wi-81" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Split — both</div><div class="opt-desc">Mobile and desktop equally</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-82" type="radio" name="mobile-prio" value="desktop"/><label for="wi-82" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Mostly desktop</div><div class="opt-desc">Most visitors on computers</div></div></label></div>
       </div>
     </div>
   </div>
@@ -619,7 +619,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 
 <!-- ══ 08 INSPIRATION ══ -->
 <div class="form-section" id="s08">
-  <div class="form-section-header" onclick="tog('s08')">
+  <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="tog('s08')">
     <div class="fsh-num">08</div>
     <div class="fsh-info"><div class="fsh-title">Inspiration & References</div><div class="fsh-sub">Sites you love — or hate</div></div>
     <span class="fsh-req req-opt">Optional</span>
@@ -652,7 +652,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 
 <!-- ══ 09 TIMELINE & BUDGET ══ -->
 <div class="form-section" id="s09">
-  <div class="form-section-header" onclick="tog('s09')">
+  <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="tog('s09')">
     <div class="fsh-num">09</div>
     <div class="fsh-info"><div class="fsh-title">Timeline & Budget</div><div class="fsh-sub">When you need it and what you're working with</div></div>
     <span class="fsh-req req-opt">Optional but helpful</span>
@@ -662,10 +662,10 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
     <div class="field-group">
       <label class="field-label">When do you need the site live? <span class="req">*</span></label>
       <div class="option-grid cols-2">
-        <div class="opt-card radio"><input type="radio" name="timeline" value="asap"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">ASAP — urgent</div><div class="opt-desc">Need it live within 1–2 weeks</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="timeline" value="month"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Within a month</div><div class="opt-desc">No extreme rush but soon</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="timeline" value="flexible"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Flexible — get it right</div><div class="opt-desc">Quality over speed</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="timeline" value="specific"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Specific date</div><div class="opt-desc">Tied to an event or launch</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-83" type="radio" name="timeline" value="asap"/><label for="wi-83" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">ASAP — urgent</div><div class="opt-desc">Need it live within 1–2 weeks</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-84" type="radio" name="timeline" value="month"/><label for="wi-84" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Within a month</div><div class="opt-desc">No extreme rush but soon</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-85" type="radio" name="timeline" value="flexible"/><label for="wi-85" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Flexible — get it right</div><div class="opt-desc">Quality over speed</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-86" type="radio" name="timeline" value="specific"/><label for="wi-86" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Specific date</div><div class="opt-desc">Tied to an event or launch</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
@@ -675,11 +675,11 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
     <div class="field-group">
       <label class="field-label">Budget range for the build</label>
       <div class="option-grid cols-2">
-        <div class="opt-card radio"><input type="radio" name="budget" value="125"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$125 — Landing page / single page</div><div class="opt-desc">One focused page, clean design</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="budget" value="300"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$300 — Small multi-page site</div><div class="opt-desc">3–5 pages, basic features</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="budget" value="500"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$500 — Full business website</div><div class="opt-desc">5–8 pages, full features, integrations</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="budget" value="1000+"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$1,000+ — Complex build</div><div class="opt-desc">E-commerce, membership, custom features</div></div></label></div>
-        <div class="opt-card radio"><input type="radio" name="budget" value="unsure"/><label class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure — advise me</div><div class="opt-desc">Tell me what's right for my needs</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-87" type="radio" name="budget" value="125"/><label for="wi-87" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$125 — Landing page / single page</div><div class="opt-desc">One focused page, clean design</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-88" type="radio" name="budget" value="300"/><label for="wi-88" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$300 — Small multi-page site</div><div class="opt-desc">3–5 pages, basic features</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-89" type="radio" name="budget" value="500"/><label for="wi-89" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$500 — Full business website</div><div class="opt-desc">5–8 pages, full features, integrations</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-90" type="radio" name="budget" value="1000+"/><label for="wi-90" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">$1,000+ — Complex build</div><div class="opt-desc">E-commerce, membership, custom features</div></div></label></div>
+        <div class="opt-card radio"><input id="wi-91" type="radio" name="budget" value="unsure"/><label for="wi-91" class="opt-label"><div class="opt-check"></div><div class="opt-text"><div class="opt-title">Not sure — advise me</div><div class="opt-desc">Tell me what's right for my needs</div></div></label></div>
       </div>
     </div>
     <div class="field-group">
@@ -738,7 +738,9 @@ textarea{resize:vertical;min-height:88px;line-height:1.6;}
 // ── SECTION TOGGLE
 function tog(id) {
   const s = document.getElementById(id);
-  s.classList.toggle('open');
+  const isOpen = s.classList.contains('open');
+  document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('open'));
+  if (!isOpen) s.classList.add('open');
   updateProgress();
 }
 
