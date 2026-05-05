@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Null Limit — Job Search Agent</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:#07080b;--bg2:#0d0f14;--bg3:#13151c;
+  --line:rgba(255,255,255,0.07);--line2:rgba(255,255,255,0.12);
+  --txt:#e8eaf0;--muted:#50556a;--muted2:#8890a4;
+  --pu:#b388ff;--gn:#c8f547;--bl:#47b8e8;
+  --tl:#47e8c5;--gd:#e8c547;--pk:#e847a8;--or:#e89047;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 3px);pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 40px 60px;}
+@media(max-width:600px){.wrap{padding:0 20px 40px;}}
+
+.top{display:flex;align-items:center;justify-content:space-between;padding:28px 0 40px;border-bottom:1px solid var(--line);margin-bottom:40px;}
+.logo{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:var(--txt);display:flex;align-items:center;}
+.logo-cur{display:inline-block;width:2px;height:0.9em;background:var(--bl);margin-left:3px;animation:blink 1.1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.top-right{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--muted);text-align:right;line-height:1.7;}
+.client-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;padding:3px 10px;margin-top:4px;border:1px solid rgba(71,184,232,0.25);color:var(--bl);background:rgba(71,184,232,0.06);}
+
+.headline{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;margin-bottom:40px;padding-bottom:40px;border-bottom:1px solid var(--line);}
+@media(max-width:700px){.headline{grid-template-columns:1fr;}}
+.hl-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,8vw,88px);letter-spacing:0.03em;line-height:0.9;color:var(--txt);}
+.hl-title span{color:var(--bl);}
+.hl-sub{font-size:14px;color:var(--muted2);line-height:1.6;margin-top:16px;max-width:520px;}
+.hl-sub strong{color:var(--txt);}
+.hl-meta{display:flex;flex-direction:column;gap:12px;min-width:220px;}
+.meta-row{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;color:var(--muted2);}
+.meta-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.meta-row strong{color:var(--txt);}
+
+.edge-box{background:var(--bg2);border:1px solid var(--line2);border-left:3px solid var(--bl);padding:18px 22px;margin-bottom:40px;display:flex;align-items:flex-start;gap:16px;}
+.edge-icon{font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--bl);flex-shrink:0;margin-top:1px;}
+.edge-text{font-size:13px;color:var(--muted2);line-height:1.6;}
+.edge-text strong{color:var(--txt);}
+
+.sec-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--line);}
+
+.agent-table{width:100%;border-collapse:collapse;margin-bottom:40px;}
+.agent-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);padding:0 16px 10px;text-align:left;border-bottom:1px solid var(--line);font-weight:400;}
+.agent-table th:first-child{padding-left:0;}
+.agent-table th:last-child{text-align:right;}
+.agent-row{border-bottom:1px solid var(--line);transition:background 0.15s;}
+.agent-row:hover{background:var(--bg2);}
+.agent-row:last-child{border-bottom:none;}
+.agent-row td{padding:14px 16px;vertical-align:middle;}
+.agent-row td:first-child{padding-left:0;}
+.agent-row td:last-child{text-align:right;}
+.td-niche{display:flex;align-items:center;gap:10px;white-space:nowrap;}
+.niche-pip{width:3px;height:32px;border-radius:2px;flex-shrink:0;}
+.niche-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;}
+.niche-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.04em;color:var(--txt);line-height:1;}
+.td-agent{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;}
+.td-mission{font-size:12px;color:var(--muted2);line-height:1.5;max-width:300px;}
+.td-mission strong{color:var(--txt);font-size:11px;}
+.td-sources{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.04em;line-height:1.8;}
+.td-sources span{display:inline-block;background:var(--bg3);border:1px solid var(--line2);padding:1px 7px;margin:1px 2px 1px 0;white-space:nowrap;color:var(--muted2);}
+.out-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;margin-bottom:3px;border:1px solid;white-space:nowrap;display:block;}
+
+.process-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:40px;}
+@media(max-width:700px){.process-strip{grid-template-columns:1fr 1fr;}}
+.proc-step{background:var(--bg2);border:1px solid var(--line);padding:20px 18px;position:relative;overflow:hidden;}
+.proc-step::before{content:attr(data-n);position:absolute;top:-4px;right:10px;font-family:'Bebas Neue',sans-serif;font-size:52px;color:rgba(255,255,255,0.03);line-height:1;pointer-events:none;}
+.proc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--bl);margin-bottom:7px;}
+.proc-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.03em;color:var(--txt);margin-bottom:8px;}
+.proc-items{font-size:11px;color:var(--muted2);line-height:1.8;}
+.proc-items div::before{content:'→ ';font-family:'JetBrains Mono',monospace;color:var(--bl);font-size:10px;}
+
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:40px;}
+@media(max-width:700px){.bottom-row{grid-template-columns:1fr;}}
+.bottom-cell{background:var(--bg2);border:1px solid var(--line);padding:22px 22px;}
+.bc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.bc-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.03em;color:var(--txt);margin-bottom:10px;}
+.bc-list{display:flex;flex-direction:column;gap:4px;}
+.bc-item{font-size:12px;color:var(--muted2);display:flex;align-items:baseline;gap:8px;line-height:1.5;}
+.bc-item::before{content:'◈';font-size:8px;color:var(--bl);flex-shrink:0;}
+
+.foot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:24px;flex-wrap:wrap;gap:12px;}
+.foot-logo{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--txt);}
+.foot-logo span{color:var(--bl);}
+.foot-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOP -->
+  <div class="top">
+    <div class="logo">null;<span class="logo-cur"></span></div>
+    <div class="top-right">
+      Job Search Automation<br/>
+      Marketing + Tech Background<br/>
+      <span class="client-badge">◈ Career · AI Agent Stack</span>
+    </div>
+  </div>
+
+  <!-- HEADLINE -->
+  <div class="headline">
+    <div>
+      <div class="hl-title">Apply<br/><span>smarter.</span><br/>Not more.</div>
+      <div class="hl-sub">
+        Most job seekers spray and pray — 100 applications, 2 responses. The problem isn't volume, it's <strong>signal.</strong> These agents find the right roles, tailor every application to the specific job and company, and follow up with the persistence no human sustains after week two.
+      </div>
+    </div>
+    <div class="hl-meta">
+      <div class="meta-row"><div class="meta-dot" style="background:var(--gn);"></div><strong>RADAR</strong> — Job Discovery</div>
+      <div class="meta-row"><div class="meta-dot" style="background:var(--bl);"></div><strong>TAILOR</strong> — Application Builder</div>
+      <div class="meta-row"><div class="meta-dot" style="background:var(--gd);"></div><strong>INTEL</strong> — Company Research</div>
+      <div class="meta-row"><div class="meta-dot" style="background:var(--tl);"></div><strong>PULSE</strong> — Follow-Up Engine</div>
+    </div>
+  </div>
+
+  <!-- EDGE BOX -->
+  <div class="edge-box">
+    <div class="edge-icon">◈</div>
+    <div class="edge-text">
+      <strong>The edge:</strong> A marketing background with computer skills is a rare hybrid — creative strategy plus technical execution. Most applicants bury this. The agent stack surfaces it clearly for every role: <strong>TAILOR rewrites the resume and cover letter for each job posting, pulling exact language from the JD</strong> and matching it to the candidate's real experience. Every application looks like it was written specifically for that company. Because it was.
+    </div>
+  </div>
+
+  <!-- AGENT TABLE -->
+  <div class="sec-lbl">// the agents</div>
+  <table class="agent-table">
+    <thead>
+      <tr>
+        <th>Function</th>
+        <th>Agent</th>
+        <th>Mission</th>
+        <th>Key Sources</th>
+        <th>Outputs</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- RADAR -->
+      <tr class="agent-row">
+        <td>
+          <div class="td-niche">
+            <div class="niche-pip" style="background:var(--gn);"></div>
+            <div><div class="niche-num">01</div><div class="niche-name">Discovery</div></div>
+          </div>
+        </td>
+        <td><div class="td-agent" style="color:var(--gn);">RADAR</div></td>
+        <td>
+          <div class="td-mission">
+            <strong>Job Finder</strong><br/>
+            Monitors job boards 24/7 for marketing + tech roles matching the candidate profile. Filters for real fit — not just keyword matches. Scores each posting on title, company size, tech stack, and salary signals before surfacing it.
+          </div>
+        </td>
+        <td>
+          <div class="td-sources">
+            <span>LinkedIn Jobs API</span><span>Indeed</span><span>Greenhouse</span><span>Lever</span><span>Wellfound</span><span>Remote.co</span>
+          </div>
+        </td>
+        <td>
+          <div class="out-tag" style="color:var(--gn);border-color:rgba(200,245,71,0.3);">Scored Job Feed</div>
+          <div class="out-tag" style="color:var(--gn);border-color:rgba(200,245,71,0.3);">Role Match Reports</div>
+          <div class="out-tag" style="color:var(--muted);border-color:var(--line2);">Salary Benchmarks</div>
+        </td>
+      </tr>
+
+      <!-- TAILOR -->
+      <tr class="agent-row">
+        <td>
+          <div class="td-niche">
+            <div class="niche-pip" style="background:var(--bl);"></div>
+            <div><div class="niche-num">02</div><div class="niche-name">Application</div></div>
+          </div>
+        </td>
+        <td><div class="td-agent" style="color:var(--bl);">TAILOR</div></td>
+        <td>
+          <div class="td-mission">
+            <strong>Application Builder</strong><br/>
+            For every approved role, TAILOR rewrites the resume and cover letter using exact language from the job description — ATS-optimized, specific to the company, in the candidate's voice. No generic applications ever go out.
+          </div>
+        </td>
+        <td>
+          <div class="td-sources">
+            <span>Job Description (live)</span><span>Candidate Resume Base</span><span>Anthropic Claude API</span><span>Jobscan ATS Data</span>
+          </div>
+        </td>
+        <td>
+          <div class="out-tag" style="color:var(--bl);border-color:rgba(71,184,232,0.3);">Tailored Resume</div>
+          <div class="out-tag" style="color:var(--bl);border-color:rgba(71,184,232,0.3);">Cover Letter</div>
+          <div class="out-tag" style="color:var(--muted);border-color:var(--line2);">ATS Score Report</div>
+        </td>
+      </tr>
+
+      <!-- INTEL -->
+      <tr class="agent-row">
+        <td>
+          <div class="td-niche">
+            <div class="niche-pip" style="background:var(--gd);"></div>
+            <div><div class="niche-num">03</div><div class="niche-name">Research</div></div>
+          </div>
+        </td>
+        <td><div class="td-agent" style="color:var(--gd);">INTEL</div></td>
+        <td>
+          <div class="td-mission">
+            <strong>Company Researcher</strong><br/>
+            Before every interview, INTEL builds a company brief — recent news, product focus, culture signals, interview patterns from Glassdoor, and likely questions for the role. Shows up knowing more than the interviewer expects.
+          </div>
+        </td>
+        <td>
+          <div class="td-sources">
+            <span>Glassdoor</span><span>LinkedIn Company</span><span>Crunchbase</span><span>Company Blog/PR</span><span>G2 / Trustpilot</span>
+          </div>
+        </td>
+        <td>
+          <div class="out-tag" style="color:var(--gd);border-color:rgba(232,197,71,0.3);">Company Brief</div>
+          <div class="out-tag" style="color:var(--gd);border-color:rgba(232,197,71,0.3);">Interview Prep Doc</div>
+          <div class="out-tag" style="color:var(--muted);border-color:var(--line2);">Culture Signals</div>
+        </td>
+      </tr>
+
+      <!-- PULSE -->
+      <tr class="agent-row">
+        <td>
+          <div class="td-niche">
+            <div class="niche-pip" style="background:var(--tl);"></div>
+            <div><div class="niche-num">04</div><div class="niche-name">Follow-Up</div></div>
+          </div>
+        </td>
+        <td><div class="td-agent" style="color:var(--tl);">PULSE</div></td>
+        <td>
+          <div class="td-mission">
+            <strong>Follow-Up Engine</strong><br/>
+            Manages the full pipeline — tracks every application, stages it, and sends the right follow-up at the right time. Post-application nudge at day 7. Thank-you after interviews. Status check at day 14. Never goes quiet, never goes annoying.
+          </div>
+        </td>
+        <td>
+          <div class="td-sources">
+            <span>Gmail / Outlook</span><span>LinkedIn DMs</span><span>Application Tracker</span><span>Calendar API</span>
+          </div>
+        </td>
+        <td>
+          <div class="out-tag" style="color:var(--tl);border-color:rgba(71,232,197,0.3);">Follow-Up Drafts</div>
+          <div class="out-tag" style="color:var(--tl);border-color:rgba(71,232,197,0.3);">Pipeline Tracker</div>
+          <div class="out-tag" style="color:var(--muted);border-color:var(--line2);">Status Dashboard</div>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <!-- PROCESS -->
+  <div class="sec-lbl">// the process</div>
+  <div class="process-strip">
+    <div class="proc-step" data-n="1">
+      <div class="proc-label">Phase 1 · Day 1–2</div>
+      <div class="proc-title">Setup</div>
+      <div class="proc-items">
+        <div>Resume base + voice locked</div>
+        <div>Target role criteria defined</div>
+        <div>RADAR feeds configured</div>
+        <div>ATS optimization tested</div>
+      </div>
+    </div>
+    <div class="proc-step" data-n="2">
+      <div class="proc-label">Phase 2 · Day 3–5</div>
+      <div class="proc-title">First Wave</div>
+      <div class="proc-items">
+        <div>RADAR surfaces first 20 roles</div>
+        <div>Candidate approves top picks</div>
+        <div>TAILOR builds each application</div>
+        <div>First 10 apps submitted</div>
+      </div>
+    </div>
+    <div class="proc-step" data-n="3">
+      <div class="proc-label">Phase 3 · Week 2–3</div>
+      <div class="proc-title">Active Pipeline</div>
+      <div class="proc-items">
+        <div>PULSE managing all follow-ups</div>
+        <div>INTEL preps interview briefs</div>
+        <div>New roles surfaced daily</div>
+        <div>Pipeline dashboard live</div>
+      </div>
+    </div>
+    <div class="proc-step" data-n="4">
+      <div class="proc-label">Phase 4 · Ongoing</div>
+      <div class="proc-title">Close</div>
+      <div class="proc-items">
+        <div>Agents run until offer signed</div>
+        <div>Salary negotiation support</div>
+        <div>Offer comparison brief</div>
+        <div>System pauses on acceptance</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="bottom-row">
+    <div class="bottom-cell">
+      <div class="bc-label">// a typical day</div>
+      <div class="bc-title">How It Runs</div>
+      <div class="bc-list">
+        <div class="bc-item">RADAR scans overnight — you wake up to a scored list of new roles</div>
+        <div class="bc-item">You approve the ones worth pursuing — takes 5 minutes</div>
+        <div class="bc-item">TAILOR builds tailored resume + cover letter for each approved role</div>
+        <div class="bc-item">Applications go out — ATS-optimized, company-specific language</div>
+        <div class="bc-item">PULSE handles every follow-up. INTEL preps you before every call.</div>
+      </div>
+    </div>
+    <div class="bottom-cell">
+      <div class="bc-label">// the difference</div>
+      <div class="bc-title">Why It Works</div>
+      <div class="bc-list">
+        <div class="bc-item"><strong style="color:var(--txt);">Quality over volume</strong> — 20 tailored apps beat 100 generic ones every time</div>
+        <div class="bc-item"><strong style="color:var(--txt);">ATS pass rate</strong> — resumes built from the JD's own language clear filters others don't</div>
+        <div class="bc-item"><strong style="color:var(--txt);">Follow-up</strong> — most candidates go silent after applying. PULSE doesn't.</div>
+        <div class="bc-item"><strong style="color:var(--txt);">Interview edge</strong> — INTEL brief means you know the company better than most interviewers expect</div>
+        <div class="bc-item"><strong style="color:var(--txt);">5 min/day</strong> — candidate approves targets, agents handle the rest</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <div class="foot-logo">null<span>;</span> limit</div>
+    <div class="foot-tag">Undefined by design · nulllimit.gg</div>
+    <div class="foot-tag">hello@nulllimit.gg</div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Null Limit — Real Estate AI Framework</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:    #07080b;
+  --bg2:   #0d0f14;
+  --bg3:   #13151c;
+  --line:  rgba(255,255,255,0.07);
+  --line2: rgba(255,255,255,0.12);
+  --txt:   #e8eaf0;
+  --muted: #50556a;
+  --muted2:#8890a4;
+  --pu:    #b388ff;
+  --gn:    #c8f547;
+  --rd:    #e85447;
+  --bl:    #47b8e8;
+  --tl:    #47e8c5;
+  --gd:    #e8c547;
+  --or:    #e89047;
+  --pk:    #e847a8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--txt);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 3px);
+  pointer-events:none;z-index:0;
+}
+.wrap{
+  position:relative;z-index:1;
+  max-width:1120px;margin:0 auto;
+  padding:0 40px 60px;
+}
+@media(max-width:600px){.wrap{padding:0 20px 40px;}}
+
+/* ── TOP ── */
+.top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:28px 0 40px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:40px;
+}
+.logo{
+  font-family:'JetBrains Mono',monospace;
+  font-size:17px;font-weight:700;
+  color:var(--txt);display:flex;align-items:center;
+}
+.logo-cur{
+  display:inline-block;width:2px;height:0.9em;
+  background:var(--gn);margin-left:3px;
+  animation:blink 1.1s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.top-right{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:0.25em;
+  text-transform:uppercase;color:var(--muted);
+  text-align:right;line-height:1.7;
+}
+.client-badge{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:0.18em;
+  text-transform:uppercase;
+  padding:3px 10px;margin-top:4px;
+  border:1px solid rgba(200,245,71,0.25);
+  color:var(--gn);background:rgba(200,245,71,0.06);
+}
+
+/* ── HEADLINE ── */
+.headline{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:32px;
+  align-items:end;
+  margin-bottom:40px;
+  padding-bottom:40px;
+  border-bottom:1px solid var(--line);
+}
+@media(max-width:700px){.headline{grid-template-columns:1fr;}}
+
+.hl-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px,8vw,88px);
+  letter-spacing:0.03em;
+  line-height:0.9;
+  color:var(--txt);
+}
+.hl-title span{color:var(--gn);}
+.hl-sub{
+  font-size:14px;color:var(--muted2);
+  line-height:1.6;margin-top:16px;
+  max-width:520px;
+}
+.hl-sub strong{color:var(--txt);}
+
+.hl-meta{
+  display:flex;flex-direction:column;
+  gap:12px;min-width:220px;
+}
+.meta-row{
+  display:flex;align-items:center;
+  gap:10px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:0.1em;
+  color:var(--muted2);
+}
+.meta-dot{
+  width:7px;height:7px;border-radius:50%;
+  flex-shrink:0;
+}
+.meta-row strong{color:var(--txt);}
+
+/* ── EDGE BOX ── */
+.edge-box{
+  background:var(--bg2);
+  border:1px solid var(--line2);
+  border-left:3px solid var(--gn);
+  padding:18px 22px;
+  margin-bottom:40px;
+  display:flex;align-items:flex-start;gap:16px;
+}
+.edge-icon{
+  font-family:'JetBrains Mono',monospace;
+  font-size:16px;color:var(--gn);flex-shrink:0;margin-top:1px;
+}
+.edge-text{
+  font-size:13px;color:var(--muted2);line-height:1.6;
+}
+.edge-text strong{color:var(--txt);}
+
+/* ── SECTION LABEL ── */
+.sec-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:0.3em;
+  text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:14px;
+}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--line);}
+
+/* ── AGENT TABLE ── */
+.agent-table{
+  width:100%;border-collapse:collapse;
+  margin-bottom:40px;
+}
+.agent-table th{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--muted);
+  padding:0 16px 10px;
+  text-align:left;
+  border-bottom:1px solid var(--line);
+  font-weight:400;
+}
+.agent-table th:first-child{padding-left:0;}
+.agent-table th:last-child{text-align:right;}
+.agent-row{
+  border-bottom:1px solid var(--line);
+  transition:background 0.15s;
+}
+.agent-row:hover{background:var(--bg2);}
+.agent-row:last-child{border-bottom:none;}
+.agent-row td{
+  padding:14px 16px;
+  vertical-align:middle;
+}
+.agent-row td:first-child{padding-left:0;}
+.agent-row td:last-child{text-align:right;}
+
+.td-niche{
+  display:flex;align-items:center;gap:10px;
+  white-space:nowrap;
+}
+.niche-pip{
+  width:3px;height:32px;border-radius:2px;flex-shrink:0;
+}
+.niche-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--muted);letter-spacing:0.1em;
+}
+.niche-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:18px;letter-spacing:0.04em;
+  color:var(--txt);line-height:1;
+}
+.td-agent{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:700;
+  letter-spacing:0.15em;text-transform:uppercase;
+}
+.td-mission{
+  font-size:12px;color:var(--muted2);
+  line-height:1.5;max-width:300px;
+}
+.td-mission strong{color:var(--txt);font-size:11px;}
+.td-sources{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--muted);
+  letter-spacing:0.04em;line-height:1.8;
+}
+.td-sources span{
+  display:inline-block;
+  background:var(--bg3);
+  border:1px solid var(--line2);
+  padding:1px 7px;margin:1px 2px 1px 0;
+  white-space:nowrap;color:var(--muted2);
+}
+.out-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8px;letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding:3px 8px;margin-bottom:3px;
+  border:1px solid;
+  white-space:nowrap;
+  display:block;
+}
+
+/* ── MARKET STATS ── */
+.market-strip{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:2px;
+  margin-bottom:40px;
+}
+@media(max-width:700px){.market-strip{grid-template-columns:1fr 1fr;}}
+
+.mstat{
+  background:var(--bg2);
+  border:1px solid var(--line);
+  padding:18px 16px;
+}
+.mstat-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:28px;letter-spacing:0.02em;
+  color:var(--gn);line-height:1;
+  margin-bottom:5px;
+}
+.mstat-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:0.15em;
+  text-transform:uppercase;color:var(--muted);
+  line-height:1.4;
+}
+
+/* ── PROCESS STRIP ── */
+.process-strip{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:2px;
+  margin-bottom:40px;
+}
+@media(max-width:700px){.process-strip{grid-template-columns:1fr 1fr;}}
+
+.proc-step{
+  background:var(--bg2);
+  border:1px solid var(--line);
+  padding:20px 18px;
+  position:relative;overflow:hidden;
+}
+.proc-step::before{
+  content:attr(data-n);
+  position:absolute;top:-4px;right:10px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:52px;
+  color:rgba(255,255,255,0.03);
+  line-height:1;pointer-events:none;
+}
+.proc-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--gn);
+  margin-bottom:7px;
+}
+.proc-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:20px;letter-spacing:0.03em;
+  color:var(--txt);margin-bottom:8px;
+}
+.proc-items{
+  font-size:11px;color:var(--muted2);line-height:1.8;
+}
+.proc-items div::before{
+  content:'→ ';
+  font-family:'JetBrains Mono',monospace;
+  color:var(--gn);font-size:10px;
+}
+
+/* ── BOTTOM ROW ── */
+.bottom-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2px;margin-bottom:40px;
+}
+@media(max-width:700px){.bottom-row{grid-template-columns:1fr;}}
+.bottom-cell{
+  background:var(--bg2);
+  border:1px solid var(--line);
+  padding:22px 22px;
+}
+.bc-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:0.25em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+}
+.bc-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;letter-spacing:0.03em;
+  color:var(--txt);margin-bottom:10px;
+}
+.bc-list{
+  display:flex;flex-direction:column;gap:4px;
+}
+.bc-item{
+  font-size:12px;color:var(--muted2);
+  display:flex;align-items:baseline;gap:8px;line-height:1.5;
+}
+.bc-item::before{
+  content:'◈';font-size:8px;color:var(--gn);flex-shrink:0;
+}
+
+/* ── FOOTER ── */
+.foot{
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid var(--line);
+  padding-top:24px;flex-wrap:wrap;gap:12px;
+}
+.foot-logo{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;font-weight:700;color:var(--txt);
+}
+.foot-logo span{color:var(--gn);}
+.foot-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--muted);
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOP -->
+  <div class="top">
+    <div class="logo">null;<span class="logo-cur"></span></div>
+    <div class="top-right">
+      Co-Living AI Framework<br/>
+      Fort Lauderdale · South Florida<br/>
+      <span class="client-badge">◈ Residential · Co-Living</span>
+    </div>
+  </div>
+
+  <!-- HEADLINE -->
+  <div class="headline">
+    <div>
+      <div class="hl-title">Buy what<br/>they <span>ignore.</span><br/>Fill what<br/>they can't.</div>
+      <div class="hl-sub">
+        <strong>The edge:</strong> On-market residential deals that single-family rental investors pass on — wrong bedroom count, deferred maintenance, awkward layout — are exactly the inventory that becomes <strong>high-yield co-living</strong> in South Florida's supply-starved rental market. AI finds them first, underwrites them instantly, and fills them fast.
+      </div>
+    </div>
+    <div class="hl-meta">
+      <div class="meta-row"><div class="meta-dot" style="background:var(--gn);"></div><strong>SCOUT</strong> — Deal Acquisition</div>
+      <div class="meta-row"><div class="meta-dot" style="background:var(--bl);"></div><strong>COMP</strong> — Rent Intelligence</div>
+      <div class="meta-row"><div class="meta-dot" style="background:var(--gd);"></div><strong>DUE</strong> — Due Diligence</div>
+      <div class="meta-row"><div class="meta-dot" style="background:var(--tl);"></div><strong>FILL</strong> — Tenant Acquisition</div>
+      <div class="meta-row"><div class="meta-dot" style="background:var(--pu);"></div><strong>OPS</strong> — Property Operations</div>
+    </div>
+  </div>
+
+  <!-- MARKET STATS -->
+  <div class="sec-lbl">// the market · fort lauderdale</div>
+  <div class="market-strip">
+    <div class="mstat">
+      <div class="mstat-num">$2,400+</div>
+      <div class="mstat-lbl">Avg 1BR rent<br/>Fort Lauderdale</div>
+    </div>
+    <div class="mstat">
+      <div class="mstat-num">$900–1,200</div>
+      <div class="mstat-lbl">Per room<br/>Co-living rate</div>
+    </div>
+    <div class="mstat">
+      <div class="mstat-num">3–4×</div>
+      <div class="mstat-lbl">Revenue uplift<br/>vs SFR rental</div>
+    </div>
+    <div class="mstat">
+      <div class="mstat-num">96%</div>
+      <div class="mstat-lbl">Rental occupancy<br/>Broward County</div>
+    </div>
+    <div class="mstat">
+      <div class="mstat-num">On-Market</div>
+      <div class="mstat-lbl">Source — no<br/>off-market needed</div>
+    </div>
+  </div>
+
+  <!-- EDGE BOX -->
+  <div class="edge-box">
+    <div class="edge-icon">◈</div>
+    <div class="edge-text">
+      <strong>The unlock:</strong> A 5-bed home priced at $450K sits on MLS for 90 days because every SFR investor underwrites it as a single-family rental at $2,800/mo — a bad deal. The same home as co-living at $950/room generates <strong>$4,750/mo gross.</strong> The AI finds these mismatches at scale, underwrites them in seconds, and flags only the ones that clear the return threshold.
+    </div>
+  </div>
+
+  <!-- AGENT TABLE -->
+  <div class="sec-lbl">// the agents</div>
+  <table class="agent-table">
+    <thead>
+      <tr>
+        <th>Function</th>
+        <th>Agent</th>
+        <th>Mission</th>
+        <th>Key Sources</th>
+        <th>Outputs</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- SCOUT -->
+      <tr class="agent-row">
+        <td>
+          <div class="td-niche">
+            <div class="niche-pip" style="background:var(--gn);"></div>
+            <div>
+              <div class="niche-num">01</div>
+              <div class="niche-name">Acquisition</div>
+            </div>
+          </div>
+        </td>
+        <td><div class="td-agent" style="color:var(--gn);">SCOUT</div></td>
+        <td>
+          <div class="td-mission">
+            <strong>Deal Finder</strong><br/>
+            Monitors MLS and Zillow 24/7 for ignored inventory — 4+ bedrooms, 60+ days on market, price/sqft below area median. Scores each deal against co-living underwriting model before you see it.
+          </div>
+        </td>
+        <td>
+          <div class="td-sources">
+            <span>MLS (MIAMI/Beaches)</span><span>Zillow API</span><span>Redfin</span><span>PropStream</span><span>Broward Appraiser</span>
+          </div>
+        </td>
+        <td>
+          <div class="out-tag" style="color:var(--gn);border-color:rgba(200,245,71,0.3);">Deal Alerts</div>
+          <div class="out-tag" style="color:var(--gn);border-color:rgba(200,245,71,0.3);">Underwriting Scores</div>
+          <div class="out-tag" style="color:var(--muted);border-color:var(--line2);">Comp Reports</div>
+        </td>
+      </tr>
+
+      <!-- COMP -->
+      <tr class="agent-row">
+        <td>
+          <div class="td-niche">
+            <div class="niche-pip" style="background:var(--bl);"></div>
+            <div>
+              <div class="niche-num">02</div>
+              <div class="niche-name">Rent Intel</div>
+            </div>
+          </div>
+        </td>
+        <td><div class="td-agent" style="color:var(--bl);">COMP</div></td>
+        <td>
+          <div class="td-mission">
+            <strong>Revenue Modeler</strong><br/>
+            Pulls per-room rental comps across Fort Lauderdale zip codes. Models gross revenue, vacancy assumptions, and net yield per property — updated weekly as market moves.
+          </div>
+        </td>
+        <td>
+          <div class="td-sources">
+            <span>Rentometer</span><span>Airbnb (MTR data)</span><span>Facebook Marketplace</span><span>SpareRoom</span><span>Furnished Finder</span>
+          </div>
+        </td>
+        <td>
+          <div class="out-tag" style="color:var(--bl);border-color:rgba(71,184,232,0.3);">Room Rate Reports</div>
+          <div class="out-tag" style="color:var(--bl);border-color:rgba(71,184,232,0.3);">Revenue Models</div>
+          <div class="out-tag" style="color:var(--muted);border-color:var(--line2);">Yield Comparisons</div>
+        </td>
+      </tr>
+
+      <!-- DUE -->
+      <tr class="agent-row">
+        <td>
+          <div class="td-niche">
+            <div class="niche-pip" style="background:var(--gd);"></div>
+            <div>
+              <div class="niche-num">03</div>
+              <div class="niche-name">Due Diligence</div>
+            </div>
+          </div>
+        </td>
+        <td><div class="td-agent" style="color:var(--gd);">DUE</div></td>
+        <td>
+          <div class="td-mission">
+            <strong>Risk Screener</strong><br/>
+            Runs automated due diligence on every flagged deal — flood zone, open permits, liens, HOA restrictions, zoning for rooming house or co-living use, and insurance cost estimates.
+          </div>
+        </td>
+        <td>
+          <div class="td-sources">
+            <span>Broward County Records</span><span>FEMA Flood Maps</span><span>PACER (liens)</span><span>FL Dept of Health</span><span>Broward Zoning</span>
+          </div>
+        </td>
+        <td>
+          <div class="out-tag" style="color:var(--gd);border-color:rgba(232,197,71,0.3);">Risk Flags</div>
+          <div class="out-tag" style="color:var(--gd);border-color:rgba(232,197,71,0.3);">Zoning Reports</div>
+          <div class="out-tag" style="color:var(--muted);border-color:var(--line2);">Permit History</div>
+        </td>
+      </tr>
+
+      <!-- FILL -->
+      <tr class="agent-row">
+        <td>
+          <div class="td-niche">
+            <div class="niche-pip" style="background:var(--tl);"></div>
+            <div>
+              <div class="niche-num">04</div>
+              <div class="niche-name">Tenant Acq.</div>
+            </div>
+          </div>
+        </td>
+        <td><div class="td-agent" style="color:var(--tl);">FILL</div></td>
+        <td>
+          <div class="td-mission">
+            <strong>Room Filler</strong><br/>
+            Manages listings across co-living platforms simultaneously. Screens applicants, handles inquiries 24/7, routes qualified leads for final approval. Targets travel nurses, young professionals, and relocation tenants — Fort Lauderdale's highest-demand renter profiles.
+          </div>
+        </td>
+        <td>
+          <div class="td-sources">
+            <span>Zillow Rooms</span><span>Facebook Marketplace</span><span>Furnished Finder</span><span>SpareRoom</span><span>Craigslist</span>
+          </div>
+        </td>
+        <td>
+          <div class="out-tag" style="color:var(--tl);border-color:rgba(71,232,197,0.3);">Qualified Leads</div>
+          <div class="out-tag" style="color:var(--tl);border-color:rgba(71,232,197,0.3);">Screening Reports</div>
+          <div class="out-tag" style="color:var(--muted);border-color:var(--line2);">Vacancy Alerts</div>
+        </td>
+      </tr>
+
+      <!-- OPS -->
+      <tr class="agent-row">
+        <td>
+          <div class="td-niche">
+            <div class="niche-pip" style="background:var(--pu);"></div>
+            <div>
+              <div class="niche-num">05</div>
+              <div class="niche-name">Operations</div>
+            </div>
+          </div>
+        </td>
+        <td><div class="td-agent" style="color:var(--pu);">OPS</div></td>
+        <td>
+          <div class="td-mission">
+            <strong>Portfolio Manager</strong><br/>
+            Runs day-to-day across all properties — rent collection, maintenance request routing, lease renewals, expense tracking, and monthly performance reports. Escalates to you only when it actually needs a human.
+          </div>
+        </td>
+        <td>
+          <div class="td-sources">
+            <span>TurboTenant / Buildium</span><span>Google Calendar</span><span>Stripe / ACH</span><span>Thumbtack / Angi</span><span>Quickbooks</span>
+          </div>
+        </td>
+        <td>
+          <div class="out-tag" style="color:var(--pu);border-color:rgba(179,136,255,0.3);">Monthly P&L</div>
+          <div class="out-tag" style="color:var(--pu);border-color:rgba(179,136,255,0.3);">Maintenance Routing</div>
+          <div class="out-tag" style="color:var(--muted);border-color:var(--line2);">Lease Management</div>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <!-- PROCESS -->
+  <div class="sec-lbl">// the process</div>
+  <div class="process-strip">
+    <div class="proc-step" data-n="1">
+      <div class="proc-label">Phase 1 · Wk 1–2</div>
+      <div class="proc-title">Deal Engine Setup</div>
+      <div class="proc-items">
+        <div>MLS + Zillow feeds wired</div>
+        <div>Underwriting model calibrated</div>
+        <div>Co-living criteria defined</div>
+        <div>SCOUT live and alerting</div>
+      </div>
+    </div>
+    <div class="proc-step" data-n="2">
+      <div class="proc-label">Phase 2 · Wk 3–4</div>
+      <div class="proc-title">Intel Layer</div>
+      <div class="proc-items">
+        <div>COMP rent model calibrated</div>
+        <div>DUE diligence checks live</div>
+        <div>First deals screened end-to-end</div>
+        <div>Underwrite in under 60 seconds</div>
+      </div>
+    </div>
+    <div class="proc-step" data-n="3">
+      <div class="proc-label">Phase 3 · Wk 5–7</div>
+      <div class="proc-title">Fill & Operate</div>
+      <div class="proc-items">
+        <div>FILL listings live on all platforms</div>
+        <div>Tenant screening automated</div>
+        <div>OPS wired to first property</div>
+        <div>Rent collection + maintenance on</div>
+      </div>
+    </div>
+    <div class="proc-step" data-n="4">
+      <div class="proc-label">Phase 4 · Ongoing</div>
+      <div class="proc-title">Scale</div>
+      <div class="proc-items">
+        <div>Each new property adds in days</div>
+        <div>Portfolio dashboard live</div>
+        <div>Monthly P&L auto-generated</div>
+        <div>You approve deals, agents do rest</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="bottom-row">
+    <div class="bottom-cell">
+      <div class="bc-label">// the deal flow</div>
+      <div class="bc-title">How It Works</div>
+      <div class="bc-list">
+        <div class="bc-item">SCOUT flags on-market deal — 4BD, 90 days on market, priced below median</div>
+        <div class="bc-item">COMP models per-room rate · DUE checks flood zone, zoning, liens — all automated</div>
+        <div class="bc-item">You get a scored deal brief: purchase price, projected gross, net yield, risk flags</div>
+        <div class="bc-item">You approve — FILL starts listing rooms before closing is done</div>
+        <div class="bc-item">OPS takes over day one — rent collection, maintenance, reporting</div>
+      </div>
+    </div>
+    <div class="bottom-cell">
+      <div class="bc-label">// your advantage</div>
+      <div class="bc-title">What Changes</div>
+      <div class="bc-list">
+        <div class="bc-item"><strong style="color:var(--txt);">Speed</strong> — first to identify and underwrite ignored inventory before other buyers catch on</div>
+        <div class="bc-item"><strong style="color:var(--txt);">Yield</strong> — 3–4× revenue per property vs SFR rental on the same asset</div>
+        <div class="bc-item"><strong style="color:var(--txt);">Vacancy</strong> — FILL running 24/7 means rooms are listed before you close</div>
+        <div class="bc-item"><strong style="color:var(--txt);">Ops overhead</strong> — OPS handles routine management so you focus on acquisition</div>
+        <div class="bc-item"><strong style="color:var(--txt);">Scale</strong> — same 5 agents run 1 property or 20. No new hires.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <div class="foot-logo">null<span>;</span> limit</div>
+    <div class="foot-tag">Undefined by design · nulllimit.gg</div>
+    <div class="foot-tag">hello@nulllimit.gg</div>
+  </div>
+
+</div>
+</body>
+</html>
