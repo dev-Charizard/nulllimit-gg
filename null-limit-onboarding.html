@@ -34,7 +34,6 @@ body {
   overflow-x: hidden;
 }
 
-/* scanline overlay */
 body::before {
   content: '';
   position: fixed; inset: 0;
@@ -170,8 +169,9 @@ body::before {
 .status-done { background: var(--green2); color: var(--green); border: 1px solid var(--green3); }
 .status-optional { background: rgba(90,96,112,0.15); color: var(--muted2); border: 1px solid var(--border2); }
 
-.form-section-body { display: none; padding: 28px 24px; } .form-section.open .form-section-body { display: block !important; }
-.form-section.open /* display controlled by .form-section.open */
+/* FIX 1: Clean CSS — removed malformed comment-as-rule and duplicate display:block */
+.form-section-body { display: none; }
+.form-section.open .form-section-body { display: block; }
 
 /* ── FORM FIELDS ── */
 .field-group { margin-bottom: 24px; }
@@ -200,23 +200,34 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
 select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6070' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
 textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 
-/* two-col grid */
 .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
 
-/* ── OPTION CARDS (radio/checkbox style) ── */
+/* ── OPTION CARDS ── */
 .option-grid { display: grid; gap: 8px; }
 .option-grid.cols-2 { grid-template-columns: 1fr 1fr; }
 .option-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
 @media (max-width: 640px) { .option-grid.cols-2, .option-grid.cols-3 { grid-template-columns: 1fr; } }
 
 .option-card { position: relative; }
-.option-card input { position: absolute; opacity: 0; pointer-events: none; }
+/* FIX 2: inputs must be visually hidden but still accessible to the label click */
+.option-card input[type="radio"],
+.option-card input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1;
+}
 .option-label {
   display: flex; align-items: flex-start; gap: 12px;
   padding: 14px 16px; background: var(--bg3);
   border: 1px solid var(--border2); cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s; position: relative; z-index: 0;
 }
 .option-label:hover { border-color: var(--green3); background: var(--bg4); }
 .option-card input:checked + .option-label {
@@ -261,12 +272,17 @@ input[type="range"]::-webkit-slider-thumb {
 .budget-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
 @media (max-width: 600px) { .budget-grid { grid-template-columns: 1fr 1fr; } }
 .budget-card { position: relative; }
-.budget-card input { position: absolute; opacity: 0; pointer-events: none; }
+.budget-card input[type="radio"] {
+  position: absolute; opacity: 0;
+  width: 100%; height: 100%;
+  top: 0; left: 0; margin: 0;
+  cursor: pointer; z-index: 1;
+}
 .budget-label {
   display: block; text-align: center;
   padding: 16px 10px; background: var(--bg3);
   border: 1px solid var(--border2); cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s; position: relative; z-index: 0;
 }
 .budget-label:hover { border-color: var(--green3); }
 .budget-card input:checked + .budget-label { border-color: var(--green); background: var(--green2); }
@@ -278,11 +294,16 @@ input[type="range"]::-webkit-slider-thumb {
 .urgency-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
 @media (max-width: 600px) { .urgency-grid { grid-template-columns: 1fr; } }
 .urgency-card { position: relative; }
-.urgency-card input { position: absolute; opacity: 0; pointer-events: none; }
+.urgency-card input[type="radio"] {
+  position: absolute; opacity: 0;
+  width: 100%; height: 100%;
+  top: 0; left: 0; margin: 0;
+  cursor: pointer; z-index: 1;
+}
 .urgency-label {
   display: block; padding: 16px; background: var(--bg3);
   border: 1px solid var(--border2); cursor: pointer; transition: all 0.2s;
-  text-align: center;
+  text-align: center; position: relative; z-index: 0;
 }
 .urgency-label:hover { border-color: var(--green3); }
 .urgency-card input:checked + .urgency-label { border-color: var(--green); background: var(--green2); }
@@ -319,7 +340,7 @@ input[type="range"]::-webkit-slider-thumb {
 .sr-label { color: var(--muted2); font-family: 'DM Mono'; }
 .sr-value { color: var(--text); font-weight: 500; text-align: right; max-width: 60%; }
 
-/* ── CHECKLIST (internal use) ── */
+/* ── CHECKLIST ── */
 .checklist-section {
   background: var(--bg2); border: 1px solid var(--border);
   padding: 28px; margin-bottom: 16px;
@@ -359,17 +380,10 @@ input[type="range"]::-webkit-slider-thumb {
 .cn-text { font-size: 13px; color: var(--muted2); line-height: 1.5; }
 .cn-text strong { color: var(--text); display: block; margin-bottom: 2px; }
 
-/* ── TOOLTIP ── */
-.tooltip { position: relative; display: inline-flex; }
-.tooltip-icon { width: 16px; height: 16px; border-radius: 50%; background: var(--border2); color: var(--muted2); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: help; }
-.tooltip-body { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--bg4); border: 1px solid var(--border2); padding: 10px 14px; font-size: 11px; color: var(--muted2); white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 50; min-width: 200px; white-space: normal; line-height: 1.5; }
-.tooltip:hover .tooltip-body { opacity: 1; }
-
-/* ── ADMIN VIEW ── */
+/* ── ADMIN ── */
 .admin-toggle { position: fixed; bottom: 24px; left: 24px; z-index: 500; }
 .admin-btn { background: var(--bg2); border: 1px solid var(--border2); color: var(--muted2); font-size: 10px; font-family: 'DM Mono'; letter-spacing: 0.1em; padding: 8px 14px; cursor: pointer; transition: all 0.2s; }
 .admin-btn:hover { border-color: var(--green3); color: var(--green); }
-
 .admin-panel { display: none; position: fixed; bottom: 60px; left: 24px; width: 320px; background: var(--bg2); border: 1px solid var(--border2); padding: 20px; z-index: 500; max-height: 70vh; overflow-y: auto; }
 .admin-panel.open { display: block; }
 .ap-title { font-size: 10px; font-family: 'DM Mono'; letter-spacing: 0.15em; text-transform: uppercase; color: var(--green); margin-bottom: 16px; }
@@ -381,7 +395,6 @@ input[type="range"]::-webkit-slider-thumb {
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="site-header">
   <div class="logo">null<span>;</span> limit</div>
   <div class="header-right">
@@ -391,9 +404,7 @@ input[type="range"]::-webkit-slider-thumb {
 </header>
 <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:20%"></div></div>
 
-<!-- ════════════════════════════════════════
-     PAGE 1 — INTAKE / ABOUT YOU
-════════════════════════════════════════ -->
+<!-- PAGE 1 -->
 <div class="page active" id="page-1">
   <div class="hero">
     <div class="hero-badge">Client Onboarding · Step 1 of 5</div>
@@ -408,9 +419,9 @@ input[type="range"]::-webkit-slider-thumb {
 
   <div class="form-container">
 
-    <!-- SECTION 1: About You -->
+    <!-- SECTION 1 -->
     <div class="form-section open" id="sec-about">
-      <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="toggleSection('sec-about')">
+      <div class="form-section-header">
         <div class="fsh-num">01</div>
         <div class="fsh-content">
           <div class="fsh-title">About You & Your Business</div>
@@ -496,9 +507,9 @@ input[type="range"]::-webkit-slider-thumb {
       </div>
     </div>
 
-    <!-- SECTION 2: The Problem -->
+    <!-- SECTION 2 -->
     <div class="form-section" id="sec-problem">
-      <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="toggleSection('sec-problem')">
+      <div class="form-section-header">
         <div class="fsh-num">02</div>
         <div class="fsh-content">
           <div class="fsh-title">The Problem You're Trying to Solve</div>
@@ -548,9 +559,9 @@ input[type="range"]::-webkit-slider-thumb {
       </div>
     </div>
 
-    <!-- SECTION 3: AI Experience -->
+    <!-- SECTION 3 -->
     <div class="form-section" id="sec-ai">
-      <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="toggleSection('sec-ai')">
+      <div class="form-section-header">
         <div class="fsh-num">03</div>
         <div class="fsh-content">
           <div class="fsh-title">Your AI Experience & Comfort Level</div>
@@ -600,9 +611,9 @@ input[type="range"]::-webkit-slider-thumb {
       </div>
     </div>
 
-    <!-- SECTION 4: What You Need -->
+    <!-- SECTION 4 -->
     <div class="form-section" id="sec-solution">
-      <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="toggleSection('sec-solution')">
+      <div class="form-section-header">
         <div class="fsh-num">04</div>
         <div class="fsh-content">
           <div class="fsh-title">What You Need Built</div>
@@ -616,30 +627,12 @@ input[type="range"]::-webkit-slider-thumb {
           <label class="field-label">What type of AI solution are you looking for? <span>*</span></label>
           <div class="field-hint">Select the closest match — we'll refine during the discovery call.</div>
           <div class="option-grid cols-2">
-            <div class="option-card radio">
-              <input id="opt-132" type="radio" name="solution-type" value="agent"/>
-              <label for="opt-132" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">🤖 AI Agent</div><div class="option-desc">Autonomous — runs tasks, responds, acts on your behalf 24/7 without you</div></div></label>
-            </div>
-            <div class="option-card radio">
-              <input id="opt-133" type="radio" name="solution-type" value="chatbot"/>
-              <label for="opt-133" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">💬 AI Chatbot</div><div class="option-desc">Answers questions, qualifies leads, handles FAQs on your site or social</div></div></label>
-            </div>
-            <div class="option-card radio">
-              <input id="opt-134" type="radio" name="solution-type" value="automation"/>
-              <label for="opt-134" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">⚙️ AI Automation</div><div class="option-desc">Connects your tools, automates workflows, removes manual steps</div></div></label>
-            </div>
-            <div class="option-card radio">
-              <input id="opt-135" type="radio" name="solution-type" value="dashboard"/>
-              <label for="opt-135" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">📊 AI Dashboard / Reporting</div><div class="option-desc">Surfaces data insights, tracks performance, generates reports automatically</div></div></label>
-            </div>
-            <div class="option-card radio">
-              <input id="opt-136" type="radio" name="solution-type" value="content"/>
-              <label for="opt-136" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">✍️ AI Content System</div><div class="option-desc">Generates, schedules, repurposes, and distributes content automatically</div></div></label>
-            </div>
-            <div class="option-card radio">
-              <input id="opt-137" type="radio" name="solution-type" value="unsure"/>
-              <label for="opt-137" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">🤷 Not sure yet</div><div class="option-desc">I know the problem — help me figure out the right solution</div></div></label>
-            </div>
+            <div class="option-card radio"><input id="opt-132" type="radio" name="solution-type" value="agent"/><label for="opt-132" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">🤖 AI Agent</div><div class="option-desc">Autonomous — runs tasks, responds, acts on your behalf 24/7 without you</div></div></label></div>
+            <div class="option-card radio"><input id="opt-133" type="radio" name="solution-type" value="chatbot"/><label for="opt-133" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">💬 AI Chatbot</div><div class="option-desc">Answers questions, qualifies leads, handles FAQs on your site or social</div></div></label></div>
+            <div class="option-card radio"><input id="opt-134" type="radio" name="solution-type" value="automation"/><label for="opt-134" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">⚙️ AI Automation</div><div class="option-desc">Connects your tools, automates workflows, removes manual steps</div></div></label></div>
+            <div class="option-card radio"><input id="opt-135" type="radio" name="solution-type" value="dashboard"/><label for="opt-135" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">📊 AI Dashboard / Reporting</div><div class="option-desc">Surfaces data insights, tracks performance, generates reports automatically</div></div></label></div>
+            <div class="option-card radio"><input id="opt-136" type="radio" name="solution-type" value="content"/><label for="opt-136" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">✍️ AI Content System</div><div class="option-desc">Generates, schedules, repurposes, and distributes content automatically</div></div></label></div>
+            <div class="option-card radio"><input id="opt-137" type="radio" name="solution-type" value="unsure"/><label for="opt-137" class="option-label"><div class="option-check"></div><div class="option-text"><div class="option-title">🤷 Not sure yet</div><div class="option-desc">I know the problem — help me figure out the right solution</div></div></label></div>
           </div>
         </div>
         <div class="field-group">
@@ -649,7 +642,7 @@ input[type="range"]::-webkit-slider-thumb {
         </div>
         <div class="field-group">
           <label class="field-label">Priority features — rank what matters most</label>
-          <div class="field-hint">Drag to rank or use the sliders (1 = highest priority)</div>
+          <div class="field-hint">1 = lowest priority, 5 = highest priority</div>
           <div class="slider-row"><span class="slider-label">24/7 availability</span><div class="slider-track"><input type="range" min="1" max="5" value="3" oninput="updateSlider(this)"/></div><span class="slider-val">3</span></div>
           <div class="slider-row"><span class="slider-label">Speed of response</span><div class="slider-track"><input type="range" min="1" max="5" value="3" oninput="updateSlider(this)"/></div><span class="slider-val">3</span></div>
           <div class="slider-row"><span class="slider-label">Personalization</span><div class="slider-track"><input type="range" min="1" max="5" value="3" oninput="updateSlider(this)"/></div><span class="slider-val">3</span></div>
@@ -664,9 +657,9 @@ input[type="range"]::-webkit-slider-thumb {
       </div>
     </div>
 
-    <!-- SECTION 5: Budget & Timeline -->
+    <!-- SECTION 5 -->
     <div class="form-section" id="sec-budget">
-      <div class="form-section-header" style="cursor:pointer;user-select:none;" onclick="toggleSection('sec-budget')">
+      <div class="form-section-header">
         <div class="fsh-num">05</div>
         <div class="fsh-content">
           <div class="fsh-title">Budget & Timeline</div>
@@ -713,7 +706,7 @@ input[type="range"]::-webkit-slider-thumb {
       </div>
     </div>
 
-  </div><!-- end form-container -->
+  </div>
 
   <div class="form-nav">
     <span class="btn btn-ghost">← Back to nulllimit.gg</span>
@@ -721,9 +714,7 @@ input[type="range"]::-webkit-slider-thumb {
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     PAGE 2 — SUMMARY & REVIEW
-════════════════════════════════════════ -->
+<!-- PAGE 2 -->
 <div class="page" id="page-2">
   <div class="hero" style="padding-bottom:40px;">
     <div class="hero-badge">Step 2 of 5 · Review Your Submission</div>
@@ -744,117 +735,49 @@ input[type="range"]::-webkit-slider-thumb {
       <div class="summary-row"><span class="sr-label">Main Pain Points</span><span class="sr-value" id="sum-pain">—</span></div>
     </div>
 
-    <!-- INTERNAL PROCESS CHECKLIST -->
     <div style="margin-bottom:8px;font-size:10px;font-family:'DM Mono';letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);padding:0 2px;">// Internal Process — What Happens Next</div>
 
     <div class="checklist-section">
       <div class="checklist-title">Phase 1 — Intake & Review (Today)</div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Intake form received and reviewed</div><div class="check-sub">Vitoshi reviews the client submission, flags key needs, and assigns solution category</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Client profile created internally</div><div class="check-sub">Business details, pain points, and solution type logged in the client file</div><span class="check-tag auto">Auto</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Confirmation email sent to client</div><div class="check-sub">Acknowledgement of receipt + what to expect next + timeline for discovery call scheduling</div><span class="check-tag auto">Auto</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Initial solution recommendation drafted</div><div class="check-sub">Based on intake data, Vitoshi identifies the most likely solution tier and approach</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Intake form received and reviewed</div><div class="check-sub">Vitoshi reviews the client submission, flags key needs, and assigns solution category</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Client profile created internally</div><div class="check-sub">Business details, pain points, and solution type logged in the client file</div><span class="check-tag auto">Auto</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Confirmation email sent to client</div><div class="check-sub">Acknowledgement of receipt + what to expect next + timeline for discovery call scheduling</div><span class="check-tag auto">Auto</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Initial solution recommendation drafted</div><div class="check-sub">Based on intake data, Vitoshi identifies the most likely solution tier and approach</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
     </div>
 
     <div class="checklist-section">
       <div class="checklist-title">Phase 2 — Discovery Call (Within 48hrs)</div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">30-minute discovery call scheduled</div><div class="check-sub">Client books via Calendly link sent in confirmation email</div><span class="check-tag client">Client</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Deep-dive into workflow and tools</div><div class="check-sub">Walk through current operations, identify integration points, confirm solution type</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Client asks all their questions</div><div class="check-sub">Full transparency on what they're getting, how it works, what they manage vs what runs automatically</div><span class="check-tag client">Client</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Final solution confirmed and scoped</div><div class="check-sub">Exact deliverables, integrations, timeline, and pricing agreed on the call</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">30-minute discovery call scheduled</div><div class="check-sub">Client books via Calendly link sent in confirmation email</div><span class="check-tag client">Client</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Deep-dive into workflow and tools</div><div class="check-sub">Walk through current operations, identify integration points, confirm solution type</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Client asks all their questions</div><div class="check-sub">Full transparency on what they're getting, how it works, what they manage vs what runs automatically</div><span class="check-tag client">Client</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Final solution confirmed and scoped</div><div class="check-sub">Exact deliverables, integrations, timeline, and pricing agreed on the call</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
     </div>
 
     <div class="checklist-section">
       <div class="checklist-title">Phase 3 — Proposal & Agreement (Within 24hrs of call)</div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Custom proposal sent</div><div class="check-sub">Scope of work, deliverables, pricing, timeline, and what's included vs not included</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Client reviews and approves proposal</div><div class="check-sub">Client has 48hrs to review, ask questions, and confirm or request changes</div><span class="check-tag client">Client</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Service agreement signed</div><div class="check-sub">Simple one-page agreement covering scope, delivery, and payment terms</div><span class="check-tag client">Client</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">50% deposit payment processed</div><div class="check-sub">Via Stripe — remaining 50% due on delivery</div><span class="check-tag client">Client</span></div>
-      </div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Custom proposal sent</div><div class="check-sub">Scope of work, deliverables, pricing, timeline, and what's included vs not included</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Client reviews and approves proposal</div><div class="check-sub">Client has 48hrs to review, ask questions, and confirm or request changes</div><span class="check-tag client">Client</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Service agreement signed</div><div class="check-sub">Simple one-page agreement covering scope, delivery, and payment terms</div><span class="check-tag client">Client</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">50% deposit payment processed</div><div class="check-sub">Via Stripe — remaining 50% due on delivery</div><span class="check-tag client">Client</span></div></div>
     </div>
 
     <div class="checklist-section">
       <div class="checklist-title">Phase 4 — Build (Timeline per scope)</div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Client credentials and access shared</div><div class="check-sub">API keys, platform logins, tool access needed to build the integration</div><span class="check-tag client">Client</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Agent / automation built and configured</div><div class="check-sub">Full build based on agreed scope — AI model, workflows, integrations, responses</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Internal testing completed</div><div class="check-sub">Full QA pass — all workflows tested, edge cases handled, responses reviewed</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Client review and feedback session</div><div class="check-sub">Live demo of the system — client tests it, requests adjustments</div><span class="check-tag client">Client</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Revisions implemented</div><div class="check-sub">Up to 2 rounds of revisions included in all packages</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Client credentials and access shared</div><div class="check-sub">API keys, platform logins, tool access needed to build the integration</div><span class="check-tag client">Client</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Agent / automation built and configured</div><div class="check-sub">Full build based on agreed scope — AI model, workflows, integrations, responses</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Internal testing completed</div><div class="check-sub">Full QA pass — all workflows tested, edge cases handled, responses reviewed</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Client review and feedback session</div><div class="check-sub">Live demo of the system — client tests it, requests adjustments</div><span class="check-tag client">Client</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Revisions implemented</div><div class="check-sub">Up to 2 rounds of revisions included in all packages</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
     </div>
 
     <div class="checklist-section">
       <div class="checklist-title">Phase 5 — Launch & Handoff</div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">System goes live</div><div class="check-sub">Agent / automation activated in production — real traffic, real results</div><span class="check-tag auto">Go Live</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Client training and walkthrough</div><div class="check-sub">30-minute handoff call — how to monitor, how to update, what to do if something breaks</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Documentation delivered</div><div class="check-sub">Written guide specific to their system — how it works, how to modify, who to contact</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">Final payment processed</div><div class="check-sub">Remaining 50% due on delivery confirmation</div><span class="check-tag client">Client</span></div>
-      </div>
-      <div class="checklist-item">
-        <div class="check-box" onclick="toggleCheck(this)"></div>
-        <div class="check-content"><div class="check-title">30-day check-in scheduled</div><div class="check-sub">Follow-up call one month post-launch — performance review and optimization opportunities</div><span class="check-tag vitoshi">Vitoshi</span></div>
-      </div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">System goes live</div><div class="check-sub">Agent / automation activated in production — real traffic, real results</div><span class="check-tag auto">Go Live</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Client training and walkthrough</div><div class="check-sub">30-minute handoff call — how to monitor, how to update, what to do if something breaks</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Documentation delivered</div><div class="check-sub">Written guide specific to their system — how it works, how to modify, who to contact</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">Final payment processed</div><div class="check-sub">Remaining 50% due on delivery confirmation</div><span class="check-tag client">Client</span></div></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-content"><div class="check-title">30-day check-in scheduled</div><div class="check-sub">Follow-up call one month post-launch — performance review and optimization opportunities</div><span class="check-tag vitoshi">Vitoshi</span></div></div>
     </div>
-
   </div>
 
   <div class="form-nav">
@@ -863,9 +786,7 @@ input[type="range"]::-webkit-slider-thumb {
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     PAGE 3 — WHAT TO EXPECT
-════════════════════════════════════════ -->
+<!-- PAGE 3 -->
 <div class="page" id="page-3">
   <div class="confirmation">
     <div class="confirm-icon">◈</div>
@@ -873,26 +794,11 @@ input[type="range"]::-webkit-slider-thumb {
     <p class="confirm-sub">Your intake has been submitted. Here's exactly what happens next — no vague "we'll be in touch." A real timeline, a real process.</p>
     <div class="confirm-next">
       <div class="cn-title">// What happens next</div>
-      <div class="cn-step">
-        <div class="cn-num">1</div>
-        <div class="cn-text"><strong>Within 2 hours</strong>You'll receive a confirmation email with your submission summary and a Calendly link to book your discovery call.</div>
-      </div>
-      <div class="cn-step">
-        <div class="cn-num">2</div>
-        <div class="cn-text"><strong>Within 48 hours</strong>Discovery call happens. We go deep on your workflow, confirm the solution, and scope exactly what we're building.</div>
-      </div>
-      <div class="cn-step">
-        <div class="cn-num">3</div>
-        <div class="cn-text"><strong>Within 24hrs of call</strong>You receive a custom proposal with full scope, pricing, and timeline. No surprises.</div>
-      </div>
-      <div class="cn-step">
-        <div class="cn-num">4</div>
-        <div class="cn-text"><strong>You approve — we build</strong>Simple agreement, 50% to start. We build, test, you review, we refine. Then we launch.</div>
-      </div>
-      <div class="cn-step">
-        <div class="cn-num">5</div>
-        <div class="cn-text"><strong>30-day check-in</strong>One month after launch — we review performance, optimize, and confirm everything is working exactly as expected.</div>
-      </div>
+      <div class="cn-step"><div class="cn-num">1</div><div class="cn-text"><strong>Within 2 hours</strong>You'll receive a confirmation email with your submission summary and a Calendly link to book your discovery call.</div></div>
+      <div class="cn-step"><div class="cn-num">2</div><div class="cn-text"><strong>Within 48 hours</strong>Discovery call happens. We go deep on your workflow, confirm the solution, and scope exactly what we're building.</div></div>
+      <div class="cn-step"><div class="cn-num">3</div><div class="cn-text"><strong>Within 24hrs of call</strong>You receive a custom proposal with full scope, pricing, and timeline. No surprises.</div></div>
+      <div class="cn-step"><div class="cn-num">4</div><div class="cn-text"><strong>You approve — we build</strong>Simple agreement, 50% to start. We build, test, you review, we refine. Then we launch.</div></div>
+      <div class="cn-step"><div class="cn-num">5</div><div class="cn-text"><strong>30-day check-in</strong>One month after launch — we review performance, optimize, and confirm everything is working exactly as expected.</div></div>
     </div>
     <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <a href="https://nulllimit.gg" style="text-decoration:none;"><button class="btn btn-secondary">← Back to nulllimit.gg</button></a>
@@ -901,7 +807,7 @@ input[type="range"]::-webkit-slider-thumb {
   </div>
 </div>
 
-<!-- ADMIN PANEL TOGGLE -->
+<!-- ADMIN -->
 <div class="admin-toggle">
   <button class="admin-btn" onclick="toggleAdmin()">◧ Internal View</button>
 </div>
@@ -916,13 +822,13 @@ input[type="range"]::-webkit-slider-thumb {
         <span style="background:rgba(212,168,67,0.1);color:var(--gold);border:1px solid rgba(212,168,67,0.2);padding:2px 8px;font-size:9px;font-family:'DM Mono';">Auto</span>
       </div>
     </div>
-    <div style="color:var(--muted2);">Use the checklist on Page 2 to track each client through the full 5-phase process. Check items off as they're completed. The checklist is independent per page load — for persistent tracking, copy to your CRM or Notion.</div>
+    <div style="color:var(--muted2);">Use the checklist on Page 2 to track each client through the full 5-phase process. Check items off as they're completed.</div>
   </div>
 </div>
 
 <script>
-// ── STEPS ──
 const totalSteps = 5;
+
 function updateProgress(step) {
   const pct = (step / totalSteps) * 100;
   document.getElementById('progress-fill').style.width = pct + '%';
@@ -937,7 +843,6 @@ function updateProgress(step) {
 }
 updateProgress(1);
 
-// ── PAGE NAVIGATION ──
 function goToPage(n) {
   if (n === 2) buildSummary();
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -946,32 +851,39 @@ function goToPage(n) {
   updateProgress(n === 1 ? 1 : n === 2 ? 3 : 5);
 }
 
-// ── SECTION TOGGLE ──
+// FIX 3: Single unified toggle — no duplicate addEventListener
+// All section headers use this one function, called via onclick in HTML
 function toggleSection(id) {
   const sec = document.getElementById(id);
   const isOpen = sec.classList.contains('open');
-  // Close all sections first
   document.querySelectorAll('.form-section').forEach(s => s.classList.remove('open'));
-  // If it wasn't open, open it
   if (!isOpen) sec.classList.add('open');
 }
 
-// ── SLIDERS ──
+// Wire up headers via JS only (no inline onclick needed, but kept for safety)
+document.querySelectorAll('.form-section-header').forEach(header => {
+  header.addEventListener('click', function(e) {
+    // Prevent double-fire if there's also an onclick attr
+    e.stopPropagation();
+    const section = this.closest('.form-section');
+    const wasOpen = section.classList.contains('open');
+    document.querySelectorAll('.form-section').forEach(s => s.classList.remove('open'));
+    if (!wasOpen) section.classList.add('open');
+  });
+});
+
 function updateSlider(el) {
   el.parentElement.nextElementSibling.textContent = el.value;
 }
 
-// ── CHECKBOXES (checklist) ──
 function toggleCheck(el) {
   el.classList.toggle('checked');
 }
 
-// ── SUMMARY ──
 function buildSummary() {
   const get = id => document.getElementById(id)?.value || '—';
   const checked = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value).join(', ') || '—';
   const radio = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '—';
-
   document.getElementById('sum-name').textContent = get('f-name');
   document.getElementById('sum-business').textContent = get('f-business');
   document.getElementById('sum-industry').textContent = get('f-industry');
@@ -982,23 +894,10 @@ function buildSummary() {
   document.getElementById('sum-pain').textContent = checked('pain');
 }
 
-// ── ADMIN PANEL ──
 function toggleAdmin() {
   document.getElementById('admin-panel').classList.toggle('open');
 }
 
-// ── AUTO-OPEN SECTIONS ON CLICK NEXT ──
-document.querySelectorAll('.form-section-header').forEach(header => {
-  header.addEventListener('click', function() {
-    const section = this.parentElement;
-    const wasOpen = section.classList.contains('open');
-    // Close all
-    document.querySelectorAll('.form-section').forEach(s => s.classList.remove('open'));
-    if (!wasOpen) section.classList.add('open');
-  });
-});
-
-// ── FORMSPREE SUBMISSION
 const ONBOARDING_ENDPOINT = 'https://formspree.io/f/xjgjzbjq';
 
 async function submitOnboarding() {
@@ -1011,25 +910,22 @@ async function submitOnboarding() {
     return;
   }
 
-  // Collect all form data
   const painPoints = [...document.querySelectorAll('input[name="pain"]:checked')].map(i => i.value).join(', ');
   const tools = [...document.querySelectorAll('input[name="tools"]:checked')].map(i => i.value).join(', ');
 
-  // ── Value decoders — turns raw option values into readable answers
   const decode = {
     team: { solo: 'Solo / Just me', '2-5': '2–5 people', '6-20': '6–20 people', '20+': '20+ people' },
     'time-lost': { '1-3hrs': '1–3 hours/week', '3-8hrs': '3–8 hours/week', '8-15hrs': '8–15 hours/week', '15+hrs': '15+ hours/week' },
     'rev-impact': { 'under500': 'Under $500/month', '500-2k': '$500–$2,000/month', '2k-5k': '$2,000–$5,000/month', '5k+': '$5,000+/month' },
-    'ai-exp': { none: 'Never used AI tools', chatgpt: 'ChatGPT / basic tools only', 'some-automation': 'Some automation tools (Zapier/Make)', advanced: 'Advanced — builds with AI' },
-    'ai-comfort': { low: 'Needs hand-holding / step-by-step', mid: 'Can follow instructions independently', high: 'Fully comfortable managing it alone' },
-    'solution-type': { agent: 'AI Agent (autonomous, runs 24/7)', chatbot: 'AI Chatbot (answers questions, qualifies leads)', automation: 'AI Automation (connects tools, removes manual steps)', dashboard: 'AI Dashboard / Reporting', content: 'AI Content System', unsure: 'Not sure yet — needs guidance' },
+    'ai-exp': { none: 'Never used AI tools', chatgpt: 'ChatGPT / basic tools only', 'some-automation': 'Some automation tools', advanced: 'Advanced — builds with AI' },
+    'ai-comfort': { low: 'Needs hand-holding', mid: 'Can follow instructions', high: 'Fully comfortable independently' },
+    'solution-type': { agent: 'AI Agent', chatbot: 'AI Chatbot', automation: 'AI Automation', dashboard: 'AI Dashboard / Reporting', content: 'AI Content System', unsure: 'Not sure yet' },
     budget: { '125': '$125 — Basic setup', '300': '$300 — Standard build', '500': '$500 — Full system', 'custom': 'Custom / Enterprise' },
     urgency: { exploring: 'Exploring — no rush', soon: 'Within a month', now: 'ASAP — this is costing us now' },
   };
-  const dv = (name, fallback='—') => { const el = document.querySelector('input[name="'+name+'"]:checked'); if (!el) return fallback; return decode[name]?.[el.value] || el.value; };
+  const dv = (name, fallback='—') => { const el = document.querySelector(`input[name="${name}"]:checked`); if (!el) return fallback; return decode[name]?.[el.value] || el.value; };
 
   const data = {
-    // ── SECTION 1: WHO THEY ARE
     '01 | Full Name': name,
     '02 | Email Address': email,
     '03 | Phone / WhatsApp': document.getElementById('f-phone')?.value || 'Not provided',
@@ -1038,32 +934,23 @@ async function submitOnboarding() {
     '06 | Industry': document.getElementById('f-industry')?.value || '—',
     '07 | Team Size': dv('team'),
     '08 | About Their Business': document.getElementById('f-about')?.value || '—',
-
-    // ── SECTION 2: THE PROBLEM
-    '09 | Pain Points (all selected)': painPoints || 'None selected',
+    '09 | Pain Points': painPoints || 'None selected',
     '10 | Problem in Their Own Words': document.getElementById('f-problem')?.value || '—',
     '11 | Time Lost Per Week': dv('time-lost'),
-    '12 | Estimated Monthly Revenue Impact': dv('rev-impact'),
-
-    // ── SECTION 3: AI EXPERIENCE
+    '12 | Revenue Impact': dv('rev-impact'),
     '13 | Prior AI Experience': dv('ai-exp'),
-    '14 | Comfort Managing Tools Independently': dv('ai-comfort'),
-    '15 | Tools They Currently Use': tools || 'None selected',
+    '14 | Comfort Level': dv('ai-comfort'),
+    '15 | Tools Currently Used': tools || 'None selected',
     '16 | Must-Have Integrations': document.getElementById('f-integrations')?.value || 'None specified',
-
-    // ── SECTION 4: WHAT THEY NEED
-    '17 | Solution Type Requested': dv('solution-type'),
-    '18 | Solution Description (their words)': document.getElementById('f-solution-desc')?.value || '—',
-    '19 | What Success Looks Like to Them': document.getElementById('f-success')?.value || '—',
-
-    // ── SECTION 5: BUDGET & TIMELINE
+    '17 | Solution Type': dv('solution-type'),
+    '18 | Solution Description': document.getElementById('f-solution-desc')?.value || '—',
+    '19 | What Success Looks Like': document.getElementById('f-success')?.value || '—',
     '20 | Budget Range': dv('budget'),
     '21 | Urgency': dv('urgency'),
     '22 | How They Found Null Limit': document.getElementById('f-source')?.value || '—',
     '23 | Anything Else': document.getElementById('f-other')?.value || 'Nothing added',
   };
 
-  // Loading state
   const btn = document.getElementById('submit-btn');
   const orig = btn.textContent;
   btn.textContent = 'Sending...';
@@ -1076,17 +963,11 @@ async function submitOnboarding() {
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(data)
     });
-
     if (res.ok) {
-      // Go to confirmation page
       goToPage(3);
     } else {
       const json = await res.json();
-      if (json.errors) {
-        alert('Error: ' + json.errors.map(e => e.message).join(', '));
-      } else {
-        alert('Something went wrong. Please email vitoshi@nulllimit.gg directly.');
-      }
+      alert(json.errors ? 'Error: ' + json.errors.map(e => e.message).join(', ') : 'Something went wrong. Please email vitoshi@nulllimit.gg directly.');
     }
   } catch(err) {
     alert('Network error. Please email vitoshi@nulllimit.gg directly.');
