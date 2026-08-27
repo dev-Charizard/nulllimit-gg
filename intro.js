@@ -67,9 +67,9 @@
             '<stop offset="55%" stop-color="#8D949B"/><stop offset="72%" stop-color="#E6E9EC"/><stop offset="88%" stop-color="#A2A8AE"/>' +
             '<stop offset="100%" stop-color="#DFE3E6"/></linearGradient></defs>' +
           '<path class="seg bar" data-seg="b1" style="--len:330.6" d="M0 570.1H330.6"/>' +
+          '<path class="seg bar" data-seg="b2" style="--len:330.6" d="M545.4 159.9H876.0"/>' +
           '<circle class="seg ring" data-seg="r1" style="--len:674.9" cx="438.0" cy="570.1" r="107.4"/>' +
           '<circle class="seg ring" data-seg="r2" style="--len:674.9" cx="438.0" cy="159.9" r="107.4"/>' +
-          '<path class="seg bar" data-seg="b2" style="--len:330.6" d="M545.4 159.9H876.0"/>' +
         '</svg>' +
         '<p class="intro-line metal-text">THE LIMIT IS UNDEFINED.</p>' +
         '<button type="button" class="intro-door">[ the limit doesn’t exist → ]</button>' +
