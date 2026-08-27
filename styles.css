@@ -1,0 +1,598 @@
+/* =====================================================================
+   null;limit — /styles.css
+   One stylesheet for the one page. Tokens and metal treatments are
+   pasted verbatim from the brand kit (snippets/tokens.css, metal.css)
+   and are the only colour values on the site. Do not invent values.
+   ===================================================================== */
+
+
+/* ---------------------------------------------------------------------
+   1. TOKENS  (brand kit: snippets/tokens.css)
+   --------------------------------------------------------------------- */
+:root {
+  /* ---- field: neutral near-black. no blue, no purple */
+  --bg:          #0B0C0E;
+  --surface:     #131518;
+  --surface-2:   #1B1E22;
+  --border:      #262A2F;
+  --border-hi:   #363B42;
+
+  /* ---- text ramp */
+  --text:        #E8EAED;
+  --text-2:      #A8AEB5;
+  --muted:       #6B7278;
+  --dim:         #464C52;
+
+  /* ---- metals. separate by tone and luminance, never by hue */
+  --silver:      #C9CFD6;   /* THE accent. flat stand-in for the gradient */
+  --platinum:    #DDE3E8; /* lightest, coolest */
+  --steel:       #9AA3AC;    /* neutral mid */
+  --titanium:    #B8B2AA; /* warm grey */
+  --nickel:      #A9A29B;   /* warmer still */
+  --gunmetal:    #5C646D; /* dark metal — use on light backgrounds */
+
+  --grad-silver: linear-gradient(135deg,
+    #FFFFFF 0%, #B9BEC4 18%, #F4F6F8 38%, #8D949B 55%,
+    #E6E9EC 72%, #A2A8AE 88%, #DFE3E6 100%);
+  --grad-silver-soft: linear-gradient(135deg, #E6E9EC 0%, #A2A8AE 50%, #DFE3E6 100%);
+  --grad-edge: linear-gradient(135deg, #363B42 0%, #6B7278 45%, #2A2E33 100%);
+
+  --nl-accent: var(--silver);
+}
+
+/* ---- ecosystem categories.
+   The old set separated by hue: purple / blue / gold / pink / volt.
+   Hue is gone. Categories now separate by metal tone plus luminance, and the
+   scale runs light to dark so it reads as a sequence, not a rainbow. */
+:root {
+  --cat-agents:  var(--platinum);
+  --cat-tools:   var(--silver);
+  --cat-crypto:  var(--titanium);
+  --cat-consult: var(--steel);
+  --cat-content: var(--nickel);
+  --cat-future:  var(--gunmetal);
+}
+
+
+/* ---------------------------------------------------------------------
+   2. METAL  (brand kit: snippets/metal.css)
+   --------------------------------------------------------------------- */
+/* Metal surfaces.
+   Gradients belong on things that are LARGE or SHINY — display type, the mark,
+   a hairline, a key border. Body copy stays flat --text. A gradient under 20px
+   is noise and it costs you contrast. */
+
+.metal-text {                       /* display type only, 28px and up */
+  color: var(--platinum);           /* fallback if background-clip is unsupported */
+  background-image: var(--grad-silver);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .metal-text { color: var(--platinum); -webkit-text-fill-color: currentColor; }
+}
+
+.metal-border {
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    var(--grad-edge) border-box;
+}
+
+.metal-rule { height: 1px; border: 0; background: var(--grad-edge); }
+
+.metal-panel {
+  background: linear-gradient(160deg, var(--surface-2) 0%, var(--surface) 60%);
+  border: 1px solid var(--border);
+}
+
+.metal-btn {
+  color: var(--text); background: var(--surface);
+  border: 1px solid var(--border-hi); border-radius: 8px; padding: .7em 1.4em;
+  transition: border-color .18s ease, color .18s ease;
+}
+.metal-btn:hover { border-color: var(--silver); color: var(--platinum); }
+
+/* ---- THE MARK. Primary. Use on its own. */
+.nl-mark {
+  height: 28px; width: auto; display: block;
+  color: var(--text);            /* the two bars */
+  min-height: 20px;
+}
+.nl-mark--nav  { height: 26px; }
+.nl-mark--hero { height: 120px; }
+.nl-mark--small { --nl-accent: var(--silver); }   /* flat below ~28px */
+.section--light .nl-mark { color: var(--bg); --nl-accent: var(--gunmetal); }
+
+/* ---- THE WORDMARK. Alternative. Never in the same place as the mark. */
+.nl-wordmark { height: 22px; width: auto; display: block; color: var(--text); }
+.section--light .nl-wordmark { color: var(--bg); --nl-accent: var(--gunmetal); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .nl-mark--link, .nl-wordmark--link { transition: opacity .15s ease; }
+  .nl-mark--link:hover, .nl-wordmark--link:hover { opacity: .82; }
+}
+
+
+/* ---------------------------------------------------------------------
+   3. BASE
+   --------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --gap-section: clamp(96px, 14vh, 180px);
+  --measure: 880px;
+}
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--bg);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* Grain — texture, not effect. */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: .028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* Scanlines — barely there. */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.018) 3px 4px);
+}
+
+::selection { background: var(--silver); color: var(--bg); }
+
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible {
+  outline: 1px solid var(--silver);
+  outline-offset: 4px;
+}
+
+.site {
+  position: relative;
+  z-index: 1;
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 40px);
+}
+
+/* Pre-intro: keep the page from flashing for the frame before the overlay
+   mounts. Failsafe restores it after 4s in case the script never runs.
+   The class is only ever set by JS, so no-JS visitors never hit this. */
+html.nl-intro { overflow: hidden; }
+html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; }
+@keyframes nl-failsafe { to { opacity: 1; } }
+
+
+/* ---------------------------------------------------------------------
+   4. SHARED PIECES
+   --------------------------------------------------------------------- */
+.section { padding-top: var(--gap-section); }
+
+/* small terminal-style label:  > label */
+.prompt {
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--text-2);
+}
+.prompt::before {
+  content: '> ';
+  color: var(--muted);
+}
+
+/* display type */
+.display {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-size: clamp(32px, 6vw, 56px);
+}
+
+/* hairline rows — no cards, no fills, no icons */
+.rows { list-style: none; margin-top: 40px; }
+.row {
+  display: grid;
+  grid-template-columns: 3ch minmax(0, 1fr) minmax(0, 1.45fr);
+  column-gap: clamp(16px, 4vw, 40px);
+  align-items: baseline;
+  padding: 22px 0;
+  border-top: 1px solid var(--border);
+}
+.row:last-child { border-bottom: 1px solid var(--border); }
+.row-n {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .08em;
+}
+.row-t { color: var(--text); font-weight: 700; }
+.row-d { color: var(--text-2); }
+@media (max-width: 639px) {
+  .row {
+    grid-template-columns: 3ch minmax(0, 1fr);
+    row-gap: 6px;
+  }
+  .row-d { grid-column: 2; }
+}
+
+
+/* ---------------------------------------------------------------------
+   5. TOP — the mark, alone
+   --------------------------------------------------------------------- */
+.top { padding-top: clamp(56px, 10vh, 120px); }
+.top .nl-mark { height: clamp(72px, 11vw, 120px); }
+
+
+/* ---------------------------------------------------------------------
+   6. BUILDS SHIPPED
+   --------------------------------------------------------------------- */
+.builds { padding-top: clamp(72px, 12vh, 140px); }
+.builds-n {
+  display: block;
+  font-weight: 700;
+  font-size: clamp(112px, 22vw, 220px);
+  line-height: .95;
+  letter-spacing: -0.05em;
+  margin-top: 8px;
+  margin-left: -0.04em;  /* optical: pull the glyph to the text edge */
+}
+
+
+/* ---------------------------------------------------------------------
+   7. CERTIFICATIONS
+   --------------------------------------------------------------------- */
+.certs {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.certs .dot { color: var(--muted); margin: 0 .6em; }
+
+
+/* ---------------------------------------------------------------------
+   8. TERMS
+   --------------------------------------------------------------------- */
+.terms {
+  margin-top: 56px;
+  padding: clamp(32px, 5vw, 48px);
+}
+.terms-h {
+  font-weight: 700;
+  font-size: clamp(20px, 3.2vw, 28px);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.terms-s {
+  margin-top: 16px;
+  color: var(--text-2);
+}
+
+
+/* ---------------------------------------------------------------------
+   9. THE FORM
+   --------------------------------------------------------------------- */
+.build .display { margin-top: 20px; }
+.build .lede { margin-top: 20px; color: var(--text-2); }
+
+.form { margin-top: 56px; }
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px clamp(24px, 5vw, 48px);
+}
+@media (min-width: 640px) {
+  .form-grid { grid-template-columns: 1fr 1fr; }
+  .field--full { grid-column: 1 / -1; }
+}
+
+.field { display: flex; flex-direction: column; min-width: 0; }
+.field label {
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin-bottom: 10px;
+}
+.field label .opt {
+  text-transform: none;
+  letter-spacing: .04em;
+  color: var(--muted);
+}
+
+.field input,
+.field select,
+.field textarea {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;            /* ≥16px: iOS won't zoom on focus */
+  line-height: 1.5;
+  padding: 10px 0 12px;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.field textarea { resize: vertical; min-height: 96px; }
+.field input::placeholder,
+.field textarea::placeholder { color: var(--muted); opacity: 1; }
+
+.field select {
+  cursor: pointer;
+  padding-right: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23C9CFD6' stroke-width='1.25'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+}
+.field select option { background: var(--surface); color: var(--text); }
+.field select:invalid,
+.field select.is-empty { color: var(--muted); }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--silver);
+  box-shadow: 0 1px 0 0 var(--silver);
+}
+.field input:hover,
+.field select:hover,
+.field textarea:hover { border-bottom-color: var(--border-hi); }
+
+.field.is-invalid input,
+.field.is-invalid select,
+.field.is-invalid textarea {
+  border-bottom-color: var(--titanium);
+  box-shadow: 0 1px 0 0 var(--titanium);
+}
+.err {
+  display: none;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--titanium);
+}
+.field.is-invalid .err { display: block; }
+
+/* honeypot */
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.form-foot {
+  margin-top: 48px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px 40px;
+}
+.btn {
+  display: inline-block;
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: .04em;
+  color: var(--silver);
+  background: transparent;
+  border: 1px solid var(--border-hi);
+  border-radius: 0;
+  padding: 18px 32px;
+  cursor: pointer;
+  transition: border-color .18s ease, color .18s ease;
+}
+.btn:hover { border-color: var(--silver); color: var(--platinum); }
+.btn[disabled] { opacity: .5; cursor: default; }
+@media (max-width: 639px) {
+  .btn { width: 100%; text-align: center; }
+}
+.form-note { font-size: 12px; color: var(--text-2); }
+.form-note a { color: var(--silver); border-bottom: 1px solid var(--border-hi); }
+.form-note a:hover { border-bottom-color: var(--silver); }
+
+.form-status { margin-top: 24px; font-size: 13px; color: var(--text-2); }
+.form-status:empty { display: none; }
+.form-status a { color: var(--silver); border-bottom: 1px solid var(--border-hi); }
+
+/* confirmation, replaces the form */
+.form-done { margin-top: 56px; }
+.form-done .display { font-size: clamp(24px, 4vw, 36px); margin-top: 12px; }
+.form-done p { margin-top: 16px; color: var(--text-2); }
+
+
+/* ---------------------------------------------------------------------
+   10. FOOTER — the wordmark, never the mark
+   --------------------------------------------------------------------- */
+.foot {
+  margin-top: var(--gap-section);
+  padding: 40px 0 clamp(40px, 8vh, 80px);
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+@media (min-width: 640px) {
+  .foot { grid-template-columns: 1fr auto; align-items: end; }
+}
+.foot .nl-wordmark { height: 44px; }       /* ≈124px wide — above the 110px minimum */
+.foot-links { list-style: none; display: grid; gap: 8px; }
+.foot-links a {
+  font-size: 13px;
+  color: var(--text-2);
+  transition: color .15s ease;
+}
+.foot-links a:hover { color: var(--silver); }
+.legal {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+
+
+/* ---------------------------------------------------------------------
+   11. CURSOR — thin silver ring. Fine pointers only. Never on fields.
+   --------------------------------------------------------------------- */
+.cur { display: none; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html.has-cur { cursor: none; }
+  html.has-cur a, html.has-cur button { cursor: none; }
+  html.has-cur input, html.has-cur textarea, html.has-cur select { cursor: auto; }
+  html.has-cur .cur {
+    display: block;
+    position: fixed; top: 0; left: 0;
+    width: 26px; height: 26px;
+    border: 1px solid var(--silver);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 20000;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform .15s ease, opacity .2s ease;
+    will-change: transform;
+  }
+  html.has-cur .cur.on { opacity: .8; }
+  html.has-cur .cur.big { transform: translate(-50%, -50%) scale(1.5); }
+  html.has-cur .cur.off { opacity: 0; }
+}
+
+
+/* ---------------------------------------------------------------------
+   12. INTRO — built entirely by JS. No JS, no overlay.
+   --------------------------------------------------------------------- */
+.intro {
+  position: fixed; inset: 0;
+  z-index: 10000;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transition: opacity .35s ease;
+}
+.intro.out { opacity: 0; pointer-events: none; }
+
+.intro-in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(32px, 6vh, 56px);
+  width: 100%;
+  max-width: 720px;
+}
+
+/* beat 1 — terminal */
+.intro-term {
+  width: 22ch;                 /* longest line is 21ch — never wraps mid-token */
+  max-width: 100%;
+  text-align: left;
+  font-size: clamp(14px, 3.8vw, 16px);
+  line-height: 1.9;
+  white-space: pre;
+}
+.intro-term .ln { display: block; min-height: 1.9em; color: var(--muted); }
+.intro-term .ln.ret { color: var(--silver); }
+.intro-term .cur-blk {
+  display: inline-block;
+  width: .6em; height: 1.1em;
+  vertical-align: -0.15em;
+  background: var(--silver);
+  animation: nl-blink 1s steps(1) infinite;
+}
+@keyframes nl-blink { 50% { opacity: 0; } }
+
+/* beat 2 — the mark draws itself */
+.intro-mark {
+  height: clamp(96px, 22vw, 168px);
+  width: auto;
+  color: var(--text);
+  display: block;
+}
+.intro-mark .seg {
+  fill: none;
+  stroke-width: 105;
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  transition: stroke-dashoffset .5s cubic-bezier(.4, 0, .2, 1);
+}
+.intro-mark .seg.bar { stroke: currentColor; }
+.intro-mark .seg.ring { stroke: url(#nlSilverIntro); }
+.intro-mark .seg.in { stroke-dashoffset: 0; }
+.intro.done .seg { transition: none; stroke-dashoffset: 0; }
+
+/* beat 3 — the line */
+.intro-line {
+  font-weight: 700;
+  font-size: clamp(22px, 5.4vw, 40px);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+@media (max-width: 400px) { .intro-line { white-space: normal; } }
+
+/* beat 4 — the door */
+.intro-door {
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: .04em;
+  color: var(--silver);
+  background: transparent;
+  border: 1px solid var(--border-hi);
+  padding: 16px 28px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .5s ease, transform .5s ease, border-color .18s ease;
+}
+.intro-door:hover { border-color: var(--silver); }
+.intro .show { opacity: 1; transform: none; }
+.intro.done .intro-line, .intro.done .intro-door { transition: none; opacity: 1; transform: none; }
+
+.intro-skip {
+  position: fixed;
+  right: 24px; bottom: 20px;
+  font-size: 12px;
+  letter-spacing: .06em;
+  color: var(--text-2);
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+.intro-skip.show { opacity: .8; }
+
+@media (prefers-reduced-motion: reduce) {
+  .intro { transition: none; }
+  .intro-term .cur-blk { animation: none; }
+}
