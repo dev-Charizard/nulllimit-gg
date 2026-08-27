@@ -23,9 +23,6 @@ Certifications: Anthropic certified · Klaviyo certified
 2. Build — working software early and often
 3. Beta — a real, usable version in your hands
 4. Market-ready — the finished product, against a signed acceptance checklist
-5. Handoff runway — six months of maintenance and support after launch
-
-Payment terms: 40% at beta completion, 60% at market-ready final. Nothing at signing. You don't pay until you've used working software.
 
 ---
 
@@ -54,4 +51,4 @@ Vitoshi (Ryan Watkins) is the all-time leading rebounder at Boise State Universi
 
 ## Keywords
 
-software development studio, custom app development, iOS Android web apps, database architecture, AI systems, AI agents, automation, marketing campaigns, Klaviyo email campaigns, Anthropic certified, end-to-end builds, pay at beta
+software development studio, custom app development, iOS Android web apps, database architecture, AI systems, AI agents, automation, marketing campaigns, Klaviyo email campaigns, Anthropic certified, end-to-end builds
