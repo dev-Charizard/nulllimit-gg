@@ -131,6 +131,7 @@
 
 :root {
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --gap-section: clamp(96px, 14vh, 180px);
   --measure: min(1040px, 92vw);
 }
@@ -276,12 +277,12 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
    --------------------------------------------------------------------- */
 .section { padding-top: var(--gap-section); }
 
-/* small terminal-style label:  > label
+/* terminal-style label, at section-heading scale.
    The glyph is the light source; the label text stays --text-2, unshadowed,
    so its contrast is untouched. */
 .prompt {
-  font-size: 11px;
-  letter-spacing: .14em;
+  font-size: clamp(18px, 2.2vw, 26px);
+  letter-spacing: .12em;
   color: var(--text-2);
 }
 .prompt::before {
@@ -298,25 +299,32 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   font-size: clamp(38px, 8vw, 76px);
 }
 
-/* hairline rows — no cards, no fills, no icons */
+/* hairline rows — numeral, icon, title, description */
 .rows { list-style: none; margin-top: 40px; }
 .row {
   display: grid;
-  grid-template-columns: 3ch minmax(0, 1fr) minmax(0, 1.45fr);
-  column-gap: clamp(16px, 4vw, 40px);
+  grid-template-columns: 3ch 30px minmax(0, 1fr) minmax(0, 1.45fr);
+  column-gap: clamp(14px, 3vw, 36px);
   align-items: baseline;
   padding: 36px 0;
   border-top: 1px solid var(--border);
   transition: background-color .22s ease, border-color .22s ease;
 }
 .row:last-child { border-bottom: 1px solid var(--border); }
-.row-n {
-  font-size: 12px;
+.row-n {                              /* the mismatch: serif italic against the mono */
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
   color: var(--muted);
-  letter-spacing: .08em;
   transition: text-shadow .22s ease;
 }
-.row-t { color: var(--text); font-weight: 700; font-size: 21px; letter-spacing: -0.01em; }
+.row-i {
+  align-self: center;
+  color: var(--muted);
+  transition: color .22s ease, filter .22s ease;
+}
+.row-i svg { display: block; width: 22px; height: 22px; }
+.row-t { color: var(--text); font-weight: 700; font-size: clamp(21px, 1.8vw, 25px); letter-spacing: -0.01em; }
 .row-d { color: var(--text-2); font-size: 15px; }
 
 /* hover: the hairlines catch the light. Fine pointers only. */
@@ -328,13 +336,14 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   .row:hover + .row { border-top-color: rgba(61, 255, 168, .35); }
   .row:hover:last-child { border-bottom-color: rgba(61, 255, 168, .35); }
   .row:hover .row-n { text-shadow: 0 0 8px rgba(61, 255, 168, .55); }
+  .row:hover .row-i { color: var(--text-2); filter: drop-shadow(0 0 6px rgba(61, 255, 168, .45)); }
 }
 @media (max-width: 639px) {
   .row {
-    grid-template-columns: 3ch minmax(0, 1fr);
+    grid-template-columns: 3ch 26px minmax(0, 1fr);
     row-gap: 6px;
   }
-  .row-d { grid-column: 2; }
+  .row-d { grid-column: 3; }
 }
 
 
@@ -349,7 +358,6 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
    6. BUILDS SHIPPED
    --------------------------------------------------------------------- */
 .builds { padding-top: clamp(72px, 12vh, 140px); }
-.builds .prompt { font-size: 13px; letter-spacing: .18em; }
 .builds-n {
   display: block;
   font-weight: 700;
@@ -383,7 +391,21 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
    9. THE FORM
    --------------------------------------------------------------------- */
 .build .display { margin-top: 20px; }
-.build .lede { margin-top: 20px; color: var(--text-2); }
+.build .lede {
+  margin-top: 20px;
+  color: var(--text-2);
+  font-family: var(--serif);            /* the mismatch again, quietly */
+  font-style: italic;
+  font-size: 18px;
+}
+
+/* one serif word inside the metal headline — the clip travels through */
+.accent-serif {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.06em;
+}
 
 .form { margin-top: 56px; }
 .form-grid {
