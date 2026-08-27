@@ -38,6 +38,13 @@
   --grad-edge: linear-gradient(135deg, #363B42 0%, #6B7278 45%, #2A2E33 100%);
 
   --nl-accent: var(--silver);
+
+  /* ---- light, never pigment. These two hues appear only as glow, bloom,
+     focus, and hover — never a fill, never body text, never a resting
+     border, never on the metal. Remove every glow and the page must still
+     be a correct monochrome null;limit page. */
+  --glow-green:  #3DFFA8;   /* phosphor. the primary signal */
+  --glow-purple: #A78BFA;   /* secondary, ~a third as often */
 }
 
 /* ---- ecosystem categories.
@@ -125,7 +132,7 @@
 :root {
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --gap-section: clamp(96px, 14vh, 180px);
-  --measure: 880px;
+  --measure: min(1040px, 92vw);
 }
 
 html {
@@ -149,11 +156,64 @@ body {
   html { scroll-behavior: auto; }
 }
 
-/* Grain — texture, not effect. */
-body::before {
+/* ---------------------------------------------------------------------
+   FX STACK — depth, back to front:
+   vignette (z1) → grid (z2) → glow pools (z3) → grain + scanlines (z4)
+   → content (z5). Everything fixed, everything pointer-events: none.
+   --------------------------------------------------------------------- */
+
+/* Vignette — pulls focus to the column. */
+html::before {
   content: '';
   position: fixed; inset: 0;
-  z-index: 50;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 120% 90% at 50% 42%, transparent 58%, rgba(0, 0, 0, .42) 100%);
+}
+
+/* Grid — 1px lines at 80px, masked so it dies at the edges. */
+html::after {
+  content: '';
+  position: fixed; inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+  background-size: 80px 80px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, #000 30%, transparent 75%);
+}
+
+/* Glow pools — light in the dead space. Drift is transform-only; the pulse
+   after the count-up is an opacity transition driven from intro.js. */
+.fx-glow {
+  position: fixed;
+  z-index: 3;
+  pointer-events: none;
+  width: min(900px, 92vw);
+  height: 540px;
+  left: 50%;
+  margin-left: calc(min(900px, 92vw) / -2);
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: .7;                      /* pulse raises this to 1, then settles */
+  transition: opacity 1.3s ease;
+}
+.fx-glow--green {
+  top: 4vh;
+  background: radial-gradient(closest-side, rgba(61, 255, 168, .14), transparent 70%);
+}
+.fx-glow--purple {
+  bottom: -14vh;
+  background: radial-gradient(closest-side, rgba(167, 139, 250, .11), transparent 70%);
+}
+
+/* Grain — texture, not effect. Oversized so the shimmer can travel. */
+body::before {
+  content: '';
+  position: fixed; inset: -50%;
+  z-index: 4;
   pointer-events: none;
   opacity: .028;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -162,9 +222,29 @@ body::before {
 body::after {
   content: '';
   position: fixed; inset: 0;
-  z-index: 50;
+  z-index: 4;
   pointer-events: none;
   background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.018) 3px 4px);
+}
+
+/* Motion for the stack — all of it dies with prefers-reduced-motion.
+   Glows stay: they're light, not motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .fx-glow--green  { animation: fx-drift-a 75s ease-in-out infinite alternate; }
+  .fx-glow--purple { animation: fx-drift-b 90s ease-in-out infinite alternate; }
+  body::before     { animation: fx-grain 1.2s steps(1, end) infinite; }
+}
+@keyframes fx-drift-a { from { transform: translate(0, 0); } to { transform: translate(34px, 18px); } }
+@keyframes fx-drift-b { from { transform: translate(0, 0); } to { transform: translate(-30px, -22px); } }
+@keyframes fx-grain {
+  0%, 100% { transform: translate(0, 0); }
+  12.5%    { transform: translate(-2%, -3%); }
+  25%      { transform: translate(3%, -1%); }
+  37.5%    { transform: translate(-1%, 2%); }
+  50%      { transform: translate(2%, 3%); }
+  62.5%    { transform: translate(-3%, 1%); }
+  75%      { transform: translate(1%, -2%); }
+  87.5%    { transform: translate(-2%, 2%); }
 }
 
 ::selection { background: var(--silver); color: var(--bg); }
@@ -177,7 +257,7 @@ a:focus-visible, button:focus-visible {
 
 .site {
   position: relative;
-  z-index: 1;
+  z-index: 5;
   max-width: var(--measure);
   margin: 0 auto;
   padding: 0 clamp(20px, 5vw, 40px);
@@ -196,15 +276,18 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
    --------------------------------------------------------------------- */
 .section { padding-top: var(--gap-section); }
 
-/* small terminal-style label:  > label */
+/* small terminal-style label:  > label
+   The glyph is the light source; the label text stays --text-2, unshadowed,
+   so its contrast is untouched. */
 .prompt {
   font-size: 11px;
-  letter-spacing: .1em;
+  letter-spacing: .14em;
   color: var(--text-2);
 }
 .prompt::before {
   content: '> ';
-  color: var(--muted);
+  color: var(--glow-green);
+  text-shadow: 0 0 12px rgba(61, 255, 168, .45);
 }
 
 /* display type */
@@ -222,17 +305,30 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   grid-template-columns: 3ch minmax(0, 1fr) minmax(0, 1.45fr);
   column-gap: clamp(16px, 4vw, 40px);
   align-items: baseline;
-  padding: 22px 0;
+  padding: 36px 0;
   border-top: 1px solid var(--border);
+  transition: background-color .22s ease, border-color .22s ease;
 }
 .row:last-child { border-bottom: 1px solid var(--border); }
 .row-n {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   letter-spacing: .08em;
+  transition: text-shadow .22s ease;
 }
-.row-t { color: var(--text); font-weight: 700; }
-.row-d { color: var(--text-2); }
+.row-t { color: var(--text); font-weight: 700; font-size: 21px; letter-spacing: -0.01em; }
+.row-d { color: var(--text-2); font-size: 15px; }
+
+/* hover: the hairlines catch the light. Fine pointers only. */
+@media (hover: hover) {
+  .row:hover {
+    background-color: rgba(61, 255, 168, .03);
+    border-top-color: rgba(61, 255, 168, .35);
+  }
+  .row:hover + .row { border-top-color: rgba(61, 255, 168, .35); }
+  .row:hover:last-child { border-bottom-color: rgba(61, 255, 168, .35); }
+  .row:hover .row-n { text-shadow: 0 0 8px rgba(61, 255, 168, .55); }
+}
 @media (max-width: 639px) {
   .row {
     grid-template-columns: 3ch minmax(0, 1fr);
@@ -246,22 +342,26 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
    5. TOP — the mark, alone
    --------------------------------------------------------------------- */
 .top { padding-top: clamp(56px, 10vh, 120px); }
-.top .nl-mark { height: clamp(72px, 11vw, 120px); }
+.top .nl-mark { height: 56px; }
 
 
 /* ---------------------------------------------------------------------
    6. BUILDS SHIPPED
    --------------------------------------------------------------------- */
 .builds { padding-top: clamp(72px, 12vh, 140px); }
+.builds .prompt { font-size: 13px; letter-spacing: .18em; }
 .builds-n {
   display: block;
   font-weight: 700;
-  font-size: clamp(150px, 30vw, 300px);
+  font-size: clamp(140px, 18vw, 240px);
   line-height: .95;
   letter-spacing: -0.05em;
   margin-top: 8px;
   margin-left: -0.04em;  /* optical: pull the glyph to the text edge */
 }
+/* the counter's band was dead space — the pool fills it with light,
+   and the next section sits a third closer */
+.builds + .section { padding-top: calc(var(--gap-section) * 2 / 3); }
 
 
 /* ---------------------------------------------------------------------
@@ -271,7 +371,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   margin-top: 40px;
   padding-top: 20px;
   border-top: 1px solid var(--border);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--text-2);
@@ -318,8 +418,8 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 
 .field { display: flex; flex-direction: column; min-width: 0; }
 .field label {
-  font-size: 10px;
-  letter-spacing: .2em;
+  font-size: 13px;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--text-2);
   margin-bottom: 10px;
@@ -342,7 +442,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   border-radius: 0;
   color: var(--text);
   font: inherit;
-  font-size: 16px;            /* ≥16px: iOS won't zoom on focus */
+  font-size: 17px;            /* ≥16px: iOS won't zoom on focus */
   line-height: 1.5;
   padding: 10px 0 12px;
   transition: border-color .18s ease, box-shadow .18s ease;
@@ -366,8 +466,8 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 .field select:focus,
 .field textarea:focus {
   outline: none;
-  border-bottom-color: var(--silver);
-  box-shadow: 0 1px 0 0 var(--silver);
+  border-bottom-color: var(--glow-green);
+  box-shadow: 0 1px 0 0 var(--glow-green), 0 0 8px rgba(61, 255, 168, .35);
 }
 .field input:hover,
 .field select:hover,
@@ -376,14 +476,14 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 .field.is-invalid input,
 .field.is-invalid select,
 .field.is-invalid textarea {
-  border-bottom-color: var(--titanium);
-  box-shadow: 0 1px 0 0 var(--titanium);
+  border-bottom-color: var(--glow-purple);
+  box-shadow: 0 1px 0 0 var(--glow-purple), 0 0 8px rgba(167, 139, 250, .35);
 }
 .err {
   display: none;
   margin-top: 8px;
   font-size: 12px;
-  color: var(--titanium);
+  color: var(--glow-purple);
 }
 .field.is-invalid .err { display: block; }
 
@@ -416,8 +516,15 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   .btn { width: 100%; text-align: center; }
 }
 .form-note { font-size: 12px; color: var(--text-2); }
-.form-note a { color: var(--silver); border-bottom: 1px solid var(--border-hi); }
-.form-note a:hover { border-bottom-color: var(--silver); }
+.form-note a {
+  color: var(--silver);
+  border-bottom: 1px solid var(--border-hi);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.form-note a:hover {
+  border-bottom-color: rgba(61, 255, 168, .6);
+  box-shadow: 0 6px 10px -7px rgba(61, 255, 168, .8);
+}
 
 .form-status { margin-top: 24px; font-size: 13px; color: var(--text-2); }
 .form-status:empty { display: none; }
@@ -448,9 +555,14 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 .foot-links a {
   font-size: 13px;
   color: var(--text-2);
-  transition: color .15s ease;
+  border-bottom: 1px solid transparent;
+  transition: color .15s ease, border-color .15s ease, box-shadow .15s ease;
 }
-.foot-links a:hover { color: var(--silver); }
+.foot-links a:hover {
+  color: var(--silver);
+  border-bottom-color: rgba(61, 255, 168, .55);
+  box-shadow: 0 6px 10px -7px rgba(61, 255, 168, .8);
+}
 .legal {
   grid-column: 1 / -1;
   font-size: 10px;
@@ -479,6 +591,17 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
     transform: translate(-50%, -50%) scale(1);
     transition: transform .15s ease, opacity .2s ease;
     will-change: transform;
+  }
+  html.has-cur .cur::after {           /* faint phosphor core inside the ring */
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--glow-green);
+    box-shadow: 0 0 6px rgba(61, 255, 168, .8);
+    opacity: .8;
   }
   html.has-cur .cur.on { opacity: .8; }
   html.has-cur .cur.big { transform: translate(-50%, -50%) scale(1.5); }
@@ -520,12 +643,16 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   white-space: pre;
 }
 .intro-term .ln { display: block; min-height: 1.9em; color: var(--text-2); }
-.intro-term .ln.ret { color: var(--silver); }
+.intro-term .ln.ret {              /* the returned value is the signal */
+  color: var(--glow-green);
+  text-shadow: 0 0 10px rgba(61, 255, 168, .4);
+}
 .intro-term .cur-blk {
   display: inline-block;
   width: .6em; height: 1.1em;
   vertical-align: -0.15em;
-  background: var(--silver);
+  background: var(--glow-green);
+  box-shadow: 0 0 8px rgba(61, 255, 168, .6);
   animation: nl-blink 1s steps(1) infinite;
 }
 @keyframes nl-blink { 50% { opacity: 0; } }
@@ -596,3 +723,17 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   .intro { transition: none; }
   .intro-term .cur-blk { animation: none; }
 }
+
+
+/* ---------------------------------------------------------------------
+   13. SCROLL REVEAL — .rv is only ever added by JS, which also checks
+   reduced-motion and IntersectionObserver support, so no-JS and
+   reduced-motion visitors always see the static final state.
+   --------------------------------------------------------------------- */
+.rv {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .5s ease-out, transform .5s ease-out;
+  transition-delay: var(--rv-d, 0ms);
+}
+.rv.rv-in { opacity: 1; transform: none; }

@@ -4,10 +4,11 @@
    renders complete, the form posts natively, and nothing is gated.
 
    1. intro     — the jump-discontinuity sequence (plays once)
-   2. counter   — builds.shipped counts up
+   2. counter   — builds.shipped counts up, then pulses its glow pool once
    3. type      — the cycling placeholder on "What are we building?"
    4. form      — validation + Formspree submit + mailto fallback
    5. cursor    — thin silver ring, fine pointers only
+   6. reveal    — scroll reveal on sections and rows, fires once
    ===================================================================== */
 (function () {
   'use strict';
@@ -175,7 +176,18 @@
     var target = parseInt(el.textContent, 10);
     if (isNaN(target) || reduce || doc.hidden) return;        // hidden tab: rAF is paused, just show it
     var t0 = null, D = 600, settled = false;
-    function settle() { if (!settled) { settled = true; el.textContent = String(target); } }
+    function settle() {
+      if (settled) return;
+      settled = true;
+      el.textContent = String(target);
+      /* one slow pulse of the green pool behind the counter, then it settles
+         back to its resting opacity (the CSS transition does the easing) */
+      var pool = doc.querySelector('.fx-glow--green');
+      if (pool) {
+        pool.style.opacity = '1';
+        setTimeout(function () { pool.style.opacity = ''; }, 1400);
+      }
+    }
     function step(ts) {
       if (settled) return;
       if (t0 == null) t0 = ts;
@@ -331,6 +343,29 @@
   }
 
 
-  function init() { intro(); counter(); placeholder(); form(); cursor(); }
+  /* -------------------------------------------------------------------
+     6. REVEAL — sections and rows fade up once as they enter. The .rv
+        class is only added here, so no-JS, no-IO, and reduced-motion
+        visitors get the static final state.
+     ------------------------------------------------------------------- */
+  function reveal() {
+    if (reduce || !('IntersectionObserver' in window)) return;
+    var targets = Array.prototype.slice.call(doc.querySelectorAll('.section, .builds, .foot'));
+    Array.prototype.forEach.call(doc.querySelectorAll('.rows'), function (list) {
+      Array.prototype.forEach.call(list.children, function (row, i) {
+        row.style.setProperty('--rv-d', (i * 50) + 'ms');   // 50ms stagger per row
+        targets.push(row);
+      });
+    });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('rv-in'); io.unobserve(en.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    targets.forEach(function (t) { t.classList.add('rv'); io.observe(t); });
+  }
+
+
+  function init() { intro(); counter(); placeholder(); form(); cursor(); reveal(); }
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', init); else init();
 })();
