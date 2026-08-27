@@ -2,6 +2,14 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/blog",
+      "destination": "/blog.html"
+    },
+    {
+      "source": "/ebooks",
+      "destination": "/ebooks.html"
+    },
+    {
       "source": "/blog/your-first-ai-agent",
       "destination": "/your-first-ai-agent.html"
     },
@@ -10,84 +18,48 @@
       "destination": "/the-agent-economy-is-already-here.html"
     },
     {
-      "source": "/blog/two-tier-radar",
-      "destination": "/two-tier-radar.html"
-    },
-    {
-      "source": "/blog/btc-prediction-markets",
-      "destination": "/btc-prediction-markets.html"
-    },
-    {
-      "source": "/blog/athlete-to-developer",
-      "destination": "/athlete-to-developer.html"
-    },
-    {
-      "source": "/blog/fed-prediction-markets",
-      "destination": "/fed-prediction-markets.html"
-    },
-    {
-      "source": "/blog/openclaw-setup",
-      "destination": "/openclaw-setup.html"
-    },
-    {
       "source": "/blog/ai-trading-bot-2-weeks",
       "destination": "/ai-trading-bot-2-weeks.html"
     },
     {
       "source": "/blog/kalshi-trading-bot",
       "destination": "/blog-kalshi-bot.html"
-    },
+    }
+  ],
+  "redirects": [
+    { "source": "/consulting", "destination": "/", "permanent": true },
+    { "source": "/consulting.html", "destination": "/", "permanent": true },
+    { "source": "/agents", "destination": "/", "permanent": true },
+    { "source": "/agents.html", "destination": "/", "permanent": true },
+    { "source": "/leads", "destination": "/", "permanent": true },
+    { "source": "/leads.html", "destination": "/", "permanent": true },
+    { "source": "/api", "destination": "/", "permanent": true },
+    { "source": "/api.html", "destination": "/", "permanent": true },
+    { "source": "/intel", "destination": "/", "permanent": true },
+    { "source": "/intel.html", "destination": "/", "permanent": true },
+    { "source": "/edge", "destination": "/", "permanent": true },
+    { "source": "/edge.html", "destination": "/", "permanent": true },
+    { "source": "/work", "destination": "/", "permanent": true },
+    { "source": "/work.html", "destination": "/", "permanent": true },
+    { "source": "/aiguy", "destination": "/", "permanent": true },
+    { "source": "/aiguy.html", "destination": "/", "permanent": true },
+    { "source": "/start", "destination": "/", "permanent": true },
+    { "source": "/null-limit-onboarding.html", "destination": "/", "permanent": true },
+    { "source": "/website", "destination": "/", "permanent": true },
+    { "source": "/website-intake.html", "destination": "/", "permanent": true },
+    { "source": "/gengar", "destination": "/", "permanent": true },
+    { "source": "/realestate.html", "destination": "/", "permanent": true },
+    { "source": "/jobsearch.html", "destination": "/", "permanent": true },
+    { "source": "/strategic-framework.html", "destination": "/", "permanent": true },
+    { "source": "/ebooks_v2.html", "destination": "/ebooks", "permanent": true },
+    { "source": "/kalshi-trading-bot.html", "destination": "/blog/kalshi-trading-bot", "permanent": true }
+  ],
+  "headers": [
     {
-      "source": "/aiguy",
-      "destination": "/aiguy.html"
-    },
-    {
-      "source": "/consulting",
-      "destination": "/consulting.html"
-    },
-    {
-      "source": "/ebooks",
-      "destination": "/ebooks.html"
-    },
-    {
-      "source": "/blog",
-      "destination": "/blog.html"
-    },
-    {
-      "source": "/leads",
-      "destination": "/leads.html"
-    },
-    {
-      "source": "/agents",
-      "destination": "/agents.html"
-    },
-    {
-      "source": "/intel",
-      "destination": "/intel.html"
-    },
-    {
-      "source": "/api",
-      "destination": "/api.html"
-    },
-    {
-      "source": "/edge",
-      "destination": "/edge.html"
-    },
-    {
-      "source": "/work",
-      "destination": "/work.html"
-    },
-    {
-      "source": "/start",
-      "destination": "/null-limit-onboarding.html"
-    },
-    {
-      "source": "/gengar",
-      "destination": "/gengar-challenge-site.html"
-    },
-    {
-      "source": "/website",
-      "destination": "/website-intake.html"
+      "source": "/stripe-buttons.html",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
     }
   ]
 }

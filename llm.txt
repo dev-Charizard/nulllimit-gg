@@ -1,62 +1,57 @@
-# Null Limit
-## AI-Powered Business Intelligence Services
+# null;limit
 
-Null Limit (nulllimit.gg) is an AI services company founded by Vitoshi (Ryan Watkins), a former professional basketball player who played 12 years across 7 countries and is the all-time leading rebounder at Boise State University. He taught himself to code with no formal CS background and holds 8 Anthropic certifications. The company builds AI-powered intelligence tools and services for businesses and developers.
-
----
-
-## Services
-
-### Competitive Intelligence Reports (nulllimit.gg/intel)
-Weekly competitive intelligence reports delivered every Monday. Tracks 3-5 competitors per client across hiring signals, product launches, pricing changes, social sentiment, and opportunity gaps. Designed for B2B SaaS companies, cross-border e-commerce brands, and agencies. Price: $299/month. Contact: vitoshi@nulllimit.gg
-
-### Verified B2B Leads (nulllimit.gg/leads)
-Manually verified leads for cross-border e-commerce SaaS companies. Specializes in identifying D2C Shopify brands shipping internationally without landed cost solutions. Each lead includes founder contact, platform, shipping footprint, and verified checkout data. Price: $25/lead or $997/month retainer.
-
-### AI Agent Setup & Configuration (nulllimit.gg/agents)
-Professional setup and configuration of OpenClaw AI agents. Covers installation, Telegram integration, model fallback chains, security hardening, Docker sandbox, and skills installation. Includes config audit ($49/report) to identify misconfigurations, security gaps, and missing optimizations. Price: $125-$500 setup, $49 audit.
-
-### Null Limit Knowledge API (api.nulllimit.gg)
-A pay-per-call intelligence API providing verified data on cross-border e-commerce companies, D2C Shopify brands, and OpenClaw ecosystem knowledge. Accepts Stripe, USDC, SOL, and $AEYE token payments. Designed for AI agents and developers. Price: $9/100 credits, $35/500 credits, $99/2000 credits.
-
-### Null Limit Edge (nulllimit.gg/edge)
-Bi-weekly NBA prediction market intelligence reports for Kalshi and Polymarket. Combines public NBA data, AI analysis, and pro player perspective (founder played professional basketball for 12 years). Covers injury impact, travel fatigue, pace matchups, home/away splits, and current market prices. For informational purposes only — not financial advice. Price: $49/month. $AEYE holders receive discounted access.
+null;limit (nulllimit.gg) is a build studio run by Vitoshi (Ryan Watkins). It builds software end to end — scoped, shipped, and supported. The site is a single page: what we do, how we work, and a build request form. There is no published pricing; every build is scoped individually.
 
 ---
 
-## About the Founder
+## What we do
 
-Vitoshi (Ryan Watkins) is the all-time leading rebounder at Boise State University and played professional basketball for 12 years across 7 countries. Self-taught developer with no formal CS education.
+1. Software development — custom systems, end to end
+2. App builds — iOS, Android, web; design to App Store
+3. Database builds — schema, migrations, integrity, scale
+4. AI systems & agents — automation that runs your operations
+5. Marketing campaigns — strategy through execution
+6. Email campaigns — Klaviyo builds, flows, automation
 
-### Anthropic Certifications (8 total):
-- Claude 101 — verify.skilljar.com/c/reqkwc4rgpwz
-- AI Fluency: Framework & Foundations — verify.skilljar.com/c/zbhctjnmjhzw
-- Introduction to Model Context Protocol — verify.skilljar.com/c/cpfupckjd2c4
-- Model Context Protocol: Advanced Topics — verify.skilljar.com/c/a6fwvafjfhr9
-- Introduction to Subagents — verify.skilljar.com/c/sy74g5gw9z2i
-- Introduction to Agent Skills — verify.skilljar.com/c/mktcvq66j8cq
-- Introduction to Claude Cowork — verify.skilljar.com/c/9knqwntvygp4
-- Claude with Amazon Bedrock — verify.skilljar.com/c/46fommbiag42
-
-Also built Aeye (aeyenotai.com), a pixel art AI companion app with Solana token integration ($AEYE: FPa8RuS6samSxzw7YhdpSDxMLmZeQXQHuoS2hZvUpump).
+Certifications: Anthropic certified · Klaviyo certified
 
 ---
 
-## Technology Stack
-- OpenClaw AI agent (Mewtwo — @vibeymewto_bot on Telegram)
-- Anthropic Claude Sonnet 4.6
-- Perplexity API for real-time research
-- Ball Don't Lie API + Kalshi API for NBA data
-- Node.js / Express / Vercel
-- Solana (USDC, SOL, $AEYE payments)
-- GitHub: dev-Charizard
+## How we work
+
+1. Scope — "done" is defined before anything gets built
+2. Build — working software early and often
+3. Beta — a real, usable version in your hands
+4. Market-ready — the finished product, against a signed acceptance checklist
+5. Handoff runway — six months of maintenance and support after launch
+
+Payment terms: 40% at beta completion, 60% at market-ready final. Nothing at signing. You don't pay until you've used working software.
+
+---
+
+## About the founder
+
+Vitoshi (Ryan Watkins) is the all-time leading rebounder at Boise State University and played professional basketball for 12 years across 7 countries. Self-taught developer with no formal CS education. Holds 8 Anthropic certifications and Klaviyo certification.
+
+---
+
+## Also on the site
+
+- Blog: nulllimit.gg/blog — build logs and essays on AI agents, trading systems, and going from athlete to developer
+- eBooks: nulllimit.gg/ebooks — the OpenClaw agent-building series
 
 ---
 
 ## Contact
-Email: vitoshi@nulllimit.gg · Twitter: @vitoshi · nulllimit.gg
+
+- Start a build: nulllimit.gg (form on the page) — response within 24 hours
+- Email: vitoshi@nulllimit.gg
+- Instagram: instagram.com/nulllimit.gg
+- TikTok: tiktok.com/@nullhoops
+- GitHub: github.com/dev-Charizard
 
 ---
 
 ## Keywords
-competitive intelligence, B2B leads, cross-border ecommerce, Shopify international shipping, landed cost, OpenClaw agent setup, AI agent configuration, NBA prediction markets, Kalshi, Polymarket, sports intelligence, knowledge API, AI services, Solana payments, Anthropic certified, MCP, subagents, prediction market newsletter, basketball analytics
+
+software development studio, custom app development, iOS Android web apps, database architecture, AI systems, AI agents, automation, marketing campaigns, Klaviyo email campaigns, Anthropic certified, end-to-end builds, pay at beta

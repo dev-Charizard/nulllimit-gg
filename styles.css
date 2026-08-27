@@ -198,8 +198,8 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 
 /* small terminal-style label:  > label */
 .prompt {
-  font-size: 12px;
-  letter-spacing: .08em;
+  font-size: 11px;
+  letter-spacing: .1em;
   color: var(--text-2);
 }
 .prompt::before {
@@ -212,7 +212,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.05;
-  font-size: clamp(32px, 6vw, 56px);
+  font-size: clamp(38px, 8vw, 76px);
 }
 
 /* hairline rows — no cards, no fills, no icons */
@@ -227,7 +227,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 }
 .row:last-child { border-bottom: 1px solid var(--border); }
 .row-n {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--muted);
   letter-spacing: .08em;
 }
@@ -256,7 +256,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 .builds-n {
   display: block;
   font-weight: 700;
-  font-size: clamp(112px, 22vw, 220px);
+  font-size: clamp(150px, 30vw, 300px);
   line-height: .95;
   letter-spacing: -0.05em;
   margin-top: 8px;
@@ -271,8 +271,8 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   margin-top: 40px;
   padding-top: 20px;
   border-top: 1px solid var(--border);
-  font-size: 11px;
-  letter-spacing: .18em;
+  font-size: 10px;
+  letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--text-2);
 }
@@ -288,7 +288,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 }
 .terms-h {
   font-weight: 700;
-  font-size: clamp(20px, 3.2vw, 28px);
+  font-size: clamp(24px, 4vw, 34px);
   line-height: 1.3;
   letter-spacing: -0.02em;
   color: var(--text);
@@ -318,8 +318,8 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 
 .field { display: flex; flex-direction: column; min-width: 0; }
 .field label {
-  font-size: 11px;
-  letter-spacing: .16em;
+  font-size: 10px;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--text-2);
   margin-bottom: 10px;
@@ -327,7 +327,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 .field label .opt {
   text-transform: none;
   letter-spacing: .04em;
-  color: var(--muted);
+  color: var(--text-2);
 }
 
 .field input,
@@ -349,7 +349,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 }
 .field textarea { resize: vertical; min-height: 96px; }
 .field input::placeholder,
-.field textarea::placeholder { color: var(--muted); opacity: 1; }
+.field textarea::placeholder { color: var(--text-2); opacity: 1; }
 
 .field select {
   cursor: pointer;
@@ -360,7 +360,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 }
 .field select option { background: var(--surface); color: var(--text); }
 .field select:invalid,
-.field select.is-empty { color: var(--muted); }
+.field select.is-empty { color: var(--text-2); }
 
 .field input:focus,
 .field select:focus,
@@ -425,7 +425,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 
 /* confirmation, replaces the form */
 .form-done { margin-top: 56px; }
-.form-done .display { font-size: clamp(24px, 4vw, 36px); margin-top: 12px; }
+.form-done .display { font-size: clamp(28px, 5vw, 44px); margin-top: 12px; }
 .form-done p { margin-top: 16px; color: var(--text-2); }
 
 
@@ -453,8 +453,8 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 .foot-links a:hover { color: var(--silver); }
 .legal {
   grid-column: 1 / -1;
-  font-size: 11px;
-  letter-spacing: .06em;
+  font-size: 10px;
+  letter-spacing: .08em;
   color: var(--muted);
 }
 
@@ -519,7 +519,7 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
   line-height: 1.9;
   white-space: pre;
 }
-.intro-term .ln { display: block; min-height: 1.9em; color: var(--muted); }
+.intro-term .ln { display: block; min-height: 1.9em; color: var(--text-2); }
 .intro-term .ln.ret { color: var(--silver); }
 .intro-term .cur-blk {
   display: inline-block;
