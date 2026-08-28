@@ -19,10 +19,15 @@ Certifications: Anthropic certified · Klaviyo certified
 
 ## How we work
 
-1. Scope — "done" is defined before anything gets built
-2. Build — working software early and often
-3. Beta — a real, usable version in your hands
-4. Market-ready — the finished product, against a signed acceptance checklist
+1. Recon — we learn your business before we touch a keyboard
+2. Scope — "done" is defined before anything gets built
+3. Plan — architecture, milestones, and sequence, mapped before we build
+4. Build — working software early and often
+5. Audit — every line reviewed against the spec
+6. Security — hardened before anyone else touches it
+7. Beta — a real, usable version in your hands
+8. Stress test — we try to break it before the real world does
+9. Market-ready — the finished product, against a signed acceptance checklist
 
 ---
 
