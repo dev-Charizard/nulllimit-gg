@@ -16,10 +16,11 @@
   var doc = document;
   var root = doc.documentElement;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var INTRO_KEY = 'nl:intro';
+  var INTRO_KEY = 'nl:intro';       // localStorage: has been through the door before
+  var SESSION_KEY = 'nl:session';   // sessionStorage: has been through the door this session
 
-  function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  function read(k)     { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function store(k, v)  { try { localStorage.setItem(k, v); } catch (e) {} }
+  function sstore(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }
 
   /* Typewriter. ~28ms/char ±12ms jitter — even timing reads as fake.
      Returns a handle with .cancel(). */
@@ -42,14 +43,23 @@
      1. INTRO
      ------------------------------------------------------------------- */
   function intro() {
-    if (!root.classList.contains('nl-intro')) return;   // head script decided: seen, or flag set
+    if (!root.classList.contains('nl-intro')) return;   // head script decided: already through this session
 
-    var LINES = [
+    /* Two scripts for the same overlay. First visit: the jump discontinuity,
+       drawn slowly. Return visit: welcome back, the mark already there, and
+       a door that reads differently. */
+    var RETURN = root.classList.contains('nl-return');
+    var LINES = RETURN ? [
+      { text: '> welcome back',        ret: false },
+      { text: '"still undefined"',     ret: true  }
+    ] : [
       { text: '> null;limit',          ret: false },
       { text: '> const limit = null;', ret: false },
       { text: '> typeof limit',        ret: false },
       { text: '"undefined"',           ret: true  }
     ];
+    var LINE_TEXT = RETURN ? 'WELCOME BACK.' : 'THE LIMIT IS UNDEFINED.';
+    var DOOR_TEXT = RETURN ? '[ continue transcending limits → ]' : '[ the limit doesn’t exist → ]';
 
     var ov = doc.createElement('div');
     ov.className = 'intro';
@@ -72,8 +82,8 @@
           '<circle class="seg ring" data-seg="r1" style="--len:674.9" cx="438.0" cy="570.1" r="107.4"/>' +
           '<circle class="seg ring" data-seg="r2" style="--len:674.9" cx="438.0" cy="159.9" r="107.4"/>' +
         '</svg>' +
-        '<p class="intro-line metal-text">THE LIMIT IS UNDEFINED.</p>' +
-        '<button type="button" class="intro-door">[ the limit doesn’t exist → ]</button>' +
+        '<p class="intro-line metal-text"></p>' +
+        '<button type="button" class="intro-door"></button>' +
       '</div>' +
       '<span class="intro-skip" aria-hidden="true">[ click to skip ]</span>';
     doc.body.appendChild(ov);
@@ -84,6 +94,8 @@
     var line = ov.querySelector('.intro-line');
     var door = ov.querySelector('.intro-door');
     var skip = ov.querySelector('.intro-skip');
+    line.textContent = LINE_TEXT;
+    door.textContent = DOOR_TEXT;
 
     var timers = [], typer = null, finished = false, closed = false;
     function after(ms, fn) { timers.push(setTimeout(fn, ms)); }
@@ -102,6 +114,12 @@
     }
 
     function drawMark() {
+      if (RETURN) {                    /* they've seen it drawn. it's just there. */
+        ['b1', 'b2', 'r1', 'r2'].forEach(function (k) { seg[k].classList.add('in'); });
+        after(500, function () { line.classList.add('show'); });
+        after(900, function () { door.classList.add('show'); finish(false); });
+        return;
+      }
       seg.b1.classList.add('in');                                  // 1. lower bar, from the left
       after(520,  function () { seg.r1.classList.add('in'); });    // 2. lower ring — the excluded endpoint
       /* 3. beat. the gap is the point. */
@@ -111,12 +129,15 @@
       after(3000, function () { door.classList.add('show'); finish(false); }); // beat 4
     }
 
+    function typeAll(i, done) {
+      if (i >= LINES.length) { done(); return; }
+      typeLine(i, function () { typeAll(i + 1, done); });
+    }
+
     function play() {
-      after(1500, function () { skip.classList.add('show'); });
-      after(400, function () {
-        typeLine(0, function () { typeLine(1, function () { typeLine(2, function () { typeLine(3, function () {
-          blk.remove(); after(300, drawMark);
-        }); }); }); });
+      after(RETURN ? 900 : 1500, function () { skip.classList.add('show'); });
+      after(RETURN ? 250 : 400, function () {
+        typeAll(0, function () { blk.remove(); after(RETURN ? 200 : 300, drawMark); });
       });
     }
 
@@ -138,6 +159,7 @@
       if (closed) return;
       closed = true;
       store(INTRO_KEY, '1');
+      sstore(SESSION_KEY, '1');
       doc.removeEventListener('keydown', onKey, true);
       doc.removeEventListener('click', onClick, true);
       root.classList.remove('nl-intro');
