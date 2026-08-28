@@ -13,7 +13,7 @@ null;limit (nulllimit.gg) is a build studio run by Vitoshi (Ryan Watkins). It bu
 5. Marketing campaigns — strategy through execution
 6. Email campaigns — Klaviyo builds, flows, automation
 
-Certifications: Anthropic certified · Klaviyo certified
+Certifications: Anthropic certified (9 certifications) · Klaviyo certified
 
 ---
 
@@ -33,7 +33,7 @@ Certifications: Anthropic certified · Klaviyo certified
 
 ## About the founder
 
-Vitoshi (Ryan Watkins) is the all-time leading rebounder at Boise State University and played professional basketball for 12 years across 7 countries. Self-taught developer with no formal CS education. Holds 8 Anthropic certifications and Klaviyo certification.
+Vitoshi (Ryan Watkins) is the all-time leading rebounder at Boise State University and played professional basketball for 12 years across 7 countries. Self-taught developer with no formal CS education. Holds 9 Anthropic certifications and Klaviyo certification.
 
 ---
 
