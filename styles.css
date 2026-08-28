@@ -728,6 +728,63 @@ html.nl-intro .site { opacity: 0; animation: nl-failsafe 0s linear 4s forwards; 
 
 
 /* ---------------------------------------------------------------------
+   12b. DESKTOP — the editorial layout. Below 1024px the page is the single
+   column above (phones and tablets). From 1024px each section becomes a
+   two-column spread: the terminal label lives in a sticky left rail, the
+   content runs in a wide right column, the counter gets the width it earns.
+   --------------------------------------------------------------------- */
+@media (min-width: 1024px) {
+  :root { --measure: min(1440px, 94vw); }
+
+  .top { padding-top: clamp(48px, 7vh, 88px); }
+  .top .nl-mark { height: 64px; }
+
+  .section,
+  .builds {
+    display: grid;
+    grid-template-columns: minmax(300px, 1fr) minmax(0, 3.2fr);
+    column-gap: clamp(40px, 5vw, 96px);
+    align-items: start;
+  }
+  .section > .prompt,
+  .builds > .prompt {
+    grid-column: 1;
+    position: sticky;
+    top: 48px;
+    align-self: start;
+    white-space: nowrap;              /* the rail is sized so no label wraps */
+  }
+  .section > :not(.prompt),
+  .builds > :not(.prompt) { grid-column: 2; }
+
+  /* the rail label reads as a heading here */
+  .prompt { font-size: clamp(20px, 1.6vw, 24px); }
+
+  /* the counter, freed from the column, goes as big as the rail allows */
+  .builds-n {
+    font-size: clamp(240px, 22vw, 340px);
+    margin-top: -0.12em;              /* optical: cap height meets the label's baseline */
+  }
+  .builds + .section { padding-top: calc(var(--gap-section) * .75); }
+
+  .rows { margin-top: 0; }
+  .row {
+    grid-template-columns: 3ch 34px minmax(0, 1.25fr) minmax(0, 1fr);
+    padding: 40px 0;
+  }
+  .row-t { font-size: clamp(24px, 1.8vw, 28px); white-space: nowrap; }
+  .row-d { font-size: 16px; }
+  .row-i svg { width: 24px; height: 24px; }
+
+  .build .display { margin-top: 0; font-size: clamp(56px, 6.2vw, 96px); }
+  .form { margin-top: 48px; }
+
+  .foot { padding-top: 56px; }
+  .foot .nl-wordmark { height: 56px; }
+}
+
+
+/* ---------------------------------------------------------------------
    13. SCROLL REVEAL — .rv is only ever added by JS, which also checks
    reduced-motion and IntersectionObserver support, so no-JS and
    reduced-motion visitors always see the static final state.
