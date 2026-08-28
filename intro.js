@@ -373,7 +373,7 @@
   function reveal() {
     if (reduce || !('IntersectionObserver' in window)) return;
     var targets = Array.prototype.slice.call(doc.querySelectorAll('.section, .builds, .foot'));
-    Array.prototype.forEach.call(doc.querySelectorAll('.rows'), function (list) {
+    Array.prototype.forEach.call(doc.querySelectorAll('.rows, .cells'), function (list) {
       Array.prototype.forEach.call(list.children, function (row, i) {
         row.style.setProperty('--rv-d', (i * 50) + 'ms');   // 50ms stagger per row
         targets.push(row);
